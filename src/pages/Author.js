@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, {  Fragment } from "react";
 
 import { useHttp } from "../hooks/http";
 
@@ -14,7 +14,7 @@ const Author = props => {
 
   const [isLoading, author] = useHttp(
     process.env.REACT_APP_BACKEND_API_URL + "authors/" + authorName,
-    [authorName]
+    []
   );
 
   const noResult = (
