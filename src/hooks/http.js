@@ -6,12 +6,10 @@ export const useHttp = (url, dependencies) => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log("Sending Http request to URL: " + url);
+
     fetch(url)
       .then(response => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch.");
-        }
+        if (response.status === 429) return null;
         return response.json();
       })
       .then(data => {
