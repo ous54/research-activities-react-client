@@ -9,10 +9,7 @@ const AuthorHeader = props => {
             className="avatar avatar-xxl mr-5 "
             style={{
               backgroundImage: props.url_picture
-            }}
-            style={{
-              "background-image": "url(" + props.url_picture + ")"
-            }}
+            }} 
           ></span>
           <div className="media-body">
             <h4 className="m-0">

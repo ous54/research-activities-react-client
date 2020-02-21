@@ -1,4 +1,5 @@
 import React from "react";
+import Publication from "./Publication";
 
 const Publications = props => {
   return (
@@ -10,22 +11,17 @@ const Publications = props => {
               <th>Titre</th>
               <th className="text-center"> Citée </th>
               <th className="text-center">Année</th>
+              <th className="text-center">SJR</th>
+              <th className="text-center">IF</th>
             </tr>
           </thead>
           <tbody>
-            {props.publications.map(publication => (
-              <tr  key={publication.bib.title} >
-                <td>
-                  <div>{publication.bib.title}</div>
-                  <div className="small text-muted"></div>
-                </td>
-                <td className="text-center">
-                  <div> {publication.citedby}</div>
-                </td>
-                <td className="text-center">
-                  <div> {publication.bib.year}</div>
-                </td>
-              </tr>
+            {props.publications.map(( publication,index) => (
+              <Publication
+                index={index}
+                key={publication.bib.title}
+                publication={publication}
+              />
             ))}
           </tbody>
         </table>

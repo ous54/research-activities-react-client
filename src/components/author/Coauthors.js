@@ -17,7 +17,7 @@ const Coauthors = withRouter(({ history, ...props }) => {
                   <span
                     className="avatar avatar-md d-block"
                     style={{
-                      "background-image":
+                      backgroundImage:
                         "url(" +
                         "https://scholar.google.com/citations?view_op=medium_photo&user=" +
                         coauthor.id +
