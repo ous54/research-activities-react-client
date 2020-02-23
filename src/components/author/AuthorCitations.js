@@ -8,7 +8,7 @@ const AuthorCitations = props => {
     title: "AuthorCitations",
     data: {
       columns: [],
-      type: "line",
+      type: "bar",
       colors: {
         data1: "#467fcf"
       },
