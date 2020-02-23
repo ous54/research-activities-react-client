@@ -40,23 +40,15 @@ const Publication = props => {
   }
 
   return (
-    <tr key={props.publication.bib.title}>
-      <td>
-        <div>{props.publication.bib.title}</div>
-        <div className="small text-muted"></div>
-      </td>
-      <td className="text-center">
-        <div> {props.publication.citedby}</div>
-      </td>
-      <td className="text-center">
-        <div> {props.publication.bib.year}</div>
-      </td>
-      <td className="text-center">
-        <div> {publication_SJR}</div>
-      </td>
-      <td className="text-center">
-        <div> {publication_IF}</div>
-      </td>
+    <tr
+      style={{ whiteSpace: "break-spaces " }}
+      key={props.publication.bib.title}
+    >
+      <td>{props.publication.bib.title}</td>
+      <td className="text-center">{props.publication.citedby}</td>
+      <td className="text-center">{props.publication.bib.year}</td>
+      <td className="text-center">{publication_SJR}</td>
+      <td className="text-center">{publication_IF}</td>
     </tr>
   );
 };

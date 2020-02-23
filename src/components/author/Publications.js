@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Publication from "./Publication";
+import $ from "jquery";
+import "datatables";
 
 const Publications = props => {
+  useEffect(() => {
+    $(".datatable").DataTable();
+  }, []);
+
   return (
     <div className="card">
       <div className="table-responsive">
-        <table className="table table-hover  card-table">
+        <table className=" table table-hover  card-table table card-table table-vcenter text-nowrap datatable">
           <thead>
             <tr>
               <th>Titre</th>
@@ -16,7 +22,7 @@ const Publications = props => {
             </tr>
           </thead>
           <tbody>
-            {props.publications.map(( publication,index) => (
+            {props.publications.map((publication, index) => (
               <Publication
                 index={index}
                 key={publication.bib.title}
