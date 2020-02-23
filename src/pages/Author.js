@@ -1,4 +1,4 @@
-import React, {  Fragment } from "react";
+import React, { Fragment } from "react";
 
 import { useHttp } from "../hooks/http";
 
@@ -12,9 +12,9 @@ import Publications from "../components/author/Publications";
 const Author = props => {
   let { authorName } = useParams();
 
-  const [isLoading, author] = useHttp(
+  let [isLoading, author] = useHttp(
     process.env.REACT_APP_BACKEND_API_URL + "authors/" + authorName,
-    []
+    [authorName]
   );
 
   const noResult = (
@@ -27,9 +27,7 @@ const Author = props => {
     </div>
   );
 
-  if (!isLoading && !author) return noResult;
-
-  let content = (
+  const loadingContent = (
     <div className="row">
       <div className="text-muted container text-center">
         <p className="h4 text-muted font-weight-normal m-7">
@@ -40,40 +38,41 @@ const Author = props => {
     </div>
   );
 
-  if (author) {
-    content = (
-      <Fragment>
-        {/* {() => (isLoading ? <div className="loader container "></div> : "")} */}
+  
 
-        <div className="row">
-          <div className="col-lg-8">
-            <AuthorHeader
-              name={author.name}
-              affiliation={author.affiliation}
-              email={author.email}
-              interests={author.interests}
-              url_picture={author.url_picture}
-            />
-            <Publications publications={author.publications} />
-          </div>
-          <div className="col-lg-4">
-            <AuthorCitations
-              cites_per_year={author.cites_per_year}
-              citedby={author.citedby}
-              citedby5y={author.citedby5y}
-              hindex={author.hindex}
-              hindex5y={author.hindex5y}
-              i10index={author.i10index}
-              i10index5y={author.i10index5y}
-            />
-            <Coauthors coauthors={author.coauthors} />
-          </div>
+  if (isLoading) return loadingContent;
+
+  if (!isLoading && !author) return noResult;
+
+  if (author)
+    return (
+      <div className="row">
+        <div className="col-lg-8">
+          <AuthorHeader
+            name={author.name}
+            affiliation={author.affiliation}
+            email={author.email}
+            interests={author.interests}
+            url_picture={author.url_picture}
+          />
+          <Publications publications={author.publications} />
         </div>
-      </Fragment>
+        <div className="col-lg-4">
+          <AuthorCitations
+            cites_per_year={author.cites_per_year}
+            citedby={author.citedby}
+            citedby5y={author.citedby5y}
+            hindex={author.hindex}
+            hindex5y={author.hindex5y}
+            i10index={author.i10index}
+            i10index5y={author.i10index5y}
+          />
+          <Coauthors
+            coauthors={author.coauthors}
+          />
+        </div>
+      </div>
     );
-  }
-
-  return content;
 };
 
 export default Author;
