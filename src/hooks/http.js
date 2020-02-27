@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const useHttp = (url, dependencies) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -7,10 +8,14 @@ export const useHttp = (url, dependencies) => {
   useEffect(() => {
     setIsLoading(true);
 
-    fetch(url)
+    axios
+      .get(url, {
+        headers: {
+          Authorization: "jwt " + localStorage.getItem("token")
+        }
+      })
       .then(response => {
-        if (response.status === 429) return null;
-        return response.json();
+        return response.data;
       })
       .then(data => {
         setIsLoading(false);
@@ -20,7 +25,33 @@ export const useHttp = (url, dependencies) => {
         console.log(err);
         setIsLoading(false);
       });
+
+
+
   }, dependencies);
 
   return [isLoading, fetchedData];
+};
+
+export const useInputForm = callback => {
+  const [inputs, setInputs] = useState({});
+  const handleSubmit = event => {
+    if (event) {
+      event.preventDefault();
+      callback();
+    }
+  };
+  const handleInputChange = event => {
+    event.persist();
+    setInputs(inputs => ({
+      ...inputs,
+      [event.target.name]: event.target.value
+    }));
+  };
+  return {
+    handleSubmit,
+    handleInputChange,
+    inputs,
+    setInputs
+  };
 };
