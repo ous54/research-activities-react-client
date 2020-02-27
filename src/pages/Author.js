@@ -17,6 +17,9 @@ const Author = props => {
     [authorName]
   );
 
+  const suivre = () => {
+    console.log("suivre");
+  };
   const noResult = (
     <div className="row">
       <div className="text-muted container text-center">
@@ -38,8 +41,6 @@ const Author = props => {
     </div>
   );
 
-  
-
   if (isLoading) return loadingContent;
 
   if (!isLoading && !author) return noResult;
@@ -54,6 +55,7 @@ const Author = props => {
             email={author.email}
             interests={author.interests}
             url_picture={author.url_picture}
+            suivre={suivre}
           />
           <Publications publications={author.publications} />
         </div>
@@ -67,9 +69,7 @@ const Author = props => {
             i10index={author.i10index}
             i10index5y={author.i10index5y}
           />
-          <Coauthors
-            coauthors={author.coauthors}
-          />
+          <Coauthors coauthors={author.coauthors} />
         </div>
       </div>
     );
