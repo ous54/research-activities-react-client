@@ -46,6 +46,7 @@ const Coauthors = withRouter(({ history, ...props }) => {
                   <div className="item-action dropdown">
                     <a
                       onClick={e => {
+                        props.ShowLoadingCircle();
                         history.push("/author/" + coauthor.name);
                       }}
                       data-toggle="dropdown"
