@@ -32,6 +32,8 @@ const App = withRouter(({ history }) => {
               <Route path="/schools/" children={<Schools />} />
               <Route path="/laboratories/" children={<Laboratories />} />
               <Route path="/Login/" children={<Login />} />
+              <Route path="/Register/" children={<Register />} />          
+              <Route path="/author/:authorName" children={<Author />} />
             </Switch>
           </div>
         </div>
