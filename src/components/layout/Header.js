@@ -1,25 +1,22 @@
 import React from "react";
-import image from "../../assets/demo/brand/tabler.svg";
+import image from "../../assets/images/tabler.svg";
 const header = props => {
   return (
     <div className="header py-4">
       <div className="container">
         <div className="d-flex">
-          <a className="header-brand" href="./index.html">
+          <a className="header-brand" href >
             <img src={image} className="header-brand-img" alt="tabler logo" />
           </a>
           <div className="d-flex order-lg-2 ml-auto">
             <div className="nav-item d-none d-md-flex">
-              <a
-                href="https://github.com/tabler/tabler"
-                className="btn btn-sm btn-outline-primary"
-              >
+              <a href  className="btn btn-sm btn-outline-primary">
                 Sign in
               </a>
             </div>
           </div>
           <a
-            href="#"
+            href 
             className="header-toggler d-lg-none ml-3 ml-lg-0"
             data-toggle="collapse"
             data-target="#headerMenuCollapse"
