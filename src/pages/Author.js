@@ -13,7 +13,7 @@ const Author = props => {
   let { authorName } = useParams();
 
   let [isLoading, author] = useHttp(
-    process.env.REACT_APP_BACKEND_API_URL + "authors/" + authorName,
+    process.env.REACT_APP_SCHOOLARY_API_URL + "authors/" + authorName,
     [authorName]
   );
 
