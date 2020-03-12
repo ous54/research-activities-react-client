@@ -46,7 +46,8 @@ const Laboratories = props => {
         process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
         {
           name: inputs.name,
-          school_id: inputs.school_id
+          school_id: inputs.school_id ??  schools[0]._id
+
         },
         {
           headers: {
