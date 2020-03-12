@@ -18,23 +18,23 @@ const Publication = props => {
     TITLE +
     "&field=SJR,SNIP";
 
-  const [isDetailsLoading, PublicationDetails] = useHttp(url, [
-    props.publication
-  ]);
+  // const [isDetailsLoading, PublicationDetails] = useHttp(url, [
+  //   props.publication
+  // ]);
 
 
   let publication_SJR = <div className="loader container "></div>;
   let publication_IF = <div className="loader container "></div>;
 
-  if (PublicationDetails) {
-    if (PublicationDetails["serial-metadata-response"].error) {
-      publication_SJR = <span className="badge badge-default">not found</span>;
-    } else {
-      publication_SJR =
-        PublicationDetails["serial-metadata-response"]["entry"][0].SJRList
-          .SJR[0]["$"];
-    }
-  }
+  // if (PublicationDetails) {
+  //   if (PublicationDetails["serial-metadata-response"].error) {
+  //     publication_SJR = <span className="badge badge-default">not found</span>;
+  //   } else {
+  //     publication_SJR =
+  //       PublicationDetails["serial-metadata-response"]["entry"][0].SJRList
+  //         .SJR[0]["$"];
+  //   }
+  // }
 
   return (
     <tr
