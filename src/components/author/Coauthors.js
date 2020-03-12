@@ -1,6 +1,6 @@
 import React from "react";
 
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 
 const Coauthors = withRouter(({ history, ...props }) => {
   return (
@@ -27,34 +27,16 @@ const Coauthors = withRouter(({ history, ...props }) => {
                 </div>
                 <div className="col">
                   <div>
-                    <a
-                      href=""
-                      onClick={e => {
-                        e.preventDefault();
-                        history.push("/author/" + coauthor.name);
-                      }}
+                    <Link
+                      to={"/author/" + coauthor.name}
                       className="text-inherit"
                     >
                       {coauthor.name}
-                    </a>
+                    </Link>
                   </div>
                   <small className="d-block item-except text-sm text-muted h-1x">
                     {coauthor.affiliation}
                   </small>
-                </div>
-                <div className="col-auto">
-                  <div className="item-action dropdown">
-                    <a
-                      onClick={e => {
-                        props.ShowLoadingCircle();
-                        history.push("/author/" + coauthor.name);
-                      }}
-                      data-toggle="dropdown"
-                      className="icon"
-                    >
-                      <i className="fe fe fe-chevron-right"></i>
-                    </a>
-                  </div>
                 </div>
               </div>
             </li>

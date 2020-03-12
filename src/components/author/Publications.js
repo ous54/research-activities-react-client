@@ -11,7 +11,7 @@ const Publications = props => {
   return (
     <div className="card">
       <div className="table-responsive">
-        <table className=" table table-hover  card-table table card-table table-vcenter text-nowrap datatable">
+        <table className="table card-table table-vcenter text-nowrap datatable">
           <thead>
             <tr>
               <th>Titre</th>
