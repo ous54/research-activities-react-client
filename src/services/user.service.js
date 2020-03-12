@@ -13,7 +13,6 @@ const userService = {
 
 export default userService;
 
-
 async function login(email, password) {
   const requestOptions = {
     method: "POST",
@@ -21,7 +20,10 @@ async function login(email, password) {
     body: JSON.stringify({ email, password })
   };
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/auth/login`, requestOptions);
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_API_URL}/auth/login`,
+    requestOptions
+  );
   const user = await handleResponse(response);
   // store user details and jwt token in local storage to keep user logged in between page refreshes
   user.email = email;
@@ -44,7 +46,10 @@ async function getAll() {
     headers: authHeader()
   };
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/users`, requestOptions);
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_API_URL}/users`,
+    requestOptions
+  );
   return handleResponse(response);
 }
 
@@ -54,7 +59,10 @@ async function getById(id) {
     headers: authHeader()
   };
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/users/${id}`, requestOptions);
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_API_URL}/users/${id}`,
+    requestOptions
+  );
   return handleResponse(response);
 }
 
@@ -62,10 +70,13 @@ async function register(user) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user)
+    body: JSON.stringify({ ...user, role: "CED_HEAD" })
   };
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/auth/signup`, requestOptions);
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_API_URL}/auth/signup`,
+    requestOptions
+  );
   return handleResponse(response);
 }
 
@@ -76,7 +87,10 @@ async function update(user) {
     body: JSON.stringify(user)
   };
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/users/${user.id}`, requestOptions);
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_API_URL}/users/${user.id}`,
+    requestOptions
+  );
   return handleResponse(response);
 }
 
@@ -87,7 +101,10 @@ async function _delete(id) {
     headers: authHeader()
   };
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/users/${id}`, requestOptions);
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_API_URL}/users/${id}`,
+    requestOptions
+  );
   return handleResponse(response);
 }
 
