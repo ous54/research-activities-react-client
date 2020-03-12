@@ -37,6 +37,7 @@ const Universities = props => {
       ...university
     }));
   };
+  
   const addUniversity = () => {
     axios
       .post(
