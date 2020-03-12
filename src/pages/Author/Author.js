@@ -85,6 +85,7 @@ const Author = props => {
             email={author.email}
             interests={author.interests}
             url_picture={author.url_picture}
+            _id={author.id}
           />
           <Publications publications={author.publications} />
         </div>

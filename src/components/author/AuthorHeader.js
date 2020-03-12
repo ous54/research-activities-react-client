@@ -14,7 +14,11 @@ const AuthorHeader = props => {
             <span
               className="avatar avatar-lg"
               style={{
-                backgroundImage: props.url_picture
+                backgroundImage:
+                  "url(" +
+                  "https://scholar.google.com/citations?view_op=medium_photo&user=" +
+                  props._id +
+                  ")"
               }}
             ></span>
           </div>
