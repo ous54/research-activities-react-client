@@ -28,7 +28,6 @@ const Schools = props => {
     addUpdate
   );
 
-  
   useEffect(() => {
     $(".datatable").DataTable();
   }, [inputs]);
@@ -42,6 +41,7 @@ const Schools = props => {
     }));
   };
   const addSchool = () => {
+ 
     console.log(inputs);
 
     axios
@@ -50,7 +50,7 @@ const Schools = props => {
         {
           name: inputs.name,
           address: inputs.address,
-          university_id: inputs.university_id
+          university_id: inputs.university_id ??  universities[0]._id
         },
         {
           headers: {
@@ -66,8 +66,8 @@ const Schools = props => {
         setDataVersion(dataVersion + 1);
         setInputs(inputs => ({
           ...inputs,
-          name: " ",
-          address: " "
+          name: "",
+          address: ""
         }));
       })
       .catch(error => {
@@ -103,6 +103,7 @@ const Schools = props => {
       });
   };
   const updateSchool = id => {
+   
     axios
       .put(
         process.env.REACT_APP_BACKEND_API_URL + "/api/school/",
@@ -156,8 +157,7 @@ const Schools = props => {
         <td>{school.university_id}</td>
         <td className="text-center">
           <div className="dropdown">
-            
-          <a
+            <a
               href="#"
               onClick={() => {
                 setEditedSchoolId(school._id);
@@ -204,7 +204,6 @@ const Schools = props => {
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </a>
-         
           </div>
         </td>
       </tr>
@@ -232,7 +231,8 @@ const Schools = props => {
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoadingUniversities && universities ? content : ""}</tbody>
+                  {!isLoadingUniversities && universities ? content : ""}
+                </tbody>
               </table>
             </div>
           </div>
