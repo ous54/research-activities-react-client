@@ -1,0 +1,41 @@
+/*!
+ * Tabler (v1.0.0-alpha.4)
+ * Copyright 2018-2020 The Tabler Authors
+ * Copyright 2018-2020 codecalm
+ * Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+ */
+/**
+Dark mode
+ */
+.flag {
+  position: relative;
+  display: inline-block;
+  width: 1.33333em;
+  height: 1em;
+  vertical-align: -3px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border: 1px solid rgba(134, 140, 151, 0.24);
+  border-radius: 3px; }
+
+  
+.flag-country-fr {
+  background-image: url("../images/flags/fr.svg"); }
+
+  .flag-country-us {
+    background-image: url("../images/flags/us.svg"); }
+    
+
+.flag-md {
+  width: 2.66666rem;
+  height: 2rem; }
+
+.flag-lg {
+  width: 3.99999rem;
+  height: 3rem; }
+
+.flag-xl {
+  width: 5.33332rem;
+  height: 4rem; }
+/*# sourceMappingURL=tabler-flags.css.map */
