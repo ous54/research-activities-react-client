@@ -1,15 +1,16 @@
 import React, { Fragment, useEffect, useState } from "react";
 import $ from "jquery";
 import "datatables";
-import { useHttp, useInputForm } from "../hooks/http";
+import { useHttp, useInputForm } from "../../hooks/http";
 import axios from "axios";
 
+import {authHeader} from "../../helpers";
 const Users = props => {
   let [dataVersion, setDataVersion] = useState(0);
   let [formAction, setFormAction] = useState("add");
   const [editedUserId, setEditedUserId] = useState(0);
   let [isLoading, users] = useHttp(
-    process.env.REACT_APP_BACKEND_API_URL + "api/user",
+    process.env.REACT_APP_BACKEND_API_URL +"/api/user",
     [dataVersion]
   );
 
@@ -40,14 +41,15 @@ const Users = props => {
     
     axios
       .post(
-        process.env.REACT_APP_BACKEND_API_URL + "api/user",
+        process.env.REACT_APP_BACKEND_API_URL +"/api/user",
         {
           email: inputs.email,
           password: inputs.password
         },
         {
           headers: {
-            Authorization: "jwt " + localStorage.getItem("token")
+                        
+ ...authHeader()
           }
         }
       )
@@ -71,11 +73,12 @@ const Users = props => {
     axios
       .delete(
         process.env.REACT_APP_BACKEND_API_URL +
-          "api/user/" +
+         "/api/user/" +
           user._id,
         {
           headers: {
-            Authorization: "jwt " + localStorage.getItem("token")
+                        
+ ...authHeader()
           }
         }
       )
@@ -93,7 +96,7 @@ const Users = props => {
   const updateUser = id => {
     axios
       .put(
-        process.env.REACT_APP_BACKEND_API_URL + "api/user/",
+        process.env.REACT_APP_BACKEND_API_URL +"/api/user/",
         {
           _id: id,
           email: inputs.email,
@@ -101,7 +104,8 @@ const Users = props => {
         },
         {
           headers: {
-            Authorization: "jwt " + localStorage.getItem("token")
+                        
+ ...authHeader()
           }
         }
       )
@@ -216,7 +220,7 @@ const Users = props => {
               </div>
               <div className="card-footer text-right">
                 <button type="submit" className="btn btn-primary">
-                  Make request
+                  Submit
                 </button>
               </div>
             </form>

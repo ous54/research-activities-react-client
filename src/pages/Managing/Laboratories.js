@@ -1,15 +1,16 @@
 import React, { Fragment, useEffect, useState } from "react";
 import $ from "jquery";
 import "datatables";
-import { useHttp, useInputForm } from "../hooks/http";
+import { useHttp, useInputForm } from "../../hooks/http";
 import axios from "axios";
 
+import { authHeader } from "../../helpers";
 const Laboratories = props => {
   let [dataVersion, setDataVersion] = useState(0);
   let [formAction, setFormAction] = useState("add");
   const [editedLaboratoryId, setEditedLaboratoryId] = useState(0);
   let [isLoading, laboratories] = useHttp(
-    process.env.REACT_APP_BACKEND_API_URL + "api/laboratory",
+    process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
     [dataVersion]
   );
 
@@ -26,6 +27,11 @@ const Laboratories = props => {
     addUpdate
   );
 
+  let [isLoadingSchools, schools] = useHttp(
+    process.env.REACT_APP_BACKEND_API_URL + "/api/school",
+    [dataVersion]
+  );
+  
   const editLaboratory = laboratory => {
     setFormAction("update");
     setEditedLaboratoryId(laboratory._id);
@@ -37,14 +43,14 @@ const Laboratories = props => {
   const addLaboratory = () => {
     axios
       .post(
-        process.env.REACT_APP_BACKEND_API_URL + "api/laboratory",
+        process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
         {
           name: inputs.name,
           school_id: inputs.school_id
         },
         {
           headers: {
-            Authorization: "jwt " + localStorage.getItem("token")
+            ...authHeader()
           }
         }
       )
@@ -57,7 +63,6 @@ const Laboratories = props => {
         setInputs(inputs => ({
           ...inputs,
           name: " ",
-          school_id: " "
         }));
       })
       .catch(error => {
@@ -68,11 +73,11 @@ const Laboratories = props => {
     axios
       .delete(
         process.env.REACT_APP_BACKEND_API_URL +
-          "api/laboratory/" +
+          "/api/laboratory/" +
           laboratory._id,
         {
           headers: {
-            Authorization: "jwt " + localStorage.getItem("token")
+            ...authHeader()
           }
         }
       )
@@ -90,15 +95,16 @@ const Laboratories = props => {
   const updateLaboratory = id => {
     axios
       .put(
-        process.env.REACT_APP_BACKEND_API_URL + "api/laboratory/",
+        process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory/",
         {
           _id: id,
           name: inputs.name,
           school_id: inputs.school_id
+          
         },
         {
           headers: {
-            Authorization: "jwt " + localStorage.getItem("token")
+            ...authHeader()
           }
         }
       )
@@ -112,13 +118,23 @@ const Laboratories = props => {
         setInputs(inputs => ({
           ...inputs,
           name: " ",
-          school_id: " "
         }));
       })
       .catch(err => {
         console.log(err);
       });
   };
+
+  let schoolsOptoins;
+
+  if (!isLoadingSchools && schools) {
+    schoolsOptoins = schools.map(school => (
+      <option value={school._id} key={school._id}>
+        {school.name}
+      </option>
+    ));
+  }
+
 
   let content = (
     <tr>
@@ -135,14 +151,29 @@ const Laboratories = props => {
         <td>{laboratory.school_id}</td>
         <td className="text-center">
           <div className="dropdown">
-            <a href className="icon p-2">
-              <i
-                className="fe fe-edit"
-                onClick={() => {
-                  setEditedLaboratoryId(laboratory._id);
-                  editLaboratory(laboratory);
-                }}
-              ></i>
+            <a
+              href="#"
+              onClick={() => {
+                setEditedLaboratoryId(laboratory._id);
+                editLaboratory(laboratory);
+              }}
+              className="icon p-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon dropdown-item-icon"
+              >
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
             </a>
             <a
               href
@@ -151,12 +182,27 @@ const Laboratories = props => {
                 deleteLaboratory(laboratory);
               }}
             >
-              <i className="fe fe-trash"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </a>
           </div>
         </td>
       </tr>
     ));
+
 
   return (
     <Fragment>
@@ -199,21 +245,23 @@ const Laboratories = props => {
                     value={inputs.name}
                     name="name"
                   />
-                </div>              
+                </div>
                 <div className="form-group">
-                  <label className="form-label">School_id</label>
-                  <input
-                    type="text"
-                    className="form-control"
+                  <label className="form-label">school</label>
+
+                  <select
+                    name="school_id"
                     onChange={handleInputChange}
                     value={inputs.school_id}
-                    name="school_id"
-                  />
+                    className="form-control"
+                  >
+                    {schoolsOptoins}
+                  </select>
                 </div>
               </div>
               <div className="card-footer text-right">
                 <button type="submit" className="btn btn-primary">
-                  Make request
+                  Submit
                 </button>
               </div>
             </form>

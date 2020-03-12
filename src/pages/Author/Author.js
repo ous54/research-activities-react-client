@@ -1,33 +1,63 @@
 import React, { Fragment } from "react";
 
-import { useHttp } from "../hooks/http";
+import { useHttp } from "../../hooks/http";
 
 import { useParams } from "react-router-dom";
 
-import AuthorHeader from "../components/author/AuthorHeader";
-import Coauthors from "../components/author/Coauthors";
-import AuthorCitations from "../components/author/AuthorCitations";
-import Publications from "../components/author/Publications";
+import AuthorHeader from "../../components/author/AuthorHeader";
+import Coauthors from "../../components/author/Coauthors";
+import AuthorCitations from "../../components/author/AuthorCitations";
+import Publications from "../../components/author/Publications";
+
+import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 
 const Author = props => {
   let { authorName } = useParams();
 
+  console.log(
+    process.env.REACT_APP_SCHOOLARY_API_URL + "/authors/" + authorName
+  );
+
   let [isLoading, author] = useHttp(
-    process.env.REACT_APP_SCHOOLARY_API_URL + "authors/" + authorName,
+    process.env.REACT_APP_SCHOOLARY_API_URL + "/authors/" + authorName,
     [authorName]
   );
 
-  const suivre = () => {
-    console.log("suivre");
-  };
   const noResult = (
-    <div className="row">
-      <div className="text-muted container text-center">
-        <p className="h4 text-muted font-weight-normal m-7">
-          No author was found with the name "{authorName}"
-        </p>
-      </div>
+    <div className="empty">
+    <div className="empty-icon">
+      <img
+        src={image}
+        className="h-8 mb-4"
+        alt=""
+      />
     </div>
+  <p className="empty-title h3">No results found for {authorName}</p>
+    <p className="empty-subtitle text-muted">
+      Try adjusting your search or filter to find the author you're looking for.
+    </p>
+    <div className="empty-action">
+      <a href="#" className="btn btn-primary">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          className="icon"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        Search again
+      </a>
+    </div>
+  </div>
+
   );
 
   const loadingContent = (
@@ -55,7 +85,6 @@ const Author = props => {
             email={author.email}
             interests={author.interests}
             url_picture={author.url_picture}
-            suivre={suivre}
           />
           <Publications publications={author.publications} />
         </div>
