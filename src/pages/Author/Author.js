@@ -19,7 +19,7 @@ const Author = props => {
   );
 
   let [isLoading, author] = useHttp(
-    process.env.REACT_APP_SCHOOLARY_API_URL + "/authors/" + authorName,
+    process.env.REACT_APP_SCHOOLARY_API_URL + "/authors/" + authorName.replace(" ","%20"),
     [authorName]
   );
 
