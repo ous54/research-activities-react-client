@@ -255,7 +255,7 @@ const Laboratories = props => {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">school</label>
+                  <label className="form-label">School</label>
 
                   <select
                     name="school_id"
