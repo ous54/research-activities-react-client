@@ -185,7 +185,7 @@ const Laboratories = props => {
       <tr key={index}>
         <td>{laboratory.name}</td>
         <td>{laboratory.school.name}</td>
-        <td className="text-center">
+        <td>
           <div className="btn-list">
             <button
               type="button"
@@ -228,8 +228,8 @@ const Laboratories = props => {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>School_id</th>
-                    <th className="text-center">Actions</th>
+                    <th>School</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>{content}</tbody>

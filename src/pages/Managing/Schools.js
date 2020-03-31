@@ -233,7 +233,7 @@ const Schools = props => {
                     <th>Name</th>
                     <th>Address</th>
                     <th>University</th>
-                    <th className="text-center">Actions</th>
+                    <th >Actions</th>
                   </tr>
                 </thead>
                 <tbody>{universities ? content : ""}</tbody>
@@ -271,7 +271,7 @@ const Schools = props => {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">University id</label>
+                  <label className="form-label">University</label>
 
                   <select
                     name="university_id"

@@ -208,7 +208,7 @@ const Universities = props => {
                     <th>Name</th>
                     <th>Country</th>
                     <th>City</th>
-                    <th className="text-center">Actions</th>
+                    <th >Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -218,7 +218,7 @@ const Universities = props => {
                         <td>{university.name}</td>
                         <td>{university.city}</td>
                         <td>{university.country}</td>
-                        <td className="text-center">
+                        <td >
                           <div className="btn-list">
                             <button
                               type="button"
