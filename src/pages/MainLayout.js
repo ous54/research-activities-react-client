@@ -1,8 +1,7 @@
 import React from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
 
-import { createBrowserHistory } from "history";
-
+import {history} from "../helpers/history"
 import PrivateRoute from "../components/PrivateRoute";
 
 import Author from "./Author/Author";
@@ -19,7 +18,6 @@ import Header from "../components/layout/Header";
 import NavBar from "../components/layout/NavBar";
 
 function MainLayout() {
-  const history = createBrowserHistory();
 
   const routes = (
     <Router history={history}>

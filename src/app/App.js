@@ -9,6 +9,8 @@ import  MainLayout  from "../pages/MainLayout";
 import  LoginPage  from "../pages/Auth/LoginPage";
 import  RegisterPage from "../pages/Auth/RegisterPage";
 
+import {history} from "../helpers/history"
+
 import "../assets/css/datatables.css"
 import "../assets/css/tabler.css"
 import "../assets/css/tabler-flags.css"
@@ -18,7 +20,6 @@ import "bootstrap/dist/js/bootstrap"
 
 
 function App() {
-  const history = createBrowserHistory();
 
   return (
       <Router history={history}>
