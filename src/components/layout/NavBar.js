@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { withRouter, Link } from "react-router-dom";
+import { AuthContext } from "../../context/auth";
+
 import image from "../../assets/images/tabler.svg";
-import  userService  from "../../services/user.service";
 
 const NavBar = withRouter(({ history, location }) => {
   
-  let user = userService.getLogedInUser();
+  let { user, setUser } = useContext(AuthContext);
 
   const handleKeyDown = e => {
     if (e.key === "Enter") {
@@ -47,9 +48,9 @@ const NavBar = withRouter(({ history, location }) => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="icon"
               >
                 <circle cx="11" cy="11" r="8"></circle>
@@ -90,7 +91,7 @@ const NavBar = withRouter(({ history, location }) => {
                 }}
               ></span>
               <div className="d-none d-lg-block pl-2">
-                <div>Akram aznakour</div>
+                <div>{`${user.firstName}  ${user.firstName}` }</div>
                 <div className="mt-1 small text-muted">{user.email}</div>
               </div>
             </Link>
@@ -103,9 +104,9 @@ const NavBar = withRouter(({ history, location }) => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="icon dropdown-item-icon"
                 ></svg>
                 Logout
