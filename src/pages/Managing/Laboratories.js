@@ -1,37 +1,81 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import $ from "jquery";
 import "datatables";
-import { useHttp, useInputForm } from "../../hooks/http";
 import axios from "axios";
+import { AuthContext } from "../../context/auth";
 
-import { authHeader } from "../../helpers";
 const Laboratories = props => {
+  const { user } = useContext(AuthContext);
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + user.token
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    if (formAction === "add") addLaboratory();
+    else if (formAction === "update") updateLaboratory(editedLaboratoryId);
+  };
+
+  const handleInputsChange = event => {
+    event.persist();
+
+    setInputs(inputs => ({
+      ...inputs,
+      [event.target.name]: event.target.value
+    }));
+  };
+
+  const [schools, setSchools] = useState(null);
+  const [laboratories, setLaboratories] = useState(null);
+  const [inputs, setInputs] = useState({
+    name: "",
+    address: "",
+    university_id: ""
+  });
+
   let [dataVersion, setDataVersion] = useState(0);
   let [formAction, setFormAction] = useState("add");
   const [editedLaboratoryId, setEditedLaboratoryId] = useState(0);
-  let [isLoading, laboratories] = useHttp(
-    process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
-    [dataVersion]
-  );
 
   useEffect(() => {
-    $(".datatable").DataTable();
-  }, []);
+    if (laboratories != null) $(".datatable").DataTable();
+  }, [laboratories]);
 
-  const addUpdate = () => {
-    if (formAction == "add") addLaboratory();
-    else if (formAction == "update") updateLaboratory(editedLaboratoryId);
-  };
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/school", {
+        headers
+      })
+      .then(response => {
+        return response.data;
+      })
+      .then(data => {
+        console.log(data);
+        setSchools(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [dataVersion]);
 
-  const { inputs, handleInputChange, handleSubmit, setInputs } = useInputForm(
-    addUpdate
-  );
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory", {
+        headers
+      })
+      .then(response => {
+        return response.data;
+      })
+      .then(data => {
+        console.log(data);
+        setLaboratories(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [dataVersion]);
 
-  let [isLoadingSchools, schools] = useHttp(
-    process.env.REACT_APP_BACKEND_API_URL + "/api/school",
-    [dataVersion]
-  );
-  
   const editLaboratory = laboratory => {
     setFormAction("update");
     setEditedLaboratoryId(laboratory._id);
@@ -46,13 +90,10 @@ const Laboratories = props => {
         process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
         {
           name: inputs.name,
-          school_id: inputs.school_id ??  schools[0]._id
-
+          school_id: inputs.school_id ?? schools[0]._id
         },
         {
-          headers: {
-            ...authHeader()
-          }
+          headers
         }
       )
       .then(response => {
@@ -63,7 +104,7 @@ const Laboratories = props => {
         setDataVersion(dataVersion + 1);
         setInputs(inputs => ({
           ...inputs,
-          name: " ",
+          name: " "
         }));
       })
       .catch(error => {
@@ -77,9 +118,7 @@ const Laboratories = props => {
           "/api/laboratory/" +
           laboratory._id,
         {
-          headers: {
-            ...authHeader()
-          }
+          headers
         }
       )
       .then(response => {
@@ -101,12 +140,9 @@ const Laboratories = props => {
           _id: id,
           name: inputs.name,
           school_id: inputs.school_id
-          
         },
         {
-          headers: {
-            ...authHeader()
-          }
+          headers
         }
       )
       .then(response => {
@@ -118,7 +154,7 @@ const Laboratories = props => {
         setFormAction("add");
         setInputs(inputs => ({
           ...inputs,
-          name: " ",
+          name: " "
         }));
       })
       .catch(err => {
@@ -128,14 +164,13 @@ const Laboratories = props => {
 
   let schoolsOptoins;
 
-  if (!isLoadingSchools && schools) {
+  if (schools) {
     schoolsOptoins = schools.map(school => (
       <option value={school._id} key={school._id}>
         {school.name}
       </option>
     ));
   }
-
 
   let content = (
     <tr>
@@ -145,65 +180,37 @@ const Laboratories = props => {
     </tr>
   );
 
-  if (!isLoading && laboratories)
+  if (laboratories) {
     content = laboratories.map((laboratory, index) => (
       <tr key={index}>
         <td>{laboratory.name}</td>
-        <td>{laboratory.school_id}</td>
+        <td>{laboratory.school.name}</td>
         <td className="text-center">
-          <div className="dropdown">
-            <a
-              href="#"
+          <div className="btn-list">
+            <button
+              type="button"
               onClick={() => {
                 setEditedLaboratoryId(laboratory._id);
                 editLaboratory(laboratory);
               }}
-              className="icon p-2"
+              className="btn  btn-outline-primary btn-sm"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon dropdown-item-icon"
-              >
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-            </a>
-            <a
-              href
-              className="icon p-2"
+              Edit
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 deleteLaboratory(laboratory);
               }}
+              className="btn  btn-outline-danger "
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </a>
+              Delete
+            </button>
           </div>
         </td>
       </tr>
     ));
-
+  }
 
   return (
     <Fragment>
@@ -242,7 +249,7 @@ const Laboratories = props => {
                   <input
                     type="text"
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={handleInputsChange}
                     value={inputs.name}
                     name="name"
                   />
@@ -252,7 +259,7 @@ const Laboratories = props => {
 
                   <select
                     name="school_id"
-                    onChange={handleInputChange}
+                    onChange={handleInputsChange}
                     value={inputs.school_id}
                     className="form-control"
                   >

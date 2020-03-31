@@ -1,33 +1,63 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import $ from "jquery";
 import "datatables";
-import { useHttp, useInputForm } from "../../hooks/http";
 import axios from "axios";
-import {authHeader} from "../../helpers";
+import { AuthContext } from "../../context/auth";
 
 const Universities = props => {
-
-  useEffect(() => {
-    $(".datatables").DataTable();
-  }, []);
-
+  const { user } = useContext(AuthContext);
+  const authHeader = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + user.token
+  };
 
   let [dataVersion, setDataVersion] = useState(0);
   let [formAction, setFormAction] = useState("add");
-  const [editedUniversityId, setEditedUniversityId] = useState(0);
-  let [isLoading, universities] = useHttp(
-    process.env.REACT_APP_BACKEND_API_URL + "/api/university",
-    [dataVersion]
-  );
+  let [editedUniversityId, setEditedUniversityId] = useState(0);
+  let [universities, setUniversities] = useState(null);
 
-  const addUpdate = () => {
+  useEffect(() => {
+    if (universities != null) $(".universities-datatable").DataTable();
+  }, [universities]);
+
+  const [inputs, setInputs] = useState({
+    name: "",
+    city: "",
+    country: ""
+  });
+
+  const handleInputsChange = event => {
+    event.persist();
+
+    setInputs(inputs => ({
+      ...inputs,
+      [event.target.name]: event.target.value
+    }));
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+
     if (formAction === "add") addUniversity();
     else if (formAction === "update") updateUniversity(editedUniversityId);
   };
 
-  const { inputs, handleInputChange, handleSubmit, setInputs } = useInputForm(
-    addUpdate
-  );
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/university", {
+        headers: authHeader
+      })
+      .then(response => {
+        return response.data;
+      })
+      .then(data => {
+        console.log(data);
+        setUniversities(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [dataVersion]);
 
   const editUniversity = university => {
     setFormAction("update");
@@ -37,7 +67,7 @@ const Universities = props => {
       ...university
     }));
   };
-  
+
   const addUniversity = () => {
     axios
       .post(
@@ -49,7 +79,7 @@ const Universities = props => {
         },
         {
           headers: {
-            ...authHeader()
+            ...authHeader
           }
         }
       )
@@ -78,7 +108,7 @@ const Universities = props => {
           university._id,
         {
           headers: {
-            ...authHeader()
+            ...authHeader
           }
         }
       )
@@ -105,7 +135,7 @@ const Universities = props => {
         },
         {
           headers: {
-            ...authHeader()
+            ...authHeader
           }
         }
       )
@@ -130,65 +160,38 @@ const Universities = props => {
 
   let content = "";
 
-  if (!isLoading && universities)
+  if (universities != null) {
     content = universities.map((university, index) => (
       <tr key={index}>
         <td>{university.name}</td>
         <td>{university.city}</td>
         <td>{university.country}</td>
         <td className="text-center">
-         
-            <a
-              href="#"
+          <div className="btn-list">
+            <button
+              type="button"
               onClick={() => {
                 setEditedUniversityId(university._id);
                 editUniversity(university);
               }}
-              className="icon p-2"
+              className="btn  btn-outline-primary btn-sm"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon dropdown-item-icon"
-              >
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-            </a>
-            <a
-              href
-              className="icon p-2"
+              Edit
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 deleteUniversity(university);
               }}
+              className="btn  btn-outline-danger "
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </a>
-         
+              Delete
+            </button>
+          </div>
         </td>
       </tr>
     ));
+  }
 
   return (
     <Fragment>
@@ -199,7 +202,7 @@ const Universities = props => {
         <div className="col-8">
           <div className="card">
             <div className="table-responsive">
-              <table className="table card-table table-vcenter text-nowrap datatables">
+              <table className="table card-table table-vcenter text-nowrap universities-datatable">
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -208,7 +211,39 @@ const Universities = props => {
                     <th className="text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody>{content}</tbody>
+                <tbody>
+                  {universities &&
+                    universities.map((university, index) => (
+                      <tr key={index}>
+                        <td>{university.name}</td>
+                        <td>{university.city}</td>
+                        <td>{university.country}</td>
+                        <td className="text-center">
+                          <div className="btn-list">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditedUniversityId(university._id);
+                                editUniversity(university);
+                              }}
+                              className="btn  btn-outline-primary btn-sm"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                deleteUniversity(university);
+                              }}
+                              className="btn  btn-outline-danger "
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
               </table>
             </div>
           </div>
@@ -225,7 +260,7 @@ const Universities = props => {
                   <input
                     type="text"
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={handleInputsChange}
                     value={inputs.name}
                     name="name"
                   />
@@ -235,7 +270,7 @@ const Universities = props => {
                   <input
                     type="text"
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={handleInputsChange}
                     value={inputs.city}
                     name="city"
                   />
@@ -245,7 +280,7 @@ const Universities = props => {
                   <input
                     type="text"
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={handleInputsChange}
                     value={inputs.country}
                     name="country"
                   />
@@ -263,8 +298,5 @@ const Universities = props => {
     </Fragment>
   );
 };
-
-
-
 
 export default Universities;
