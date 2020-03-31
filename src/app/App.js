@@ -1,9 +1,8 @@
-import React, { useEffect, Fragment } from "react";
+import React  from "react";
 import { Router, Route, Switch } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import { history } from "../helpers";
-import { alertActions } from "../actions";
+import { createBrowserHistory } from 'history';
+
 
 import  PrivateRoute  from "../components/PrivateRoute";
 import  MainLayout  from "../pages/MainLayout";
@@ -19,21 +18,9 @@ import "bootstrap/dist/js/bootstrap"
 
 
 function App() {
-  const alert = useSelector(state => state.alert);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    history.listen((location, action) => {
-      // clear alert on location change
-      dispatch(alertActions.clear());
-    });
-  }, [dispatch]);
+  const history = createBrowserHistory();
 
   return (
-    <Fragment >
-      {alert.message && (
-        <div className={`alert ${alert.type}`}>{alert.message}</div>
-      )}
       <Router history={history}>
         <Switch>
           <Route path="/login" component={LoginPage} />
@@ -41,7 +28,6 @@ function App() {
           <PrivateRoute exact path="/*" component={MainLayout} />
         </Switch>
       </Router>
-    </Fragment>
   );
 }
 
