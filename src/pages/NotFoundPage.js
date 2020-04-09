@@ -1,5 +1,6 @@
-import React  from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { LeftArrowIcon } from "../components/icons/icons";
 
 function NotFoundPage() {
   return (
@@ -16,21 +17,7 @@ function NotFoundPage() {
             </p>
             <div className="empty-action">
               <Link to="/home" className="btn btn-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="icon"
-                >
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
+                <LeftArrowIcon />
                 Take me home
               </Link>
             </div>
