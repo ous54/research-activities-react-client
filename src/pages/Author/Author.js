@@ -9,26 +9,74 @@ import Publications from "../../components/author/Publications";
 
 import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 import Axios from "axios";
+import { LoopIcon } from "../../components/icons/icons";
+import { AuthContext } from "../../context/auth";
 
-const Author = props => {
+const Author = (props) => {
   let { authorName } = useParams();
 
   const [author, setAuthor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [noResult, setNoResult] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [isSendingFollow, setsSendingFollow] = useState(false);
+
+  const { user } = useContext(AuthContext);
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + user.token,
+  };
 
   useEffect(() => {
+    Axios.get(
+      process.env.REACT_APP_BACKEND_API_URL + "/api/is-following/" + authorName,
+      { headers }
+    )
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        if (data.isFollowing) setIsFollowed(true);
+        else setIsFollowed(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const suivre = () => {
+    setsSendingFollow(true);
+
+    Axios.post(
+      process.env.REACT_APP_BACKEND_API_URL + "/api/follow",
+      { ...author },
+      { headers }
+    )
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setIsFollowed(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    setsSendingFollow(false);
+  };
+
+  useEffect(() => {
+    if (isFollowed) return;
+
     setAuthor();
     if (isError) setIsError(false);
     if (noResult) setNoResult(false);
 
+    const authorNamePath = authorName.replace(" ", "%20");
     Axios.get(
-      `${process.env.REACT_APP_SCHOOLARY_API_URL}/authors/${authorName.replace(
-        " ",
-        "%20"
-      )}`
+      `${process.env.REACT_APP_SCHOOLARY_API_URL}/authors/${authorNamePath}`
     )
-      .then(result => {
+      .then((result) => {
         console.log(result);
         if (result.status === 200) {
           if (isError) setIsError(false);
@@ -39,13 +87,11 @@ const Author = props => {
           setIsError(true);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         setNoResult(true);
       });
   }, [authorName]);
-
-
 
   if (noResult)
     return (
@@ -53,28 +99,16 @@ const Author = props => {
         <div className="empty-icon">
           <img src={image} className="h-8 mb-4" alt="" />
         </div>
-        <p className="empty-title h3">No results found for {authorName}</p>
+        <p className="empty-title h3">
+          Aucun résultat trouvé pour {authorName}
+        </p>
         <p className="empty-subtitle text-muted">
-          Try adjusting your search or filter to find the author you're looking
-          for.
+          Essayez d'ajuster votre recherche ou votre filtre pour trouver
+          l'auteur que vous recherchez.
         </p>
         <div className="empty-action">
-          <a href="#" className="btn btn-primary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="icon"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+          <a href="/home" className="btn btn-primary">
+            <LoopIcon />
             Search again
           </a>
         </div>
@@ -86,7 +120,7 @@ const Author = props => {
       <div className="row">
         <div className="text-muted container text-center">
           <p className="h4 text-muted font-weight-normal m-7">
-            We are processing your request please be patient ...
+            Nous traitons votre demande, veuillez patienter ...
           </p>
         </div>
         <div className="loader container "></div>
@@ -98,26 +132,16 @@ const Author = props => {
       <div className="row">
         <div className="col-lg-8">
           <AuthorHeader
-            name={author.name}
-            affiliation={author.affiliation}
-            email={author.email}
-            interests={author.interests}
-            url_picture={author.url_picture}
-            _id={author.id}
+            author={author}
+            suivre={suivre}
+            isFollowed={isFollowed}
+            isSendingFollow={isSendingFollow}
           />
-          <Publications publications={author.publications} />
+          <Publications author={author} />
         </div>
         <div className="col-lg-4">
-          <AuthorCitations
-            cites_per_year={author.cites_per_year}
-            citedby={author.citedby}
-            citedby5y={author.citedby5y}
-            hindex={author.hindex}
-            hindex5y={author.hindex5y}
-            i10index={author.i10index}
-            i10index5y={author.i10index5y}
-          />
-          <Coauthors coauthors={author.coauthors} />
+          <AuthorCitations author={author} />
+          <Coauthors author={author} />
         </div>
       </div>
     );
