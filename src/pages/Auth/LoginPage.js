@@ -8,8 +8,8 @@ import { AuthContext } from "../../context/auth";
 function LoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  let [inputs, setInputs] = useState({ email: " ", password: "" });
-  let { setUser } = useContext(AuthContext);
+  const [inputs, setInputs] = useState({ email: " ", password: "" });
+  const { user, setUser } = useContext(AuthContext);
 
   const history = useHistory();
 
@@ -17,22 +17,22 @@ function LoginPage() {
     setUser();
   }, []);
 
-  const handleInputsChange = event => {
+  const handleInputsChange = (event) => {
     event.persist();
 
-    setInputs(inputs => ({
+    setInputs((inputs) => ({
       ...inputs,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (isError) setIsError(false);
 
     Axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/login`, inputs)
-      .then(result => {
+      .then((result) => {
         console.log(result);
 
         if (result.status === 200) {
@@ -40,18 +40,19 @@ function LoginPage() {
 
           setUser({
             token: result.data.token,
-            ...result.data.user
+            ...result.data.user,
           });
           setIsLoggedIn(true);
 
           setTimeout(() => {
-            history.push("/home");
+            if (result.data.user.has_confirmed) history.push("/home");
+            else history.push("/settings/account");
           }, 1000);
         } else {
           setIsError(true);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         setIsError(true);
       });
   };
@@ -67,56 +68,57 @@ function LoginPage() {
               </div>
               <form className="card" form action onSubmit={handleSubmit}>
                 <div className="card-body ">
-                  <div className="card-title">Login to your account</div>
+                  <div className="card-title">
+                    Connectez-vous à votre compte
+                  </div>
                   <div className="mb-3">
-                    <label className="form-label">Email address</label>
+                    <label className="form-label">Adresse email</label>
                     <input
                       onChange={handleInputsChange}
                       value={inputs.email}
                       name="email"
                       type="email"
                       className="form-control"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
-                      placeholder="Enter email"
+                      placeholder="Adresse email"
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Password</label>
+                    <label className="form-label">Mot de passe</label>
                     <input
                       onChange={handleInputsChange}
                       value={inputs.password}
                       type="password"
                       name="password"
                       className="form-control"
-                      placeholder="Password"
+                      placeholder="Mot de passe"
                     />
                   </div>
 
                   {isError && (
                     <div className="mb-3">
                       <div className="alert alert-danger" role="alert">
-                        Your email or password are not correct! try once more
-                        please
+                        Votre email ou mot de passe n'est pas correct! essayez
+                        encore s'il vous plait
                       </div>
                     </div>
                   )}
 
                   {isLoggedIn && (
                     <div className="alert alert-success" role="alert">
-                      Congratulation ! you have successfully logged in
+                      Félicitations! Vous êtes connecté avec succès
                     </div>
                   )}
                 </div>
 
                 <div className="card-footer">
                   <button type="submit" className="btn btn-primary ">
-                    Sign in
+                    Se connecter
                   </button>
                 </div>
               </form>
               <div className="text-center text-muted">
-                Don't have account yet? <Link to="/register">Sign up</Link>
+                Vous n'avez pas encore de compte?
+                <Link to="/register">S'inscrire</Link>
               </div>
             </div>
           </div>

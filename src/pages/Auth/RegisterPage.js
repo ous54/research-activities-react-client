@@ -11,29 +11,29 @@ function RegisterPage() {
     firstName: "",
     lastName: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   const history = useHistory();
 
-  const handleInputsChange = event => {
+  const handleInputsChange = (event) => {
     event.persist();
-    setInputs(inputs => ({
+    setInputs((inputs) => ({
       ...inputs,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (isError) setIsError(false);
 
     Axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/signup`, {
       ...inputs,
-      role: "CED_HEAD"
+      role: "CED_HEAD",
     })
-      .then(result => {
+      .then((result) => {
         console.log(result);
 
         if (result.status === 200) {
@@ -48,7 +48,7 @@ function RegisterPage() {
           setIsError(true);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         setIsError(true);
       });
@@ -65,74 +65,75 @@ function RegisterPage() {
               </div>
               <form className="card" onSubmit={handleSubmit}>
                 <div className="card-body ">
-                  <div className="card-title">Create new account</div>
+                  <div className="card-title">Créer un nouveau compte</div>
                   <div className="form-group m-2">
-                    <label className="form-label"> First name</label>
+                    <label className="form-label">Prénom</label>
                     <input
                       onChange={handleInputsChange}
                       value={inputs.firstName}
                       type="text"
                       name="firstName"
                       className="form-control"
-                      placeholder="Enter first name"
+                      placeholder="Prénom"
                     />
                   </div>
                   <div className="form-group m-2">
-                    <label className="form-label">Last name</label>
+                    <label className="form-label">Nom de famille</label>
                     <input
                       onChange={handleInputsChange}
                       value={inputs.lastName}
                       type="text"
                       name="lastName"
                       className="form-control"
-                      placeholder="Enter first name"
+                      placeholder="Nom de famille"
                     />
                   </div>
                   <div className="form-group m-2">
-                    <label className="form-label">Email address</label>
+                    <label className="form-label">Adresse email</label>
                     <input
                       onChange={handleInputsChange}
                       value={inputs.email}
                       type="email"
                       name="email"
                       className="form-control"
-                      placeholder="Enter email"
+                      placeholder="Adresse email"
                     />
                   </div>
                   <div className="form-group m-2">
-                    <label className="form-label">Password</label>
+                    <label className="form-label">Mot de passe</label>
                     <input
                       type="password"
                       className="form-control"
-                      placeholder="Password"
                       onChange={handleInputsChange}
                       value={inputs.password}
                       name="password"
+                      placeholder="Mot de passe"
                     />
                   </div>
                   {isError && (
                     <div className="form-group m-2">
                       <div className="alert alert-danger" role="alert">
-                        This email is already in use
+                        Cet e-mail est déjà utilisée
                       </div>
                     </div>
                   )}
                   {isRegistered && (
                     <div className="form-group m-2">
-                    <div className="alert alert-success" role="alert">
-                      Congratulation ! you have successfully registered
-                    </div>
+                      <div className="alert alert-success" role="alert">
+                        Félicitations! Vous êtes inscrit avec succès
+                      </div>
                     </div>
                   )}
                 </div>
                 <div className="card-footer">
                   <button type="submit" className="btn btn-primary ">
-                    Create new account
+                    Créer un nouveau compte
                   </button>
                 </div>
               </form>
               <div className="text-center text-muted">
-                Already have account? <Link to="./login.html">Sign in</Link>
+                Vous avez déjà un compte?{" "}
+                <Link to="./login.html">Se connecter</Link>
               </div>
             </div>
           </div>
