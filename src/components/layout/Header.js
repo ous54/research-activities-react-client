@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useContext, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 
+import { AuthContext } from "../../context/auth";
+import { CED_HEAD_MENUS, LABORATORY_HEAD_MENUS, SEARCHER_MENUS } from "./Menus";
+
 const header = withRouter(({ history, location, ...props }) => {
+  const { user } = useContext(AuthContext);
+
+  const menus =
+    user.role === "CED_HEAD"
+      ? CED_HEAD_MENUS
+      : user.role === "LABORATORY_HEAD"
+      ? LABORATORY_HEAD_MENUS
+      : SEARCHER_MENUS;
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light navbar-primary"
@@ -9,7 +21,7 @@ const header = withRouter(({ history, location, ...props }) => {
     >
       <div className="container">
         <a
-          href="."
+          href
           className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal"
         >
           <img
@@ -26,73 +38,45 @@ const header = withRouter(({ history, location, ...props }) => {
         <div className="navbar-collapse collapse">
           <h6 className="navbar-heading">Navigation</h6>
           <ul className="navbar-nav">
-            <li className="nav-item active">
-              <Link to="/home" className="nav-link" href="./index.html">
-                <span className="nav-link-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="icon"
-                  >
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                  </svg>
-                </span>
-                <span className="nav-link-title">Home</span>
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#navbar-extra"
-                data-toggle="dropdown"
-                role="button"
-                aria-expanded="false"
-              >
-                <span className="nav-link-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="icon"
-                  >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                  </svg>
-                </span>
-                <span className="nav-link-title">Managing</span>
-              </a>
-              <ul className="dropdown-menu dropdown-menu-arrow">
-                {["Laboratories", "Schools", "Universities", "Users"].map(
-                  (page, index) => (
-                    <li key={index}>
-                      <Link
-                        to={"/" + page}
-                        className="dropdown-item"
-                        
-                      >
-                        {page}
-                      </Link>
-                    </li>
-                  )
+            {menus.map((menu, index) => (
+              <li className="nav-item" key={index}>
+                {menu.isDropdown && (
+                  <Fragment>
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#navbar-extra"
+                      data-toggle="dropdown"
+                      role="button"
+                      aria-expanded="false"
+                    >
+                      <span className="nav-link-icon">
+                        <menu.icon />
+                      </span>
+                      <span className="nav-link-title">{menu.title}</span>
+                    </a>
+                    <ul className="dropdown-menu dropdown-menu-arrow">
+                      {menu.subMenus.map((subMenu) => (
+                        <li key={index}>
+                          <Link to={subMenu.link} className="dropdown-item">
+                            {subMenu.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </Fragment>
                 )}
-              </ul>
-            </li>
+
+                {!menu.isDropdown && (
+                  <Link to={menu.link} className="nav-link">
+                    <span className="nav-link-icon">
+                      <menu.icon />
+                    </span>
+                    <span className="nav-link-title">{menu.title}</span>
+                  </Link>
+                )}
+              </li>
+            ))}
           </ul>
-          <h6 className="navbar-heading mt-4">Tools</h6>
         </div>
       </div>
     </nav>
