@@ -3,12 +3,12 @@ import { withRouter, Link } from "react-router-dom";
 import { AuthContext } from "../../context/auth";
 
 import image from "../../assets/images/tabler.svg";
+import { LoopIcon } from "../icons/icons";
 
 const NavBar = withRouter(({ history, location }) => {
-  
   let { user, setUser } = useContext(AuthContext);
 
-  const handleKeyDown = e => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const authorName = e.target.value;
@@ -41,74 +41,41 @@ const NavBar = withRouter(({ history, location }) => {
         <form className="form-inline w-50 mr-4 d-none d-md-flex">
           <div className="input-icon w-100">
             <span className="input-icon-addon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
+              <LoopIcon />
             </span>
             <input
               onKeyDown={handleKeyDown}
               type="text"
               className="form-control form-control-flush w-100"
-              placeholder="Search here for an author..."
+              placeholder="Rechercher ici un auteur ..."
             />
           </div>
         </form>
         <ul className="navbar-nav ml-auto">
-          <li className="nav-item dropdown">
-            <a href="#" className="nav-link" data-toggle="dropdown">
-              <span className="flag flag-country-us mr-1"></span>
-              <span className="d-none d-lg-inline">English</span>
-            </a>
-            <div className="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
-              <a href="#" className="dropdown-item">
-                <span className="flag flag-country-fr mr-1"></span> Frnçais
-              </a>
-            </div>
-          </li>
-
           <li className="nav-item dropdown pl-2">
             <Link
               to="/"
               className="nav-link d-flex lh-1 text-inherit p-0 text-left"
               data-toggle="dropdown"
             >
-              <span
-                className="avatar"
-                style={{
-                  backgroundImage: "props.url_picture"
-                }}
-              ></span>
+              <span className="avatar bg-blue-lt">
+                <span className="badge  bg-success"></span>
+                {user.firstName ? user.firstName[0] : ""}
+                {user.lastName ? user.lastName[0] : ""}
+              </span>
               <div className="d-none d-lg-block pl-2">
-                <div>{`${user.firstName}  ${user.firstName}` }</div>
+                <div>
+                  {user.firstName ? user.firstName : ""}{" "}
+                  {user.lastName ? user.lastName : ""}
+                </div>
                 <div className="mt-1 small text-muted">{user.email}</div>
               </div>
             </Link>
             <div className="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+              <Link className="dropdown-item" to="/settings/account" href="#">
+                Paramètres du compte
+              </Link>
               <Link className="dropdown-item" to="/login" href="#">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="icon dropdown-item-icon"
-                ></svg>
                 Logout
               </Link>
             </div>
