@@ -197,7 +197,7 @@ const Users = props => {
                 <h3 className="card-title">Add a new user</h3>
               </div>
               <div className="card-body">
-                <div className="form-group">
+                <div className="form-group mt-2">
                   <label className="form-label">Email</label>
                   <input
                     type="text"
@@ -207,7 +207,7 @@ const Users = props => {
                     name="email"
                   />
                 </div>              
-                <div className="form-group">
+                <div className="form-group mt-2">
                   <label className="form-label">Passowrd</label>
                   <input
                     type="text"
