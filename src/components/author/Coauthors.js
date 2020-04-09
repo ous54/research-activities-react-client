@@ -10,7 +10,7 @@ const Coauthors = withRouter(({ history, ...props }) => {
       </div>
       <div className="card-body o-auto" style={{ height: "auto" }}>
         <ul className="list-unstyled list-separated">
-          {props.coauthors.map(coauthor => (
+          {props.author.coauthors.map(coauthor => (
             <li className="list-separated-item" key={coauthor.id}>
               <div className="row align-items-center">
                 <div className="col-auto">

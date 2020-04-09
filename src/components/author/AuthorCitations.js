@@ -3,31 +3,35 @@ import React from "react";
 import "c3/c3.css";
 import C3Chart from "react-c3js";
 
-const AuthorCitations = props => {
+const AuthorCitations = (props) => {
   let chart = {
     title: "AuthorCitations",
     data: {
       columns: [],
       type: "bar",
       colors: {
-        data1: "#467fcf"
+        data1: "#467fcf",
       },
       names: {
-        data1: "Citations"
-      }
+        data1: "Citations",
+      },
     },
     axis: {
       x: {
         type: "category",
-        categories: []
-      }
-    }
+        categories: [],
+      },
+    },
   };
 
   chart.data.columns[0] = ["data1"].concat(
-    Object.keys(props.cites_per_year).map((k, v) => props.cites_per_year[k])
+    Object.keys(props.author.cites_per_year).map(
+      (k, v) => props.author.cites_per_year[k]
+    )
   );
-  chart.axis.x.categories = Object.keys(props.cites_per_year).map((k, v) => k);
+  chart.axis.x.categories = Object.keys(props.author.cites_per_year).map(
+    (k, v) => k
+  );
 
   return (
     <div className="card">
@@ -48,18 +52,18 @@ const AuthorCitations = props => {
           <tbody>
             <tr>
               <td>Citations</td>
-              <td className="text-center">{props.citedby}</td>
-              <td className="text-center">{props.citedby5y}</td>
+              <td className="text-center">{props.author.citedby}</td>
+              <td className="text-center">{props.author.citedby5y}</td>
             </tr>
             <tr>
               <td>indice h</td>
-              <td className="text-center">{props.hindex}</td>
-              <td className="text-center">{props.hindex5y}</td>
+              <td className="text-center">{props.author.hindex}</td>
+              <td className="text-center">{props.author.hindex5y}</td>
             </tr>
             <tr>
               <td>indice i10</td>
-              <td className="text-center">{props.i10index}</td>
-              <td className="text-center">{props.i10index5y}</td>
+              <td className="text-center">{props.author.i10index}</td>
+              <td className="text-center">{props.author.i10index5y}</td>
             </tr>
           </tbody>
         </table>
@@ -68,11 +72,11 @@ const AuthorCitations = props => {
             data={chart.data}
             axis={chart.axis}
             legend={{
-              show: false
+              show: false,
             }}
             padding={{
               bottom: 0,
-              top: 0
+              top: 0,
             }}
           />
         </div>
