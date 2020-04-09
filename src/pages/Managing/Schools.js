@@ -4,11 +4,11 @@ import "datatables";
 import axios from "axios";
 import { AuthContext } from "../../context/auth";
 
-const Schools = props => {
+const Schools = (props) => {
   const { user } = useContext(AuthContext);
   const headers = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + user.token
+    Authorization: "Bearer " + user.token,
   };
 
   const [dataVersion, setDataVersion] = useState(0);
@@ -20,23 +20,23 @@ const Schools = props => {
   const [inputs, setInputs] = useState({
     name: "",
     address: "",
-    university_id: ""
+    university_id: "",
   });
 
   useEffect(() => {
     if (schools != null) $(".datatable").DataTable();
   }, [schools]);
 
-  const handleInputsChange = event => {
+  const handleInputsChange = (event) => {
     event.persist();
 
-    setInputs(inputs => ({
+    setInputs((inputs) => ({
       ...inputs,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (formAction === "add") addSchool();
@@ -46,16 +46,16 @@ const Schools = props => {
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_BACKEND_API_URL + "/api/school", {
-        headers
+        headers,
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setSchools(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, [dataVersion]);
@@ -63,26 +63,26 @@ const Schools = props => {
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_BACKEND_API_URL + "/api/university", {
-        headers
+        headers,
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setUniversities(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, [dataVersion]);
 
-  const editSchool = school => {
+  const editSchool = (school) => {
     setFormAction("update");
     setEditedSchoolId(school._id);
-    setInputs(inputs => ({
+    setInputs((inputs) => ({
       ...inputs,
-      ...school
+      ...school,
     }));
   };
   const addSchool = () => {
@@ -97,50 +97,50 @@ const Schools = props => {
           university_id:
             inputs.university_id === ""
               ? universities[0]._id
-              : inputs.university_id
+              : inputs.university_id,
         },
         {
-          headers
+          headers,
         }
       )
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setDataVersion(dataVersion + 1);
-        setInputs(inputs => ({
+        setInputs((inputs) => ({
           ...inputs,
           name: "",
-          address: ""
+          address: "",
         }));
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
-  const deleteSchool = school => {
+  const deleteSchool = (school) => {
     axios
       .delete(
         process.env.REACT_APP_BACKEND_API_URL + "/api/school/" + school._id,
         {
-          headers
+          headers,
         }
       )
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setDataVersion(dataVersion + 1);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
-  const updateSchool = id => {
+  const updateSchool = (id) => {
     axios
       .put(
         process.env.REACT_APP_BACKEND_API_URL + "/api/school/",
@@ -148,23 +148,23 @@ const Schools = props => {
           _id: id,
           name: inputs.name,
           address: inputs.address,
-          university_id: inputs.university_id
+          university_id: inputs.university_id,
         },
         {
-          headers
+          headers,
         }
       )
-      .then(response => {
+      .then((response) => {
         console.log(response.data);
         setDataVersion(dataVersion + 1);
         setFormAction("add");
-        setInputs(inputs => ({
+        setInputs((inputs) => ({
           ...inputs,
           name: " ",
-          address: " "
+          address: " ",
         }));
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -174,7 +174,7 @@ const Schools = props => {
   let universitiesOptoins;
 
   if (universities) {
-    universitiesOptoins = universities.map(university => (
+    universitiesOptoins = universities.map((university) => (
       <option value={university._id} key={university._id}>
         {university.name}
       </option>
@@ -218,22 +218,19 @@ const Schools = props => {
   return (
     <Fragment>
       <div className="page-header">
-        <h1 className="page-title">Schools</h1>
+        <h1 className="page-title">Écoles</h1>
       </div>
       <div className="row row-cards row-deck">
         <div className="col-8">
           <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Schools</h3>
-            </div>
             <div className="table-responsive">
               <table className="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>University</th>
-                    <th >Actions</th>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th>Université</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>{universities ? content : ""}</tbody>
@@ -245,11 +242,11 @@ const Schools = props => {
           <div className="card">
             <form onSubmit={handleSubmit}>
               <div className="card-header">
-                <h3 className="card-title">Add a new school</h3>
+                <h3 className="card-title">Ajouter une nouvelle école</h3>
               </div>
               <div className="card-body">
-                <div className="form-group">
-                  <label className="form-label">Name</label>
+                <div className="form-group mt-2">
+                  <label className="form-label">Nom</label>
                   <input
                     type="text"
                     className="form-control"
@@ -259,8 +256,8 @@ const Schools = props => {
                     name="name"
                   />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Address</label>
+                <div className="form-group mt-2">
+                  <label className="form-label">Adresse</label>
                   <input
                     type="text"
                     className="form-control"
@@ -270,8 +267,8 @@ const Schools = props => {
                     name="address"
                   />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">University</label>
+                <div className="form-group mt-2">
+                  <label className="form-label">Université</label>
 
                   <select
                     name="university_id"
@@ -285,7 +282,7 @@ const Schools = props => {
               </div>
               <div className="card-footer text-right">
                 <button type="submit" className="btn btn-primary">
-                  Submit
+                  Soumettre
                 </button>
               </div>
             </form>

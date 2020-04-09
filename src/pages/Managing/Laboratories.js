@@ -4,25 +4,25 @@ import "datatables";
 import axios from "axios";
 import { AuthContext } from "../../context/auth";
 
-const Laboratories = props => {
+const Laboratories = (props) => {
   const { user } = useContext(AuthContext);
   const headers = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + user.token
+    Authorization: "Bearer " + user.token,
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     if (formAction === "add") addLaboratory();
     else if (formAction === "update") updateLaboratory(editedLaboratoryId);
   };
 
-  const handleInputsChange = event => {
+  const handleInputsChange = (event) => {
     event.persist();
 
-    setInputs(inputs => ({
+    setInputs((inputs) => ({
       ...inputs,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
   };
 
@@ -31,7 +31,7 @@ const Laboratories = props => {
   const [inputs, setInputs] = useState({
     name: "",
     address: "",
-    university_id: ""
+    university_id: "",
   });
 
   let [dataVersion, setDataVersion] = useState(0);
@@ -45,16 +45,16 @@ const Laboratories = props => {
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_BACKEND_API_URL + "/api/school", {
-        headers
+        headers,
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setSchools(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, [dataVersion]);
@@ -62,26 +62,26 @@ const Laboratories = props => {
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory", {
-        headers
+        headers,
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setLaboratories(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, [dataVersion]);
 
-  const editLaboratory = laboratory => {
+  const editLaboratory = (laboratory) => {
     setFormAction("update");
     setEditedLaboratoryId(laboratory._id);
-    setInputs(inputs => ({
+    setInputs((inputs) => ({
       ...inputs,
-      ...laboratory
+      ...laboratory,
     }));
   };
   const addLaboratory = () => {
@@ -90,74 +90,74 @@ const Laboratories = props => {
         process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
         {
           name: inputs.name,
-          school_id: inputs.school_id ?? schools[0]._id
+          school_id: inputs.school_id ?? schools[0]._id,
         },
         {
-          headers
+          headers,
         }
       )
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setDataVersion(dataVersion + 1);
-        setInputs(inputs => ({
+        setInputs((inputs) => ({
           ...inputs,
-          name: " "
+          name: " ",
         }));
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
-  const deleteLaboratory = laboratory => {
+  const deleteLaboratory = (laboratory) => {
     axios
       .delete(
         process.env.REACT_APP_BACKEND_API_URL +
           "/api/laboratory/" +
           laboratory._id,
         {
-          headers
+          headers,
         }
       )
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setDataVersion(dataVersion + 1);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
-  const updateLaboratory = id => {
+  const updateLaboratory = (id) => {
     axios
       .put(
         process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory/",
         {
           _id: id,
           name: inputs.name,
-          school_id: inputs.school_id
+          school_id: inputs.school_id,
         },
         {
-          headers
+          headers,
         }
       )
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setDataVersion(dataVersion + 1);
         setFormAction("add");
-        setInputs(inputs => ({
+        setInputs((inputs) => ({
           ...inputs,
-          name: " "
+          name: " ",
         }));
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -165,7 +165,7 @@ const Laboratories = props => {
   let schoolsOptoins;
 
   if (schools) {
-    schoolsOptoins = schools.map(school => (
+    schoolsOptoins = schools.map((school) => (
       <option value={school._id} key={school._id}>
         {school.name}
       </option>
@@ -215,20 +215,17 @@ const Laboratories = props => {
   return (
     <Fragment>
       <div className="page-header">
-        <h1 className="page-title">Laboratories</h1>
+        <h1 className="page-title">Laboratoires</h1>
       </div>
       <div className="row row-cards row-deck">
         <div className="col-8">
           <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Laboratories</h3>
-            </div>
             <div className="table-responsive">
               <table className="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>School</th>
+                    <th>Nom</th>
+                    <th>École</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -241,11 +238,11 @@ const Laboratories = props => {
           <div className="card">
             <form onSubmit={handleSubmit}>
               <div className="card-header">
-                <h3 className="card-title">Add a new laboratory</h3>
+                <h3 className="card-title">Ajouter un nouveau laboratoire</h3>
               </div>
               <div className="card-body">
-                <div className="form-group">
-                  <label className="form-label">Name</label>
+                <div className="form-group mt-2">
+                  <label className="form-label">Nom</label>
                   <input
                     type="text"
                     className="form-control"
@@ -254,8 +251,8 @@ const Laboratories = props => {
                     name="name"
                   />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">School</label>
+                <div className="form-group mt-2">
+                  <label className="form-label">École</label>
 
                   <select
                     name="school_id"
@@ -269,7 +266,7 @@ const Laboratories = props => {
               </div>
               <div className="card-footer text-right">
                 <button type="submit" className="btn btn-primary">
-                  Submit
+                  Soumettre
                 </button>
               </div>
             </form>

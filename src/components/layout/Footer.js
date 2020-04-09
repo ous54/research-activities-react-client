@@ -1,6 +1,6 @@
 import React from "react";
 
-const Footer = props => {
+const Footer = (props) => {
   return (
     <footer className="footer">
       <div className="container">
@@ -8,7 +8,7 @@ const Footer = props => {
           <div className="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
             Copyright © 2020 &nbsp;
             <a href="https://github.com/AkramAznakour/research-activities">
-              Research activities
+              Activités de recherche
             </a>
           </div>
         </div>
