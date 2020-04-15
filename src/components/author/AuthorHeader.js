@@ -27,22 +27,24 @@ const AuthorHeader = (props) => {
               <h4 className="m-0">
                 {props.author.name}
 
-                <button
-                  type="button"
-                  onClick={handleFollow}
-                  className={
-                    "btn  btn-sm m-3 btn-outline-" +
-                    (props.isFollowed ? "success" : "primary")
-                  }
-                >
-                  {props.isFollowed ? "Suivé" : "Suivre"}
-                  {props.isSendingFollow && (
-                    <div
-                      style={{ height: "10px", width: "10px" }}
-                      className="loader ml-2 "
-                    ></div>
-                  )}
-                </button>
+                {props.user.role === "CED_HEAD" && (
+                  <button
+                    type="button"
+                    onClick={handleFollow}
+                    className={
+                      "btn  btn-sm m-3 btn-outline-" +
+                      (props.isFollowed ? "success" : "primary")
+                    }
+                  >
+                    {props.isFollowed ? "Suivé" : "Suivre"}
+                    {props.isSendingFollow && (
+                      <div
+                        style={{ height: "10px", width: "10px" }}
+                        className="loader ml-2 "
+                      ></div>
+                    )}
+                  </button>
+                )}
               </h4>
 
               <p className="text-muted mb-0">{props.author.affiliation}</p>
