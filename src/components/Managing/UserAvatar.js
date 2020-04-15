@@ -6,7 +6,7 @@ function UserAvatar(props) {
     <Fragment>
       <div class="row row-sm align-items-center">
         <div class="col-auto">
-          <span class="avatar avatar-md">
+          <span class="avatar  bg-blue-lt avatar-md">
             {user.firstName ? user.firstName[0] : ""}
             {user.lastName ? user.lastName[0] : ""}
           </span>
