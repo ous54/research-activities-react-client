@@ -22,6 +22,7 @@ import NavBar from "../components/layout/NavBar";
 import Teams from "./Managing/Teams";
 import { default as LHAssociation } from "./Managing/LaboratoryHeadsAssociation";
 import { default as TRAssociation } from "./Managing/TeamsResearchersAssociation";
+import FollowedResearchers from "./Managing/FollowedResearchers";
 
 function MainLayout() {
   const routes = (
@@ -40,12 +41,17 @@ function MainLayout() {
         component={LHAssociation}
         role="CED_HEAD"
       />
-      <Route path="/teams" component={Teams} role="LABORATORY_HEAD" />
+      <Route
+        path="/followed-researchers"
+        component={FollowedResearchers}
+        role="CED_HEAD"
+      />
       <Route
         path="/teams-researchers-association"
         component={TRAssociation}
         role="LABORATORY_HEAD"
       />
+      <Route path="/teams" component={Teams} role="LABORATORY_HEAD" />
       <Route path="/settings/account" component={AccountSettings} />
       <Route path="/author/:authorName" component={Author} /> }
       <Route path="/*" component={NotFoundPage} />
