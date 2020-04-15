@@ -132,6 +132,7 @@ const Author = (props) => {
       <div className="row">
         <div className="col-lg-8">
           <AuthorHeader
+            user={user}
             author={author}
             suivre={suivre}
             isFollowed={isFollowed}
