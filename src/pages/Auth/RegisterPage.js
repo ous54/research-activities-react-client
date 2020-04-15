@@ -59,7 +59,7 @@ function RegisterPage() {
       <div className="page-single">
         <div className="container">
           <div className="row">
-            <div className="col col-login mx-auto">
+            <div className="col col-md-4 mx-auto">
               <div className="text-center mb-6 mt-6">
                 <img src={image} className="h-6" alt="" />
               </div>
@@ -126,7 +126,7 @@ function RegisterPage() {
                   )}
                 </div>
                 <div className="card-footer">
-                  <button type="submit" className="btn btn-primary ">
+                  <button type="submit" className="btn btn-block btn-primary ">
                     Créer un nouveau compte
                   </button>
                 </div>

@@ -62,7 +62,7 @@ function LoginPage() {
       <div className="page-single">
         <div className="container">
           <div className="row">
-            <div className="col col-login mx-auto">
+            <div className="col col-md-4 mx-auto">
               <div className="text-center mb-6 mt-6">
                 <img src={image} className="h-6" alt="" />
               </div>
@@ -111,15 +111,15 @@ function LoginPage() {
                 </div>
 
                 <div className="card-footer">
-                  <button type="submit" className="btn btn-primary ">
+                  <button type="submit" className="btn btn-block  btn-primary ">
                     Se connecter
                   </button>
                 </div>
               </form>
-              <div className="text-center text-muted">
-                Vous n'avez pas encore de compte?
-                <Link to="/register">S'inscrire</Link>
-              </div>
+             {/*  <div className="text-center text-muted">
+                Vous n'avez pas encore de compte ?
+                <Link to="/register"> S'inscrire</Link>
+              </div> */}
             </div>
           </div>
         </div>
