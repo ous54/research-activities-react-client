@@ -27,6 +27,12 @@ const CED_HEAD_MENUS = [
       },
     ],
   },
+  {
+    title: "Chercheurs suivis",
+    isDropdown: false,
+    icon: TeamIcon,
+    link: "/followed-researchers",
+  },
 ];
 
 const LABORATORY_HEAD_MENUS = [
