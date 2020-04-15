@@ -28,6 +28,7 @@ function PasswordUpdate(props) {
             <div className="mb-2">
               <label className="form-label">Courant password</label>
               <input
+                type="password"
                 className="form-control"
                 onChange={handlePasswordUpdateChange}
                 value={passwordUpdate.courantPassword}
@@ -37,6 +38,7 @@ function PasswordUpdate(props) {
             <div className="mb-2">
               <label className="form-label">New password</label>
               <input
+                type="password"
                 className="form-control"
                 onChange={handlePasswordUpdateChange}
                 value={passwordUpdate.newPassword}
@@ -46,6 +48,7 @@ function PasswordUpdate(props) {
             <div className="mb-2">
               <label className="form-label">Confirme new password</label>
               <input
+                type="password"
                 className="form-control"
                 onChange={handlePasswordUpdateChange}
                 value={passwordUpdate.confirmedNewPassword}
