@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
 import $ from "jquery";
 import "datatables";
-import axios from "axios";
-import { AuthContext } from "../../context/auth";
+
+import { AppContext } from "../../../AppContext";
 
 const Universities = (props) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AppContext);
   const authHeader = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + user.token,
@@ -15,6 +15,9 @@ const Universities = (props) => {
   let [formAction, setFormAction] = useState("add");
   let [editedUniversityId, setEditedUniversityId] = useState(0);
   let [universities, setUniversities] = useState(null);
+
+  const { ApiServices } = useContext(AppContext);
+  const { schoolService, universityService } = ApiServices;
 
   useEffect(() => {
     if (universities != null) $(".universities-datatable").DataTable();
@@ -43,19 +46,13 @@ const Universities = (props) => {
   };
 
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/university", {
-        headers: authHeader,
-      })
+    universityService
+      .findAllUniversities()
       .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        console.log(data);
-        setUniversities(data);
+        setUniversities(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, [dataVersion]);
 
@@ -69,25 +66,13 @@ const Universities = (props) => {
   };
 
   const addUniversity = () => {
-    axios
-      .post(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/university",
-        {
-          name: inputs.name,
-          city: inputs.city,
-          country: inputs.country,
-        },
-        {
-          headers: {
-            ...authHeader,
-          },
-        }
-      )
-      .then((response) => {
-        return response.data;
+    universityService
+      .createUniversity({
+        name: inputs.name,
+        city: inputs.city,
+        country: inputs.country,
       })
-      .then((data) => {
-        console.log(data);
+      .then((response) => {
         setDataVersion(dataVersion + 1);
         setInputs((inputs) => ({
           ...inputs,
@@ -97,53 +82,30 @@ const Universities = (props) => {
         }));
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
   const deleteUniversity = (university) => {
-    axios
-      .delete(
-        process.env.REACT_APP_BACKEND_API_URL +
-          "/api/university/" +
-          university._id,
-        {
-          headers: {
-            ...authHeader,
-          },
-        }
-      )
+    universityService
+      .delateUniversity(university._id)
       .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        console.log(data);
+        
         setDataVersion(dataVersion + 1);
       })
       .catch((err) => {
-        console.log(err);
+        
       });
   };
   const updateUniversity = (id) => {
-    axios
-      .put(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/university/",
-        {
-          _id: id,
-          name: inputs.name,
-          city: inputs.city,
-          country: inputs.country,
-        },
-        {
-          headers: {
-            ...authHeader,
-          },
-        }
-      )
-      .then((response) => {
-        return response.data;
+    universityService
+      .updateUniversity({
+        _id: id,
+        name: inputs.name,
+        city: inputs.city,
+        country: inputs.country,
       })
-      .then((data) => {
-        console.log(data);
+      .then((response) => {
+        
         setDataVersion(dataVersion + 1);
         setFormAction("add");
         setInputs((inputs) => ({
@@ -154,7 +116,7 @@ const Universities = (props) => {
         }));
       })
       .catch((err) => {
-        console.log(err);
+        
       });
   };
 

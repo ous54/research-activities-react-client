@@ -1,16 +1,10 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
 import $ from "jquery";
 import "datatables";
-import axios from "axios";
-import { AuthContext } from "../../context/auth";
+
+import { AppContext } from "../../../AppContext";
 
 const Schools = (props) => {
-  const { user } = useContext(AuthContext);
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + user.token,
-  };
-
   const [dataVersion, setDataVersion] = useState(0);
   const [formAction, setFormAction] = useState("add");
   const [editedSchoolId, setEditedSchoolId] = useState(0);
@@ -22,6 +16,9 @@ const Schools = (props) => {
     address: "",
     university_id: "",
   });
+
+  const { ApiServices } = useContext(AppContext);
+  const { schoolService, universityService } = ApiServices;
 
   useEffect(() => {
     if (schools != null) $(".datatable").DataTable();
@@ -44,37 +41,27 @@ const Schools = (props) => {
   };
 
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/school", {
-        headers,
-      })
+    schoolService
+      .findAllSchools()
       .then((response) => {
         return response.data;
       })
       .then((data) => {
-        console.log(data);
         setSchools(data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, [dataVersion]);
 
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/university", {
-        headers,
-      })
+    universityService
+      .findAllUniversities()
       .then((response) => {
         return response.data;
       })
       .then((data) => {
-        console.log(data);
         setUniversities(data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, [dataVersion]);
 
   const editSchool = (school) => {
@@ -86,28 +73,19 @@ const Schools = (props) => {
     }));
   };
   const addSchool = () => {
-    console.log(inputs);
+    ;
 
-    axios
-      .post(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/school",
-        {
-          name: inputs.name,
-          address: inputs.address,
-          university_id:
-            inputs.university_id === ""
-              ? universities[0]._id
-              : inputs.university_id,
-        },
-        {
-          headers,
-        }
-      )
-      .then((response) => {
-        return response.data;
+    schoolService
+      .create({
+        name: inputs.name,
+        address: inputs.address,
+        university_id:
+          inputs.university_id === ""
+            ? universities[0]._id
+            : inputs.university_id,
       })
-      .then((data) => {
-        console.log(data);
+      .then((response) => {
+        
         setDataVersion(dataVersion + 1);
         setInputs((inputs) => ({
           ...inputs,
@@ -115,47 +93,32 @@ const Schools = (props) => {
           address: "",
         }));
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const deleteSchool = (school) => {
-    axios
-      .delete(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/school/" + school._id,
-        {
-          headers,
-        }
-      )
+    schoolService
+      .deleteSchool(school._id)
       .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        console.log(data);
+        
         setDataVersion(dataVersion + 1);
       })
       .catch((err) => {
-        console.log(err);
+        
       });
   };
 
   const updateSchool = (id) => {
-    axios
-      .put(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/school/",
-        {
-          _id: id,
-          name: inputs.name,
-          address: inputs.address,
-          university_id: inputs.university_id,
-        },
-        {
-          headers,
-        }
-      )
+    schoolService
+      .updateSchool({
+        _id: id,
+        name: inputs.name,
+        address: inputs.address,
+        university_id: inputs.university_id,
+      })
+
       .then((response) => {
-        console.log(response.data);
+        
         setDataVersion(dataVersion + 1);
         setFormAction("add");
         setInputs((inputs) => ({
@@ -165,7 +128,7 @@ const Schools = (props) => {
         }));
       })
       .catch((err) => {
-        console.log(err);
+        
       });
   };
 
@@ -181,7 +144,6 @@ const Schools = (props) => {
     ));
   }
 
-  console.log(schools);
 
   if (schools)
     content = schools.map((school, index) => (

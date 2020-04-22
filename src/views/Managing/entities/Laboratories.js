@@ -1,15 +1,13 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
 import $ from "jquery";
 import "datatables";
-import axios from "axios";
-import { AuthContext } from "../../context/auth";
+
+import { AppContext } from "../../../AppContext";
 
 const Laboratories = (props) => {
-  const { user } = useContext(AuthContext);
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + user.token,
-  };
+
+  const { ApiServices } = useContext(AppContext);
+  const { schoolService, laboratoryService } = ApiServices;
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -43,36 +41,25 @@ const Laboratories = (props) => {
   }, [laboratories]);
 
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/school", {
-        headers,
-      })
+    schoolService
+      .findAllSchools()
       .then((response) => {
         return response.data;
       })
       .then((data) => {
-        console.log(data);
         setSchools(data);
       })
       .catch((error) => {
-        console.log(error);
       });
   }, [dataVersion]);
 
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory", {
-        headers,
-      })
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        console.log(data);
-        setLaboratories(data);
+    laboratoryService
+      .findAllLaboratories()
+      .then((response) => {  
+        setLaboratories(response.data);
       })
       .catch((error) => {
-        console.log(error);
       });
   }, [dataVersion]);
 
@@ -85,22 +72,15 @@ const Laboratories = (props) => {
     }));
   };
   const addLaboratory = () => {
-    axios
-      .post(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory",
-        {
-          name: inputs.name,
-          school_id: inputs.school_id ?? schools[0]._id,
-        },
-        {
-          headers,
-        }
-      )
+    laboratoryService
+      .createLaboratory({
+        name: inputs.name,
+        school_id: inputs.school_id ?? schools[0]._id,
+      })
       .then((response) => {
         return response.data;
       })
       .then((data) => {
-        console.log(data);
         setDataVersion(dataVersion + 1);
         setInputs((inputs) => ({
           ...inputs,
@@ -108,48 +88,29 @@ const Laboratories = (props) => {
         }));
       })
       .catch((error) => {
-        console.log(error);
       });
   };
   const deleteLaboratory = (laboratory) => {
-    axios
-      .delete(
-        process.env.REACT_APP_BACKEND_API_URL +
-          "/api/laboratory/" +
-          laboratory._id,
-        {
-          headers,
-        }
-      )
+    laboratoryService
+      .deleteLaboratory(laboratory._id)
       .then((response) => {
         return response.data;
       })
       .then((data) => {
-        console.log(data);
         setDataVersion(dataVersion + 1);
       })
       .catch((err) => {
-        console.log(err);
       });
   };
+  
   const updateLaboratory = (id) => {
-    axios
-      .put(
-        process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory/",
-        {
-          _id: id,
-          name: inputs.name,
-          school_id: inputs.school_id,
-        },
-        {
-          headers,
-        }
-      )
-      .then((response) => {
-        return response.data;
+    laboratoryService
+      .updateLaboratory({
+        _id: id,
+        name: inputs.name,
+        school_id: inputs.school_id,
       })
-      .then((data) => {
-        console.log(data);
+      .then((response) => {
         setDataVersion(dataVersion + 1);
         setFormAction("add");
         setInputs((inputs) => ({
@@ -158,7 +119,6 @@ const Laboratories = (props) => {
         }));
       })
       .catch((err) => {
-        console.log(err);
       });
   };
 

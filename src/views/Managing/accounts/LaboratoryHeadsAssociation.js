@@ -1,62 +1,49 @@
 import React, { useState, useContext, useEffect } from "react";
-import GeneratedUser from "../../components/Managing/GeneratedUser";
-import PageHeader from "../../components/layout/PageHeader";
-import Axios from "axios";
-import { AuthContext } from "../../context/auth";
-import LaboratoryBox from "../../components/Managing/LaboratoryBox";
+
+import LaboratoryBox from "../_components/LaboratoryBox";
+import PageHeader from "../../_common/_components/PageHeader";
+import { AppContext } from "../../../AppContext";
 
 const LaboratoryHeadsAssociation = (props) => {
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [laboratories, setLaboratories] = useState([]);
   const [laboratoriesUpdate, setLaboratoriesUpdate] = useState(1);
-  const { user } = useContext(AuthContext);
+
+  const { ApiServices } = useContext(AppContext);
+  const { laboratoryService, userService } = ApiServices;
 
   const requestUpdate = () => {
-    setLaboratoriesUpdate(laboratoriesUpdate*2);
-  };
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + user.token,
+    setLaboratoriesUpdate(laboratoriesUpdate * 2);
   };
 
   useEffect(() => {
-    console.log("useEffect 1");
-    
-    Axios.get(process.env.REACT_APP_BACKEND_API_URL + "/api/laboratory", {
-      headers,
-    })
+    laboratoryService
+      .findAllLaboratories()
       .then((response) => {
-        console.log(response.data);
         setLaboratories([]);
         setLaboratories(response.data);
       })
       .catch((error) => {
-        console.log(error);
       });
-
   }, [laboratoriesUpdate]);
 
   useEffect(() => {
-    console.log("useEffect 2");
-    
-    Axios.get(process.env.REACT_APP_BACKEND_API_URL + "/api/lab-heads", {
-      headers,
-    })
+    userService
+      .getLabHeads()
       .then((response) => {
-        setLaboratoryHeads([])
+        setLaboratoryHeads([]);
         setLaboratoryHeads(response.data.labHeads);
       })
       .catch((error) => {
-        console.log(error);
       });
   }, [laboratoriesUpdate]);
 
   return (
-    <div class="container">
-      <div class="row">
-        <div class="col-6">
+    <div  className="container">
+      <div  className="row">
+        <div  className="col-6">
           <PageHeader title="Laboratoires sans chef désigné" />
-          <div class="row">
+          <div  className="row">
             {laboratories
               .filter((laboratory) => !laboratory.head_id)
               .map((laboratory) => (
@@ -68,9 +55,9 @@ const LaboratoryHeadsAssociation = (props) => {
               ))}
           </div>
         </div>
-        <div class="col-6">
+        <div  className="col-6">
           <PageHeader title="Laboratoires avec un chef désigné" />
-          <div class="row">
+          <div  className="row">
             {laboratories
               .filter((laboratory) => laboratory.head_id)
               .map((laboratory) => (

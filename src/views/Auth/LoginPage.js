@@ -1,16 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import Axios from "axios";
-
+import { useHistory } from "react-router-dom";
 import image from "../../assets/images/tabler.svg";
-import { AuthContext } from "../../context/auth";
+import { AppContext } from "../../AppContext";
 
 function LoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [inputs, setInputs] = useState({ email: " ", password: "" });
-  const { user, setUser } = useContext(AuthContext);
-
+  const { ApiServices, setUser } = useContext(AppContext);
+  const { authentificationService } = ApiServices;
   const history = useHistory();
 
   useEffect(() => {
@@ -31,9 +29,9 @@ function LoginPage() {
 
     if (isError) setIsError(false);
 
-    Axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/login`, inputs)
+    authentificationService
+      .login(inputs)
       .then((result) => {
-        console.log(result);
 
         if (result.status === 200) {
           if (isError) setIsError(false);
@@ -116,7 +114,7 @@ function LoginPage() {
                   </button>
                 </div>
               </form>
-             {/*  <div className="text-center text-muted">
+              {/*  <div className="text-center text-muted">
                 Vous n'avez pas encore de compte ?
                 <Link to="/register"> S'inscrire</Link>
               </div> */}

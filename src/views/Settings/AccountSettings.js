@@ -1,19 +1,16 @@
 import React, { useState, useContext } from "react";
-import InformationUpdate from "../../components/settings/InformationUpdate";
-import PasswordUpdate from "../../components/settings/PasswordUpdate";
-import SettingsAlert from "../../components/settings/SettingsAlert";
-import { AuthContext } from "../../context/auth";
-import Axios from "axios";
+import InformationUpdate from "./_components/InformationUpdate";
+import PasswordUpdate from "./_components/PasswordUpdate";
+import SettingsAlert from "./_components/SettingsAlert";
+import { AppContext } from "../../AppContext";
+
 import { useHistory } from "react-router-dom";
 
 function AccountSettings() {
-  const { user, setUser } = useContext(AuthContext);
   const history = useHistory();
 
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + user.token,
-  };
+  const { ApiServices, user, setUser } = useContext(AppContext);
+  const { userService } = ApiServices;
 
   const [passwordUpdate, setPasswordUpdate] = useState({
     courantPassword: "",
@@ -53,18 +50,9 @@ function AccountSettings() {
   };
 
   const updateAccountInformations = () => {
-    console.log("Save");
-    
-    Axios.put(
-      process.env.REACT_APP_BACKEND_API_URL + "/api/user",
-      { ...accountInformations, _id: user._id },
-      {
-        headers,
-      }
-    )
+    userService
+      .updateUser({ ...accountInformations, _id: user._id })
       .then((response) => {
-        console.log(response);
-        
         if (response.data.ok) {
           setUser({
             ...user,
@@ -75,10 +63,10 @@ function AccountSettings() {
         }
       })
       .catch((error) => {
-        console.log(error);
         showError();
       });
   };
+
   const updatePassword = () => {
     const {
       courantPassword,
@@ -90,17 +78,8 @@ function AccountSettings() {
       showPasswordNotConfirmed();
       return;
     }
-
-    Axios.post(
-      process.env.REACT_APP_BACKEND_API_URL +
-        "/api/user/" +
-        user._id +
-        "/update-password",
-      { password: newPassword },
-      {
-        headers,
-      }
-    )
+    userService
+      .updatePassword(user._id, { password: newPassword })
       .then((response) => {
         if (response.data.ok) {
           showInformationUpdated();
@@ -110,7 +89,6 @@ function AccountSettings() {
         }
       })
       .catch((error) => {
-        console.log(error);
         showError();
       });
   };

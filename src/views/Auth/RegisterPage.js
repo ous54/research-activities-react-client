@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
-import Axios from "axios";
-
 import image from "../../assets/images/tabler.svg";
+import { AppContext } from "../../AppContext";
 
 function RegisterPage() {
   const [isRegistered, setRegistered] = useState(false);
@@ -13,6 +12,9 @@ function RegisterPage() {
     email: "",
     password: "",
   });
+
+  const { ApiServices } = useContext(AppContext);
+  const { authentificationService } = ApiServices;
 
   const history = useHistory();
 
@@ -29,12 +31,12 @@ function RegisterPage() {
 
     if (isError) setIsError(false);
 
-    Axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/auth/signup`, {
-      ...inputs,
-      role: "CED_HEAD",
-    })
+    authentificationService
+      .signup({
+        ...inputs,
+        role: "CED_HEAD",
+      })
       .then((result) => {
-        console.log(result);
 
         if (result.status === 200) {
           if (isError) setIsError(false);
@@ -49,7 +51,6 @@ function RegisterPage() {
         }
       })
       .catch((e) => {
-        console.log(e);
         setIsError(true);
       });
   };

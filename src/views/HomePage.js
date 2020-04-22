@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import image from "../assets/images/illustrations/undraw_bug_fixing_oc7a.svg";
 import { Link } from "react-router-dom";
-import { LoopIcon } from "../components/icons/icons";
+import { LoopIcon } from "./_common/_components/icons";
 
-function HomePage() {
+const HomePage = () => {
   return (
     <div className="empty">
       <div className="empty-icon">
@@ -23,6 +23,6 @@ function HomePage() {
       </div>
     </div>
   );
-}
+};
 
 export default HomePage;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LeftArrowIcon } from "../components/icons/icons";
+import { LeftArrowIcon } from "./_common/_components/icons";
 
 function NotFoundPage() {
   return (
