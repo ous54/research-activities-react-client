@@ -4,6 +4,7 @@ import {
   INFORMATION_UPDATED_MESSAGE,
   INFORMATION_NOT_UPDATED_MESSAGE,
   PASSWORD_NOT_CONFIRMED_MESSAGE,
+  AUTHOR_HAS_UPDATES,
   NO_MESSAGE,
 } from "./AlertMessages";
 
@@ -16,9 +17,11 @@ function SettingsAlert(props) {
       : props.message === "INFORMATION_NOT_UPDATED_MESSAGE"
       ? INFORMATION_NOT_UPDATED_MESSAGE
       : props.message === "PASSWORD_NOT_CONFIRMED_MESSAGE"
-      ? PASSWORD_NOT_CONFIRMED_MESSAGE
+      ? PASSWORD_NOT_CONFIRMED_MESSAGE      
+      : props.message === "AUTHOR_HAS_UPDATES"
+      ? AUTHOR_HAS_UPDATES
       : NO_MESSAGE;
-
+      
   return (
     <div className="col-md-12">
       <div

@@ -1,8 +1,9 @@
 import React, { useEffect, useContext } from "react";
-import { AuthContext } from "../../context/auth";
+import { AppContext } from "../../../AppContext";
+import UserPicture from "../../_common/_components/UserPicture";
 
 function InformationUpdate(props) {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AppContext);
   const {
     accountInformations,
     setAccountInformations,
@@ -40,15 +41,7 @@ function InformationUpdate(props) {
           <form onSubmit={handleSubmit}>
             <div className="row mb-3">
               <div className="col-auto">
-                <span className="avatar avatar-lg bg-blue-lt">
-                  <span className="badge  bg-success"></span>
-                  {accountInformations.firstName
-                    ? accountInformations.firstName[0]
-                    : ""}
-                  {accountInformations.lastName
-                    ? accountInformations.lastName[0]
-                    : ""}
-                </span>
+                <UserPicture user={user} size={"lg"} />
               </div>
               <div className="col">
                 <div className="mb-2">

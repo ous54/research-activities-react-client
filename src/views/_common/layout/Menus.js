@@ -3,7 +3,8 @@ import {
   HomeIcon,
   TeamIcon,
   ConfigurationIcon,
-} from "../icons/icons";
+  StatistiquesIcon,
+} from "../_components/icons";
 
 const CED_HEAD_MENUS = [
   {
@@ -13,14 +14,21 @@ const CED_HEAD_MENUS = [
     link: "/home",
   },
   {
-    title: "Gestion",
+    title: "Entités",
     isDropdown: true,
     icon: ConfigurationIcon,
     subMenus: [
       { title: "Universités", link: "/universities" },
       { title: "Ecoles", link: "/schools" },
       { title: "Laboratoires", link: "/laboratories" },
-      { title: "Chefs de Laboratoires", link: "/laboratory-heads" },
+    ],
+  },
+  {
+    title: "Chefs de Laboratoires",
+    isDropdown: true,
+    icon: TeamIcon,
+    subMenus: [
+      { title: "Creation des comptes", link: "/laboratory-heads" },
       {
         title: "Associer les chefs des Laboratoires",
         link: "/laboratory-heads-association",
@@ -33,6 +41,12 @@ const CED_HEAD_MENUS = [
     icon: TeamIcon,
     link: "/followed-researchers",
   },
+  {
+    title: "Statistiques",
+    isDropdown: false,
+    icon: StatistiquesIcon,
+    link: "/statistics",
+  },
 ];
 
 const LABORATORY_HEAD_MENUS = [
@@ -43,31 +57,28 @@ const LABORATORY_HEAD_MENUS = [
     link: "/home",
   },
   {
-    title: "Gestion",
+    title: "Entités",
     isDropdown: true,
     icon: ConfigurationIcon,
-    subMenus: [
-      {
-        title: "Creation des chercheurs ",
-        link: "/teams-researchers-association",
-      },
-      { title: "Ecoles", link: "/schools" },
-    ],
+    subMenus: [{ title: "Équipes", link: "/teams" }],
   },
   {
-    title: "Equipes de laboratoire",
+    title: "Chercheurs",
     isDropdown: true,
     icon: TeamIcon,
     subMenus: [
+      { title: "Creation des comptes", link: "/researchers" },
       {
-        title: "Gestion des équipes du laboratoire",
-        link: "/laboratory-heads",
-      },
-      {
-        title: "Ajouter des chercheurs ",
-        link: "/teams-researchers-association",
+        title: "Associer les researchers",
+        link: "/researchers-association",
       },
     ],
+  },
+  {
+    title: "Statistiques",
+    isDropdown: false,
+    icon: StatistiquesIcon,
+    link: "/statistics",
   },
 ];
 
@@ -79,15 +90,22 @@ const SEARCHER_MENUS = [
     link: "/home",
   },
   {
-    title: "Gestion",
-    isDropdown: true,
-    icon: SettingsIcon,
-    subMenus: [
-      { title: "Universités", link: "/universities" },
-      { title: "Ecoles", link: "/schools" },
-      { title: "Laboratoires", link: "/laboratories" },
-      { title: "Chefs de Laboratoires", link: "/laboratory-heads" },
-    ],
+    title: "Laboratoire",
+    isDropdown: false,
+    icon: HomeIcon,
+    link: "/home",
+  },
+  {
+    title: "Équipes",
+    isDropdown: false,
+    icon: HomeIcon,
+    link: "/home",
+  },
+  {
+    title: "Statistiques",
+    isDropdown: false,
+    icon: StatistiquesIcon,
+    link: "/statistics",
   },
 ];
 
