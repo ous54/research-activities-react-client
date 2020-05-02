@@ -1,6 +1,6 @@
 # PFA
 
-👨🏼‍🎓 **Contributeurs :** [Akram Aznakour](https://github.com/AkramAznakour) [Zelma Aubin BIRBA](https://github.com/birbaubin)   | 📅 **Date :** Mars 2020
+👨🏼‍🎓 **Contributeurs :** [Akram Aznakour](https://github.com/AkramAznakour) [Zelma Aubin BIRBA](https://github.com/birbaubin) | 📅 **Date :** Mars 2020
 
 **Description:**
 
@@ -29,7 +29,8 @@
 | Faire des alertes chaque fois qu'un prof publie un nouvel article |  ❌ |
 | Imprimer les rapports                                             |  ❌ |
 |                                                                   |
-<!-- 
+
+<!--
 Modification de la photo
 Réorganiser l’affichage des chercheurs suivis
 Filtrer la liste des chercheurs suivis
@@ -54,7 +55,7 @@ Statistiques (tableau : nombre de publication par année par chercheur suivi) --
 |                 | Gestion des laboratoires                           |
 |                 | Creation des comptes LABORATORY_HEAD               |
 | LABORATORY_HEAD | Gestion des équipes                                |
-|                 | Gestion des comptes SEARCHER                      |
+|                 | Gestion des comptes SEARCHER                       |
 |                 | ajoute des SEARCHER aux équipes de son laboratoire |
 | RESEARCHER      |                                                    |
 |                 | ?                                                  |
@@ -65,11 +66,13 @@ Statistiques (tableau : nombre de publication par année par chercheur suivi) --
 
 _Password : email.split("@")[0] example : example.example@gmail.com | example.example_
 
-| firstName       | lastName               | email                         | role            |
-| --------------- | ---------------------- | ----------------------------- | --------------- |
-| Admin           | Admin                  | admin@gmail.com               | CED_HEAD           |
-| Hassan          | OUAHMANE               | hassan.ouahmane@gmail.com     | LABORATORY_HEAD |
-| Abdelowahed     | HAJJAJI                | Abdelowahed.hajjaji@gmail.com | LABORATORY_HEAD |
+| firstName   | lastName | email                         | role            |
+| ----------- | -------- | ----------------------------- | --------------- |
+| Admin       | Admin    | admin@gmail.com               | CED_HEAD        |
+| Hassan      | OUAHMANE | hassan.ouahmane@gmail.com     | LABORATORY_HEAD |
+| Abdelowahed | HAJJAJI  | Abdelowahed.hajjaji@gmail.com | LABORATORY_HEAD |
+
+<!--
 | Abdelfettah     | HAIDINE                | ahaidine@gmail.com            | RESEARCHER      |
 | Abdelhak        | Aqqal                  | aqqal.ensaj@gmail.com         | RESEARCHER      |
 | Abdelilah       | KADDAR                 | a.kaddar@gmail.com            | RESEARCHER      |
@@ -118,6 +121,7 @@ _Password : email.split("@")[0] example : example.example@gmail.com | example.ex
 | Sanae           | El Hassani             | sanae.elhassani@gmail.com     | RESEARCHER      |
 | Younes          | Chhiti                 | chhiti.younes@gmail.com       | RESEARCHER      |
 | Younes          | ABOUELMAHJOUB          | younes_abou@gmail.com         | RESEARCHER      |
+-->
 
 ### Universités | Universities
 
