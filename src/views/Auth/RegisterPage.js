@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import image from "../../assets/images/tabler.svg";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../context/AppContext";
 
 function RegisterPage() {
   const [isRegistered, setRegistered] = useState(false);
