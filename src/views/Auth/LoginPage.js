@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import image from "../../assets/images/tabler.svg";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../context/AppContext";
 
 function LoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,18 +32,15 @@ function LoginPage() {
     authentificationService
       .login(inputs)
       .then((result) => {
-
         if (result.status === 200) {
           if (isError) setIsError(false);
 
-          setUser({
-            token: result.data.token,
-            ...result.data.user,
-          });
+          setUser(result.data);
+
           setIsLoggedIn(true);
 
           setTimeout(() => {
-            if (result.data.user.has_confirmed) history.push("/home");
+            if (result.data.hasConfirmed) history.push("/home");
             else history.push("/settings/account");
           }, 1000);
         } else {
