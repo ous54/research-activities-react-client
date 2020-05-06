@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import GeneratedUser from "../_components/GeneratedUser";
 
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
 import PageHeader from "../../_common/_components/PageHeader";
 
 const LaboratoryHeads = (props) => {
@@ -13,12 +13,11 @@ const LaboratoryHeads = (props) => {
 
   useEffect(() => {
     userService
-      .getLabHeads()
+      .getLaboratoryHeads()
       .then((response) => {
-        setLaboratoryHeads(response.data.labHeads);
+        setLaboratoryHeads(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   }, []);
 
   const handleEmailChange = (event) => {
@@ -38,14 +37,13 @@ const LaboratoryHeads = (props) => {
       .then((response) => {
         setLaboratoryHeads([...laboratoryHeads, response.data]);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
 
   return (
-    <div  className="container">
-      <div  className="row">
-        <div  className="col-12">
+    <div className="container">
+      <div className="row">
+        <div className="col-12">
           <div className="card">
             <div className="card-header">
               <h3 className="card-title">
@@ -53,25 +51,25 @@ const LaboratoryHeads = (props) => {
               </h3>
             </div>
             <div className="card-body">
-              <div  className="row">
-                <div  className="col-md-6 col-xl-12">
-                  <div  className="mb-3">
-                    <label  className="form-label">
+              <div className="row">
+                <div className="col-md-6 col-xl-12">
+                  <div className="mb-3">
+                    <label className="form-label">
                       Email de chef de laboratoire
                     </label>
-                    <div  className="input-group mb-2">
+                    <div className="input-group mb-2">
                       <input
                         type="email"
-                         className="form-control"
+                        className="form-control"
                         placeholder="example@domaine.com"
                         onChange={handleEmailChange}
                         value={newEmail.email}
                         name="email"
                       />
-                      <span  className="input-group-append">
+                      <span className="input-group-append">
                         <button
                           onClick={handleSubmit}
-                           className="btn btn-secondary"
+                          className="btn btn-secondary"
                           type="button"
                         >
                           Créer
@@ -84,21 +82,31 @@ const LaboratoryHeads = (props) => {
             </div>
           </div>
         </div>
-        <div  className="col-6">
-          <PageHeader title="Utilisateurs confirmés" />
-          <div  className="row">
+        <div className="col-md-6">
+          <PageHeader
+            title="Utilisateurs confirmés"
+            subTitle={`${
+              laboratoryHeads.filter((user) => user.hasConfirmed).length
+            } utilisateur(s)`}
+          />
+          <div className="row">
             {laboratoryHeads
-              .filter((user) => user.has_confirmed)
+              .filter((user) => user.hasConfirmed)
               .map((laboratoryHead) => (
                 <GeneratedUser user={laboratoryHead} />
               ))}
           </div>
-        </div>{" "}
-        <div  className="col-6">
-          <PageHeader title="Utilisateurs non confirmés" />
-          <div  className="row">
+        </div>
+        <div className="col-md-6">
+          <PageHeader
+            title="Utilisateurs non confirmés"
+            subTitle={`${
+              laboratoryHeads.filter((user) => !user.hasConfirmed).length
+            } utilisateur(s)`}
+          />
+          <div className="row">
             {laboratoryHeads
-              .filter((user) => !user.has_confirmed)
+              .filter((user) => !user.hasConfirmed)
               .map((laboratoryHead) => (
                 <GeneratedUser user={laboratoryHead} />
               ))}

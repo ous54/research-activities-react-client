@@ -1,51 +1,85 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
 
 import ResearcherCard from "../_components/ResearcherCard";
 import ResearchersFilter from "../_components/ResearchersFilter";
 import PageHeader from "../../_common/_components/PageHeader";
 
-const FollowedResearchers = (props) => {
+const FollowedResearchers = () => {
   const [followedResearchers, setFollowedResearchers] = useState([]);
-  const [filteredResearchers, setFilteredResearchers] = useState([]);
+  const [
+    filteredFollowedResearchers,
+    setFilteredFollowedResearchers,
+  ] = useState([]);
+
   const [filter, setFilter] = useState(null);
+  const [filteringOptions, setFilteringOptions] = useState(null);
+
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
+    updateFilteringOptionsData();
+  }, []);
+
+  useEffect(() => {
     if (!filter) return;
-    const { category, option, searchTerm } = filter;
-
-    userService
-      .getFollowedUsers()
-      .then((response) => {
-        console.log(searchTerm);
-
-        setFollowedResearchers(
-          response.data.filter(
-            (user) =>
-              searchTerm === "" ||
-              user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-          )
-        );
-      })
-      .catch((error) => {});
+    if (!isSearchActive) setIsSearchActive(true);
+    updateFollowedUsersData();
   }, [filter]);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredFollowedResearchers(followedResearchers);
+      return;
+    }
+
+    setFilteredFollowedResearchers(
+      followedResearchers.filter(
+        (user) =>
+          user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+      )
+    );
+  }, [searchTerm, followedResearchers]);
+
+  const updateFilteringOptionsData = () => {
+    userService.getFilteringOptions({}).then((response) => {
+      setFilteringOptions(response.data);
+    });
+  };
+
+  const updateFollowedUsersData = () => {
+    userService.getFollowedUsers(filter).then((response) => {
+      setFollowedResearchers(response.data);
+    });
+  };
 
   return (
     <div className="container">
       <PageHeader
         title="Chercheurs suivis"
-        subTitle={filteredResearchers.length + " chercheurs"}
+        subTitle={filteredFollowedResearchers.length + " chercheurs"}
       />
       <div className="row">
-        <div className="col-3">
-          <ResearchersFilter filter={filter} setFilter={setFilter} />
+        <div className="col-md-3">
+          <ResearchersFilter
+            {...{
+              filter,
+              setFilter,
+              filteringOptions,
+              setSearchTerm,
+              searchTerm,
+              isSearchActive,
+              setIsSearchActive,
+            }}
+          />
         </div>
-        <div className="col-9">
+        <div className="col-md-9">
           <div className="row">
-            {followedResearchers.map((researcher) => (
+            {filteredFollowedResearchers.map((researcher) => (
               <ResearcherCard researcher={researcher} />
             ))}
           </div>
