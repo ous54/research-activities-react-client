@@ -1,18 +1,13 @@
 import React, { useContext, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 
-import { CED_HEAD_MENUS, LABORATORY_HEAD_MENUS, SEARCHER_MENUS } from "./Menus";
-import { AppContext } from "../../../AppContext";
+import { getMenuForRole } from "./Menus";
+import { AppContext } from "../../../context/AppContext";
 
 const MenuBar = withRouter(({ history, location, ...props }) => {
   const { user } = useContext(AppContext);
 
-  const menus =
-    user.role === "CED_HEAD"
-      ? CED_HEAD_MENUS
-      : user.role === "LABORATORY_HEAD"
-      ? LABORATORY_HEAD_MENUS
-      : SEARCHER_MENUS;
+  const menus = getMenuForRole(user.role);
 
   return (
     <nav
@@ -27,9 +22,10 @@ const MenuBar = withRouter(({ history, location, ...props }) => {
                 {menu.isDropdown && (
                   <Dropdown menu={menu} location={location} />
                 )}
-                {!menu.isDropdown && (
-                  <NotDropdown menu={menu} location={location} />
-                )}
+                {!menu.isDropdown &&
+                  menu.subMenus.map((subMenu) => (
+                    <NotDropdown menu={subMenu} location={location} />
+                  ))}
               </li>
             ))}
           </ul>
@@ -43,8 +39,8 @@ export default MenuBar;
 
 const NotDropdown = ({ menu, location }) => (
   <Link
-    to={menu.link}
-    className={`nav-link ${location.pathname === menu.link ? "active" : ""} `}
+    to={menu.path}
+    className={`nav-link ${location.pathname === menu.path ? "active" : ""} `}
   >
     <span className="nav-link-icon">
       <menu.icon />
@@ -58,7 +54,7 @@ const Dropdown = ({ menu, location }) => (
     <a
       className={`nav-link dropdown-toggle ${
         menu.subMenus
-          .map((subMenu) => subMenu.link)
+          .map((subMenu) => subMenu.path)
           .indexOf(location.pathname) !== -1
           ? "active"
           : ""
@@ -76,7 +72,7 @@ const Dropdown = ({ menu, location }) => (
     <ul className="dropdown-menu dropdown-menu-arrow ">
       {menu.subMenus.map((subMenu, index) => (
         <li key={index}>
-          <Link to={subMenu.link} className="dropdown-item">
+          <Link to={subMenu.path} className="dropdown-item">
             {subMenu.title}
           </Link>
         </li>
