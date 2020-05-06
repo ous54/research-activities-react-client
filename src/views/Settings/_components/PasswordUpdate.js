@@ -21,12 +21,12 @@ function PasswordUpdate(props) {
     <div className="col-md-4">
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title">Password update</h3>
+          <h3 className="card-title">Mise à jour du mot de passe</h3>
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="mb-2">
-              <label className="form-label">Courant password</label>
+              <label className="form-label">Mot de passe Courant</label>
               <input
                 type="password"
                 className="form-control"
@@ -36,7 +36,7 @@ function PasswordUpdate(props) {
               />
             </div>
             <div className="mb-2">
-              <label className="form-label">New password</label>
+              <label className="form-label">Nouveau mot de passe</label>
               <input
                 type="password"
                 className="form-control"
@@ -46,7 +46,9 @@ function PasswordUpdate(props) {
               />
             </div>
             <div className="mb-2">
-              <label className="form-label">Confirme new password</label>
+              <label className="form-label">
+                Confirmer le nouveau mot de passe
+              </label>
               <input
                 type="password"
                 className="form-control"
@@ -57,7 +59,7 @@ function PasswordUpdate(props) {
             </div>
 
             <div className="form-footer">
-              <button className="btn btn-primary ">Update</button>
+              <button className="btn btn-primary ">Mise à jour</button>
             </div>
           </form>
         </div>
