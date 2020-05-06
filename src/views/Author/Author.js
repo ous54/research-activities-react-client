@@ -9,7 +9,7 @@ import Publications from "./_components/Publications";
 
 import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../context/AppContext";
 import {
   LoopIcon,
   CrossIcon,
