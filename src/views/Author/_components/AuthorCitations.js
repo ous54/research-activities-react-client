@@ -29,6 +29,7 @@ const AuthorCitations = (props) => {
       (k, v) => props.author.cites_per_year[k]
     )
   );
+  
   chart.axis.x.categories = Object.keys(props.author.cites_per_year).map(
     (k, v) => k
   );
