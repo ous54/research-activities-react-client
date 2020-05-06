@@ -2,22 +2,19 @@ import React, { useState, useContext, useEffect } from "react";
 import GeneratedUser from "../_components/GeneratedUser";
 import PageHeader from "../../_common/_components/PageHeader";
 
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
 
-const Researchers = (props) => {
-  const [Researchers, setLaboratoryHeads] = useState([]);
+const Researchers = ({}) => {
+  const [researchers, setResearchers] = useState([]);
   const [newEmail, setNewEmail] = useState("");
 
   const { ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
-    userService
-      .getLabHeads()
-      .then((response) => {
-        setLaboratoryHeads(response.data.labHeads);
-      })
-      .catch((error) => {});
+    userService.getResearchers().then((response) => {
+      setResearchers(response.data);
+    });
   }, []);
 
   const handleEmailChange = (event) => {
@@ -35,7 +32,7 @@ const Researchers = (props) => {
         role: "RESEARCHER",
       })
       .then((response) => {
-        setLaboratoryHeads([...Researchers, response.data]);
+        setResearchers([...researchers, response.data]);
       })
       .catch((error) => {});
   };
@@ -52,7 +49,7 @@ const Researchers = (props) => {
               <div className="row">
                 <div className="col-md-6 col-xl-12">
                   <div className="mb-3">
-                    <label className="form-label">Email de chercheurs</label>
+                    <label className="form-label">Email de chercheur</label>
                     <div className="input-group mb-2">
                       <input
                         type="email"
@@ -78,24 +75,34 @@ const Researchers = (props) => {
             </div>
           </div>
         </div>
-        <div className="col-6">
-          <PageHeader title="Utilisateurs confirmés" />
+        <div className="col-md-6">
+          <PageHeader
+            title="Utilisateurs confirmés"
+            subTitle={`${
+              researchers.filter((user) => user.hasConfirmed).length
+            } researcher(s)`}
+          />
           <div className="row">
-            {Researchers.filter((user) => user.has_confirmed).map(
-              (laboratoryHead) => (
+            {researchers
+              .filter((user) => user.hasConfirmed)
+              .map((laboratoryHead) => (
                 <GeneratedUser user={laboratoryHead} />
-              )
-            )}
+              ))}
           </div>
-        </div>{" "}
-        <div className="col-6">
-          <PageHeader title="Utilisateurs non confirmés" />
+        </div>
+        <div className="col-md-6">
+          <PageHeader
+            title="Utilisateurs non confirmés"
+            subTitle={`${
+              researchers.filter((user) => !user.hasConfirmed).length
+            } researcher(s)`}
+          />
           <div className="row">
-            {Researchers.filter((user) => !user.has_confirmed).map(
-              (laboratoryHead) => (
+            {researchers
+              .filter((user) => !user.hasConfirmed)
+              .map((laboratoryHead) => (
                 <GeneratedUser user={laboratoryHead} />
-              )
-            )}
+              ))}
           </div>
         </div>
       </div>
