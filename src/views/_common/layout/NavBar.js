@@ -3,11 +3,11 @@ import { withRouter, Link } from "react-router-dom";
 
 import image from "../../../assets/images/tabler.svg";
 import { LoopIcon, NotificationIcon } from "./../_components/icons";
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
 import UserPicture from "../_components/UserPicture";
 
 const NavBar = withRouter(({ history, location }) => {
-  const { user } = useContext(AppContext);
+  const { user, UserHelper } = useContext(AppContext);
 
   return (
     <nav
@@ -22,7 +22,7 @@ const NavBar = withRouter(({ history, location }) => {
             <Notifications Notifications={[]} />
           </li>
           <li className="nav-item dropdown pl-2">
-            <UserMenu user={user} />
+            <UserMenu {...{ user, UserHelper }} />
           </li>
         </ul>
       </div>
@@ -118,28 +118,30 @@ const Notifications = ({ notifications }) => (
   </Fragment>
 );
 
-const UserMenu = ({ user }) => (
+const UserMenu = ({ user, UserHelper }) => (
   <Fragment>
     <Link
       to="/"
       className="nav-link d-flex lh-1 text-inherit p-0 text-left"
       data-toggle="dropdown"
     >
-      <UserPicture user={user} />
+      <UserPicture user={user} badge={true} />
       <div className="d-none d-lg-block pl-2">
         <div>
           {user.firstName ? user.firstName : ""}{" "}
           {user.lastName ? user.lastName : ""}
         </div>
-        <div className="mt-1 small text-muted">{user.email}</div>
+        <div className="mt-1 small text-muted">
+          {UserHelper.userShortBio(user)}
+        </div>
       </div>
     </Link>
     <div className="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-      <Link className="dropdown-item" to="/settings/account" href="#">
+      <Link className="dropdown-item" to="/account" href="#">
         Paramètres du compte
       </Link>
       <Link className="dropdown-item" to="/login" href="#">
-        Logout
+        Se déconnecter
       </Link>
     </div>
   </Fragment>
