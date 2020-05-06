@@ -5,8 +5,8 @@ const GeneratedUser = ({ user }) => (
   <div className=" col-xl-6">
     <a className="card card-link">
       <div className="card-body">
-        {user.has_confirmed && <UserBox user={user} />}
-        {!user.has_confirmed && <UnconfirmedUserBox2 user={user} />}
+        {user.hasConfirmed && <UserBox user={user} />}
+        {!user.hasConfirmed && <UnconfirmedUserBox2 user={user} />}
       </div>
     </a>
   </div>
