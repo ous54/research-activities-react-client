@@ -1,14 +1,16 @@
 import React, { useEffect, useContext } from "react";
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
 import UserPicture from "../../_common/_components/UserPicture";
 
-function InformationUpdate(props) {
-  const { user } = useContext(AppContext);
-  const {
-    accountInformations,
-    setAccountInformations,
-    updateAccountInformations,
-  } = props;
+function InformationUpdate({
+  accountInformations,
+  setAccountInformations,
+  updateAccountInformations,
+  profilePicture,
+  setProfilePicture,
+  updateProfilePicture,
+}) {
+  const { user, UserHelper } = useContext(AppContext);
 
   useEffect(() => {
     setAccountInformations({
@@ -26,37 +28,70 @@ function InformationUpdate(props) {
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    updateAccountInformations();
+  const handleProfilePictureChange = (event) => {
+    setProfilePicture(event.target.files[0]);
   };
 
   return (
     <div className="col-md-8">
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title">Account update</h3>
+          <h3 className="card-title">Mise à jour du compte</h3>
         </div>
         <div className="card-body">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="row mb-3">
               <div className="col-auto">
-                <UserPicture user={user} size={"lg"} />
+                <UserPicture
+                  user={{
+                    ...accountInformations,
+                    profilePicture: user.profilePicture,
+                  }}
+                  size={"lg"}
+                />
               </div>
-              <div className="col">
-                <div className="mb-2">
-                  <label className="form-label">Role</label>
-                  <input
-                    disabled
-                    className="form-control"
-                    value={user.role.replace("_", " ")}
-                  />
+              <div className="col-md-7">
+                <div className="mb-3">
+                  <div className="form-file">
+                    <input
+                      type="file"
+                      className="form-file-input"
+                      id="customFile"
+                      onChange={handleProfilePictureChange}
+                    />
+                    <label className="form-file-label" for="customFile">
+                      <span className="form-file-text">
+                        {profilePicture
+                          ? profilePicture.name
+                          : "Choose file..."}
+                      </span>
+                      <span className="form-file-button">Parcourir</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-2">
+                <div className="mb-3">
+                  <button
+                    className=" btn btn-primary"
+                    onClick={updateProfilePicture}
+                  >
+                    Update
+                  </button>
                 </div>
               </div>
             </div>
 
             <div className="mb-2">
-              <label className="form-label">First name</label>
+              <label className="form-label">Role</label>
+              <input
+                disabled
+                className="form-control"
+                value={UserHelper.userShortBio(user)}
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Prénom</label>
               <input
                 className="form-control"
                 placeholder="First name"
@@ -66,7 +101,7 @@ function InformationUpdate(props) {
               />
             </div>
             <div className="mb-2">
-              <label className="form-label">Last name</label>
+              <label className="form-label">Nom de famille</label>
               <input
                 className="form-control"
                 placeholder="Last name"
@@ -77,7 +112,7 @@ function InformationUpdate(props) {
             </div>
 
             <div className="mb-2">
-              <label className="form-label">Email-Address</label>
+              <label className="form-label">Adresse e-mail</label>
               <input
                 className="form-control"
                 placeholder="your-email@domain.com"
@@ -87,7 +122,12 @@ function InformationUpdate(props) {
               />
             </div>
             <div className="form-footer">
-              <button className="btn btn-primary ">Save</button>
+              <button
+                className="btn btn-primary"
+                onClick={updateAccountInformations}
+              >
+                Save
+              </button>
             </div>
           </form>
         </div>
