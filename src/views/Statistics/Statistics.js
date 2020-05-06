@@ -1,7 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 
 import PageHeader from "../_common/_components/PageHeader";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../context/AppContext";
+
+import C3Chart from "react-c3js";
+import "c3/c3.css";
 
 const Statistics = () => {
   const { ApiServices } = useContext(AppContext);
@@ -13,9 +16,46 @@ const Statistics = () => {
     end: new Date().getFullYear(),
   });
 
+  const [chart, setChart] = useState({
+    data: {
+      x: "x",
+      columns: [],
+      type: "bar",
+    },
+  });
+
+  useEffect(() => {
+    updateChart();
+  }, [usersStatistics]);
+
   useEffect(() => {
     updateStatistics();
   }, []);
+
+  const updateChart = () => {
+    if (!usersStatistics.length) return;
+
+    const columns = usersStatistics
+      .map((usersStatistic) =>
+        [usersStatistic.name].concat(
+          Object.keys(usersStatistic.publicationStatistics)
+            .map((key, index) => key)
+            .map((year) => usersStatistic.publicationStatistics[year])
+        )
+      )
+      .concat([
+        ["x"].concat(
+          Object.keys(usersStatistics[0].publicationStatistics)
+            .map((key, index) => key)
+            .map((year) => parseInt(year))
+        ),
+      ]);
+
+    setChart(() => ({
+      ...chart,
+      data: { columns },
+    }));
+  };
 
   const updateStatistics = () => {
     statisticsService
@@ -25,26 +65,35 @@ const Statistics = () => {
       })
       .catch((error) => {});
   };
+
   return (
     <div className="container">
-      <PageHeader title="statistiques" subTitle={[].length + " publications"} />
+      <PageHeader title="Statistiques" />
       <div className="row">
-        <div className="col-3">
+        <div className="col-4">
           <StatisticsFilter
             dateRange={dateRange}
             setDateRange={setDateRange}
             updateStatistics={updateStatistics}
           />
         </div>
-        <div className="col-9">
-          <div class="card">
-            <div id="chart-development-activity" class="mt-4">
+        <div className="col-8">
+          <div className="card">
+            <div id="chart-development-activity" className="mt-4">
               <div
                 id="apexcharts28b504"
-                class="apexcharts-canvas apexcharts28b504 apexcharts-theme-light"
-              ></div>
+                className="apexcharts-canvas apexcharts28b504 apexcharts-theme-light"
+              >
+                <C3Chart
+                  data={chart.data}
+                  axis={chart.axis}
+                  legend={{
+                    show: true,
+                  }}
+                />
+              </div>
             </div>
-            <div class="table-responsive">
+            <div className="table-responsive">
               {usersStatistics.length > 1 && (
                 <StatisticsTable
                   usersStatistics={usersStatistics}
@@ -52,11 +101,11 @@ const Statistics = () => {
                 />
               )}
             </div>
-            <div class="resize-triggers">
-              <div class="expand-trigger">
+            <div className="resize-triggers">
+              <div className="expand-trigger">
                 <div style={{ width: "579px", height: "460px" }}></div>
               </div>
-              <div class="contract-trigger"></div>
+              <div className="contract-trigger"></div>
             </div>
           </div>
         </div>
@@ -71,9 +120,10 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
   const handleInputsChange = (event) => {
     event.persist();
 
+    const { value, name } = event.target;
     setDateRange((dateRange) => ({
       ...dateRange,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
   };
   const handelFormSubmit = (event) => {
@@ -82,43 +132,49 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
     updateStatistics();
   };
 
+  const thisYear = new Date().getFullYear();
+
   return (
-    <form action="" method="get">
-      <div class="subheader mb-2">Date range</div>
-      <div class="row row-sm align-items-center mb-3">
-        <div class="col">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Start</span>
+    <form action="" method="get" onSubmit={handelFormSubmit}>
+      <div className="subheader mb-2">Date range</div>
+      <div className="row row-sm align-items-center mb-3">
+        <div className="col">
+          <div className="input-group">
+            <div className="input-group-prepend ">
+              <span className="input-group-text">Start</span>
             </div>
             <input
               onChange={handleInputsChange}
               name="start"
-              class="form-control"
+              type="number"
+              min={thisYear - 20}
+              max={dateRange.end}
+              className="form-control"
               value={dateRange.start}
             />
           </div>
         </div>
-        <div class="col-auto">—</div>
-        <div class="col">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">End</span>
+        <div className="col-auto">—</div>
+        <div className="col">
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">End</span>
             </div>
             <input
               onChange={handleInputsChange}
               name="end"
-              class="form-control"
+              type="number"
+              min={dateRange.start}
+              max={thisYear}
+              className="form-control"
               value={dateRange.end}
             />
           </div>
         </div>
       </div>
 
-      <div class="mt-5">
-        <button class="btn btn-primary btn-block" onClick={handelFormSubmit}>
-          Update usersStatistics
-        </button>
+      <div className="mt-5">
+        <button className="btn btn-primary btn-block">Update statistics</button>
       </div>
     </form>
   );
@@ -126,7 +182,7 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
 
 const StatisticsTable = ({ usersStatistics, dateRange }) => {
   return (
-    <table class="table card-table table-vcenter">
+    <table className="table card-table table-vcenter">
       <thead>
         <tr>
           <th>User</th>
@@ -141,14 +197,23 @@ const StatisticsTable = ({ usersStatistics, dateRange }) => {
       <tbody>
         {usersStatistics.map((userStatistics) => (
           <tr>
-            <td class="w-1">
-              <span class="avatar"></span>
+            <td className="w-1">
+              <span
+                className="avatar"
+                style={{
+                  backgroundImage:
+                    "url(" +
+                    "https://scholar.google.com/citations?view_op=medium_photo&user=" +
+                    userStatistics.id +
+                    ")",
+                }}
+              ></span>
             </td>
-            <td class="td-truncate">{userStatistics.name}</td>
+            <td className="">{userStatistics.name}</td>
             {Object.keys(usersStatistics[0].publicationStatistics)
               .map((key, index) => key)
               .map((year) => (
-                <td class="td-truncate">
+                <td className="">
                   {userStatistics.publicationStatistics[year]}
                 </td>
               ))}
