@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import InformationUpdate from "./_components/InformationUpdate";
 import PasswordUpdate from "./_components/PasswordUpdate";
 import SettingsAlert from "./_components/SettingsAlert";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../context/AppContext";
 
 import { useHistory } from "react-router-dom";
 
@@ -23,6 +23,8 @@ function AccountSettings() {
     lastName: "",
     email: "",
   });
+
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const [isInformationUpdated, setIsInformationUpdated] = useState(false);
   const [isPasswordNotConfirmed, setIsPasswordNotConfirmed] = useState(false);
@@ -57,7 +59,7 @@ function AccountSettings() {
           setUser({
             ...user,
             ...accountInformations,
-            has_confirmed: true,
+            hasConfirmed: true,
           });
           showInformationUpdated();
         }
@@ -92,6 +94,19 @@ function AccountSettings() {
         showError();
       });
   };
+  const updateProfilePicture = () => {
+    const formData = new FormData();
+    formData.append("file", profilePicture);
+    userService
+      .updateProfilePicture(formData)
+      .then((response) => {
+        setUser({
+          ...user,
+          profilePicture: response.data.profilePicture,
+        });
+      })
+      .catch((error) => {});
+  };
 
   return (
     <div className="row">
@@ -99,7 +114,7 @@ function AccountSettings() {
         <SettingsAlert message="INFORMATION_UPDATED_MESSAGE" badge="success" />
       )}
 
-      {!user.has_confirmed && (
+      {!user.hasConfirmed && (
         <SettingsAlert message="HAS_NOT_CONFIRMED_MESSAGE" badge="info" />
       )}
 
@@ -121,6 +136,9 @@ function AccountSettings() {
         accountInformations={accountInformations}
         setAccountInformations={setAccountInformations}
         updateAccountInformations={updateAccountInformations}
+        setProfilePicture={setProfilePicture}
+        profilePicture={profilePicture}
+        updateProfilePicture={updateProfilePicture}
       />
       <PasswordUpdate
         passwordUpdate={passwordUpdate}
