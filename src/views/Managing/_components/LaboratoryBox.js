@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { TeamIcon } from "../../_common/_components/icons";
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
+import UserBox from "./UserBox";
 
 function LaboratoryBox({ laboratory, laboratoryHeads, requestUpdate }) {
   const [newHeadId, setNewHeadId] = useState(null);
@@ -36,37 +37,24 @@ function LaboratoryBox({ laboratory, laboratoryHeads, requestUpdate }) {
   };
 
   return (
-    <div className=" col-xl-6">
+    <div className=" col-md-6">
       <div className="card card-sm">
         <div className="card-body d-flex align-items-center">
           <span className="bg-blue text-white stamp mr-3">
             <TeamIcon />
           </span>
           <div className="mr-3 lh-sm">
-            <div className="strong">{laboratory.name}</div>
-            <div className="text-muted">Ecole : {laboratory.school.name}</div>
+            <div className="strong">{laboratory.abbreviation}</div>
+            <div className="text-muted">
+              Ecole : {laboratory.school.abbreviation}
+            </div>
           </div>
         </div>
         {laboratory.head_id && currentHead && (
           <div className="p-0 m-0">
             <div className="card-body">
               <div className="form-label">Chef de laboratoire courant</div>
-
-              <div className="float-left mr-3">
-                <span className="avatar rounded">
-                  {currentHead.firstName ? currentHead.firstName[0] : ""}
-                  {currentHead.lastName ? currentHead.lastName[0] : ""}
-                </span>
-              </div>
-              <div className="lh-sm">
-                <div className="strong">
-                  {currentHead.firstName ? currentHead.firstName : ""}{" "}
-                  {currentHead.lastName ? currentHead.lastName : ""}
-                </div>
-                <div className="text-muted">
-                  {currentHead.email ? currentHead.email : ""}
-                </div>
-              </div>
+              <UserBox user={currentHead} />
             </div>
           </div>
         )}
@@ -82,7 +70,7 @@ function LaboratoryBox({ laboratory, laboratoryHeads, requestUpdate }) {
                 value={laboratoryHead._id}
                 selected={laboratoryHead._id === laboratory.id}
               >
-                {laboratoryHead.has_confirmed
+                {laboratoryHead.hasConfirmed
                   ? laboratoryHead.firstName + " " + laboratoryHead.lastName
                   : laboratoryHead.email}
               </option>

@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import UserPicture from "../../_common/_components/UserPicture";
+import { Link } from "react-router-dom";
 
 const UserBox = ({ user }) => (
   <Fragment>
@@ -7,13 +8,13 @@ const UserBox = ({ user }) => (
       <UserPicture user={user} size="md" />
 
       <div className="col">
-        <h3 className="mb-0">
-          <a href="#">
+        <h4 className="mb-0">
+          <Link  to={`/author/${user.firstName} ${user.lastName} `} href="#">
             {user.firstName ? user.firstName : ""}{" "}
             {user.lastName ? user.lastName : ""}
-          </a>
-        </h3>
-        <div className="text-muted text-h5">{user.email ? user.email : ""}</div>
+          </Link>
+        </h4>
+        <div className="text-muted text-h6">{user.email ? user.email : ""}</div>
       </div>
     </div>
   </Fragment>

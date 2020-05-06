@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const ResearcherCard = (props) => {
-  const { researcher } = props;
+const ResearcherCard = ({ researcher }) => {
   return (
     <div className="col-md-6 ">
       <div className="card">
@@ -57,7 +56,9 @@ const ResearcherCard = (props) => {
                 <div className="inline-block  mb-0">
                   {researcher.interests.map((interest, index) => (
                     <span key={index} className="badge bg-blue-lt  mr-2">
-                      {interest}
+                      {interest.length > 40
+                        ? interest.substr(1, 40).concat("...")
+                        : interest}
                     </span>
                   ))}
                 </div>

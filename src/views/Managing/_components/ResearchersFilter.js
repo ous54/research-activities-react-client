@@ -1,66 +1,30 @@
-import React, { Fragment, useState, useContext, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { LoopIcon } from "../../_common/_components/icons";
 import { Link } from "react-router-dom";
-import { AppContext } from "../../../AppContext";
 
-const ResearchersFilter = ({ filter, setFilter }) => {
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const { ApiServices } = useContext(AppContext);
-  const { laboratoryService, teamService } = ApiServices;
-
-  const [laboratories, setLaboratories] = useState(null);
-  const [teams, setTeams] = useState(null);
-
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    teamService
-      .findAllTeams()
-      .then((response) => {
-        setCategories((categories) => [
-          ...categories,
-          {
-            name: "Équipes",
-            options: [...response.data],
-          },
-        ]);
-      })
-      .catch((error) => {});
-
-    laboratoryService
-      .findAllLaboratories()
-      .then((response) => {
-        setCategories((categories) => [
-          ...categories,
-          {
-            name: "Laboratoires",
-            options: [...response.data],
-          },
-        ]);
-      })
-      .catch((error) => {});
-  }, []);
-
-  const updateFunctionBuilder = (category) => (option) => {
-    setIsSearchActive(true);
-
-    setFilter((filter) => ({
-      ...filter,
-      category,
-      option,
-      searchTerm,
-    }));
-  };
+const ResearchersFilter = ({
+  filter,
+  setFilter,
+  filteringOptions,
+  setSearchTerm,
+  searchTerm,
+  isSearchActive,
+  setIsSearchActive,
+}) => {
+  const [laboratories, setLaboratories] = useState([]);
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
-    setFilter((filter) => ({
-      ...filter,
-      searchTerm,
-    }));
-  }, [searchTerm]);
-  
+    if (!filteringOptions) return;
+
+    setLaboratories(
+      filteringOptions.filter(({ optionType }) => optionType === "laboratory")
+    );
+    setTeams(
+      filteringOptions.filter(({ optionType }) => optionType === "team")
+    );
+  }, [filteringOptions]);
+
   return (
     <form action="" method="get">
       <div className="mb-3">
@@ -78,45 +42,66 @@ const ResearchersFilter = ({ filter, setFilter }) => {
           </span>
         </div>
       </div>
-      {categories.map((category) => (
+      {
         <FilteringCategory
-          category={category}
-          updateFunctionBuilder={updateFunctionBuilder}
+          {...{
+            options: laboratories,
+            category: "laboratoires",
+            setFilter,
+            filter,
+          }}
         />
-      ))}
+      }
+
+      {
+        <FilteringCategory
+          {...{
+            options: teams,
+            category: "teams",
+            setFilter,
+            filter,
+          }}
+        />
+      }
     </form>
   );
 };
 
 export default ResearchersFilter;
 
-const FilteringCategory = ({ category, updateFunctionBuilder }) => {
+const FilteringCategory = ({ category, options, setFilter, filter }) => {
   return (
     <Fragment>
-      <div className="subheader mb-2">{category.name}</div>
+      <div className="subheader mb-2">{category}</div>
       <div className="list-group list-group-transparent mb-3">
-        {category.options.map((option) => (
-          <FilteringOption
-            option={option}
-            updateFilterOption={updateFunctionBuilder(category)}
-          />
+        {options.map((option) => (
+          <FilteringOption {...{ option, setFilter, filter }} />
         ))}
       </div>
     </Fragment>
   );
 };
 
-const FilteringOption = ({ option, isActive, updateFilterOption }) => {
+const FilteringOption = ({ option, setFilter, filter }) => {
   const classes =
-    "list-group-item list-group-item-action d-flex align-items-center";
+    "list-group-item list-group-item-action d-flex align-items-center ";
 
+  const updateFilter = () => {
+    setFilter({
+      [`${option.optionType}_abbreviation`]: option.abbreviation,
+    });
+  };
+
+  const isActive = filter
+    ? filter[`${option.optionType}_abbreviation`] === option.abbreviation
+    : false;
   return (
     <Link
-      className={`${classes} ${isActive ? "active" : ""}`}
-      onClick={() => updateFilterOption(option)}
+      className={`${classes} ${isActive ? " active " : "notActive"}`}
+      onClick={updateFilter}
     >
-      {option.name}
-      <small className="text-muted ml-auto">{""}</small>
+      {option.abbreviation}
+      <small className="text-muted ml-auto">{option.membershipCount}</small>
     </Link>
   );
 };
