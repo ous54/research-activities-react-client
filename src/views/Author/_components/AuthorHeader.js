@@ -121,11 +121,11 @@ const ConfirmationModel = ({ isFollowed, toggleFollow, users }) => {
 
           {!isFollowed && (
             <div className="modal-body text-center py-5">
-              <div class="subheader mb-2">L'utilisateur</div>
+              <div className="subheader mb-2">L'utilisateur</div>
               <div>
                 <select
                   name=""
-                  class="form-select"
+                  className="form-select"
                   onChange={(e) => {
                     setUserId(e.target.value);
                   }}
