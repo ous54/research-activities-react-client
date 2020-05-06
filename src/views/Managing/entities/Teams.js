@@ -1,238 +1,149 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
-import $ from "jquery";
-import "datatables";
-
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
+import CRUDTable from "../../_common/_components/CRUDTable";
+import CRUDForm from "../../_common/_components/CRUDForm";
+import PageHeader from "../../_common/_components/PageHeader";
 
 const Teams = (props) => {
+  const { user, ApiServices, UserHelper } = useContext(AppContext);
+  const { teamService, laboratoryService } = ApiServices;
 
-  const { ApiServices } = useContext(AppContext);
-  const { laboratoryService, teamService } = ApiServices;
+  const [teams, setTeams] = useState([]);
+  const [laboratories, setLaboratories] = useState([]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (formAction === "add") addTeam();
-    else if (formAction === "update") updateTeam(editedTeamId);
-  };
+  const [inputs, setInputs] = useState({});
+  const [action, setAction] = useState("ADDING");
 
-  const handleInputsChange = (event) => {
-    event.persist();
+  const columns = ["Nom", "Abréviation", "laboratoire"];
 
+  const inputsSkeleton = [
+    { name: "name", label: columns[0], type: "input" },
+    { name: "abbreviation", label: columns[1], type: "input" },
+    {
+      name: "laboratory",
+      label: columns[2],
+      type: "select",
+      options: laboratories,
+    },
+  ];
+
+  const clearInputs = () => {
     setInputs((inputs) => ({
-      ...inputs,
-      [event.target.name]: event.target.value,
+      name: " ",
+      abbreviation: " ",
+      laboratory_id: "",
     }));
   };
 
-  const [laboratories, setLaboratories] = useState(null);
-  const [teams, setTeams] = useState(null);
-  const [inputs, setInputs] = useState({
-    name: "",
-    address: "",
-    university_id: "",
-  });
-
-  let [dataVersion, setDataVersion] = useState(0);
-  let [formAction, setFormAction] = useState("add");
-  const [editedTeamId, setEditedTeamId] = useState(0);
-
   useEffect(() => {
-    if (teams != null) $(".datatable").DataTable();
-  }, [teams]);
+    updateTeamData();
+    updateLaboratoriesData();
+    clearInputs();
+  }, []);
 
-  useEffect(() => {
-    laboratoryService
-      .findAllLaboratories()
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setLaboratories(data);
-      })
-      .catch((error) => {
-      });
-  }, [dataVersion]);
+  const updateTeamData = () => {
+    teamService.findAllTeams().then((response) => {
+      setTeams(
+        response.data.map((team) => ({
+          ...team,
+          laboratory: team.laboratory.name,
+        }))
+      );
+    });
+  };
 
-  useEffect(() => {
-    teamService
-      .findAllTeams()
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setTeams(data);
-      })
-      .catch((error) => {
-      });
-  }, [dataVersion]);
+  const updateLaboratoriesData = () => {
+    laboratoryService.findAllLaboratories().then((response) => {
+      setLaboratories(response.data);
+    });
+  };
 
   const editTeam = (team) => {
-    setFormAction("update");
-    setEditedTeamId(team._id);
+    setAction("EDITING");
     setInputs((inputs) => ({
       ...inputs,
       ...team,
     }));
   };
+
   const addTeam = () => {
-    teamService
-      .createTeam({
-        name: inputs.name,
-        laboratory_id: inputs.laboratory_id ?? laboratories[0]._id,
-      })
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setDataVersion(dataVersion + 1);
-        setInputs((inputs) => ({
-          ...inputs,
-          name: " ",
-        }));
-      })
-      .catch((error) => {
-      });
+    teamService.createTeam(inputs).then((response) => {
+      updateTeamData();
+      clearInputs();
+    });
   };
-  const deleteTeam = (team) => {
-    teamService
-      .deleteTeam(team._id)
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setDataVersion(dataVersion + 1);
-      })
-      .catch((err) => {
-      });
-  };
-  const updateTeam = (id) => {
+
+  const updateTeam = (team) => {
     teamService
       .updateTeam({
-        _id: id,
-        name: inputs.name,
-        laboratory_id: inputs.laboratory_id,
+        ...team,
+        ...inputs,
       })
       .then((response) => {
-        setDataVersion(dataVersion + 1);
-        setFormAction("add");
-        setInputs((inputs) => ({
-          ...inputs,
-          name: " ",
-        }));
-      })
-      .catch((err) => {
+        setAction("ADDING");
+        updateTeamData();
+        clearInputs();
       });
   };
 
-  let laboratoriesOptoins;
+  const deleteTeam = (team) => {
+    teamService.deleteTeam(team._id).then((response) => {
+      updateTeamData();
+    });
+  };
 
-  if (laboratories) {
-    laboratoriesOptoins = laboratories.map((laboratory) => (
-      <option value={laboratory._id} key={laboratory._id}>
-        {laboratory.name}
-      </option>
-    ));
-  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  let content = (
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-  );
+    return action === "ADDING"
+      ? addTeam()
+      : action === "EDITING"
+      ? updateTeam()
+      : updateTeamData();
+  };
 
-  if (teams) {
-    content = teams.map((team, index) => (
-      <tr key={index}>
-        <td>{team.name}</td>
-        <td>{team.laboratory.name}</td>
-        <td>
-          <div className="btn-list">
-            <button
-              type="button"
-              onClick={() => {
-                setEditedTeamId(team._id);
-                editTeam(team);
-              }}
-              className="btn  btn-outline-primary btn-sm"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                deleteTeam(team);
-              }}
-              className="btn  btn-outline-danger "
-            >
-              Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-    ));
-  }
+  const cancelEdit = () => {
+    clearInputs();
+    setAction("ADDING");
+  };
 
   return (
     <Fragment>
       <div className="page-header">
-        <h1 className="page-title">Équipes</h1>
+        <PageHeader
+          title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(
+            user
+          )}`}
+          subTitle={`${teams.length} équipe(s)`}
+        />
       </div>
       <div className="row row-cards row-deck">
-        <div className="col-8">
-          <div className="card">
-            <div className="table-responsive">
-              <table className="table card-table table-vcenter text-nowrap datatable">
-                <thead>
-                  <tr>
-                    <th>Nom</th>
-                    <th>Laboratoire</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>{content}</tbody>
-              </table>
-            </div>
-          </div>
+        <div className="col-md-8">
+          <CRUDTable
+            columns={columns}
+            data={teams}
+            tableSkeleton={inputsSkeleton}
+            actions={[
+              { name: "Modifier", function: editTeam, style: "primary" },
+              {
+                name: "Supprimer",
+                function: deleteTeam,
+                style: "danger",
+              },
+            ]}
+          />
         </div>
-        <div className="col-4">
-          <div className="card">
-            <form onSubmit={handleSubmit}>
-              <div className="card-header">
-                <h3 className="card-title">Ajouter un nouveau équipe</h3>
-              </div>
-              <div className="card-body">
-                <div className="form-group mt-2">
-                  <label className="form-label">Nom</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    onChange={handleInputsChange}
-                    value={inputs.name}
-                    name="name"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label className="form-label">Laboratoire</label>
-
-                  <select
-                    name="laboratory_id"
-                    onChange={handleInputsChange}
-                    value={inputs.laboratory_id}
-                    className="form-control"
-                  >
-                    {laboratoriesOptoins}
-                  </select>
-                </div>
-              </div>
-              <div className="card-footer text-right">
-                <button type="submit" className="btn btn-primary">
-                  Soumettre
-                </button>
-              </div>
-            </form>
-          </div>
+        <div className="col-md-4">
+          <CRUDForm
+            {...{
+              inputs,
+              setInputs,
+              inputsSkeleton,
+              handleSubmit,
+              cancelEdit,
+              action,
+            }}
+          />
         </div>
       </div>
     </Fragment>

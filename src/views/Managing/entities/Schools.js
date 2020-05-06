@@ -1,254 +1,153 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
-import $ from "jquery";
-import "datatables";
-
-import { AppContext } from "../../../AppContext";
+import { AppContext } from "../../../context/AppContext";
+import CRUDTable from "../../_common/_components/CRUDTable";
+import CRUDForm from "../../_common/_components/CRUDForm";
+import PageHeader from "../../_common/_components/PageHeader";
 
 const Schools = (props) => {
-  const [dataVersion, setDataVersion] = useState(0);
-  const [formAction, setFormAction] = useState("add");
-  const [editedSchoolId, setEditedSchoolId] = useState(0);
-  const [schools, setSchools] = useState(null);
-  const [universities, setUniversities] = useState(null);
-
-  const [inputs, setInputs] = useState({
-    name: "",
-    address: "",
-    university_id: "",
-  });
-
   const { ApiServices } = useContext(AppContext);
   const { schoolService, universityService } = ApiServices;
 
-  useEffect(() => {
-    if (schools != null) $(".datatable").DataTable();
-  }, [schools]);
+  const [schools, setSchools] = useState([]);
+  const [universities, setUniversities] = useState([]);
 
-  const handleInputsChange = (event) => {
-    event.persist();
+  const [inputs, setInputs] = useState({});
+  const [action, setAction] = useState("ADDING");
 
+  const columns = ["Nom", "Abréviation", "Adresse", "Université"];
+
+  const inputsSkeleton = [
+    { name: "name", label: columns[0], type: "input" },
+    { name: "abbreviation", label: columns[1], type: "input" },
+    { name: "address", label: columns[2], type: "input" },
+    {
+      name: "university",
+      label: columns[3],
+      type: "select",
+      options: universities,
+    },
+  ];
+
+  const clearInputs = () => {
     setInputs((inputs) => ({
-      ...inputs,
-      [event.target.name]: event.target.value,
+      name: " ",
+      abbreviation: " ",
+      address: " ",
+      university_id: "",
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  useEffect(() => {
+    updateSchoolData();
+    updateUniversitiesData();
+    clearInputs();
+  }, []);
 
-    if (formAction === "add") addSchool();
-    else if (formAction === "update") updateSchool(editedSchoolId);
+  const updateSchoolData = () => {
+    schoolService.findAllSchools().then((response) => {
+      setSchools(
+        response.data.map((school) => ({
+          ...school,
+          university: school.university.name,
+        }))
+      );
+    });
   };
 
-  useEffect(() => {
-    schoolService
-      .findAllSchools()
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setSchools(data);
-      })
-      .catch((error) => {});
-  }, [dataVersion]);
-
-  useEffect(() => {
-    universityService
-      .findAllUniversities()
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setUniversities(data);
-      })
-      .catch((error) => {});
-  }, [dataVersion]);
+  const updateUniversitiesData = () => {
+    universityService.findAllUniversities().then((response) => {
+      setUniversities(response.data);
+    });
+  };
 
   const editSchool = (school) => {
-    setFormAction("update");
-    setEditedSchoolId(school._id);
+    setAction("EDITING");
     setInputs((inputs) => ({
       ...inputs,
       ...school,
     }));
   };
-  const addSchool = () => {
-    ;
 
+  const addSchool = () => {
+    schoolService.createSchool(inputs).then((response) => {
+      updateSchoolData();
+      clearInputs();
+    });
+  };
+
+  const updateSchool = (school) => {
     schoolService
-      .create({
-        name: inputs.name,
-        address: inputs.address,
-        university_id:
-          inputs.university_id === ""
-            ? universities[0]._id
-            : inputs.university_id,
+      .updateSchool({
+        ...school,
+        ...inputs,
       })
       .then((response) => {
-        
-        setDataVersion(dataVersion + 1);
-        setInputs((inputs) => ({
-          ...inputs,
-          name: "",
-          address: "",
-        }));
-      })
-      .catch((error) => {});
+        setAction("ADDING");
+        updateSchoolData();
+        clearInputs();
+      });
   };
 
   const deleteSchool = (school) => {
-    schoolService
-      .deleteSchool(school._id)
-      .then((response) => {
-        
-        setDataVersion(dataVersion + 1);
-      })
-      .catch((err) => {
-        
-      });
+    schoolService.deleteSchool(school._id).then((response) => {
+      updateSchoolData();
+    });
   };
 
-  const updateSchool = (id) => {
-    schoolService
-      .updateSchool({
-        _id: id,
-        name: inputs.name,
-        address: inputs.address,
-        university_id: inputs.university_id,
-      })
+  const handleSubmit = (event) => {
+    if (inputs.university_id === "")
+      setInputs(() => ({
+        ...inputs,
+        university_id: inputsSkeleton[2].options[0]._id,
+      }));
 
-      .then((response) => {
-        
-        setDataVersion(dataVersion + 1);
-        setFormAction("add");
-        setInputs((inputs) => ({
-          ...inputs,
-          name: " ",
-          address: " ",
-        }));
-      })
-      .catch((err) => {
-        
-      });
+    action === "ADDING"
+      ? addSchool()
+      : action === "EDITING"
+      ? updateSchool()
+      : updateSchoolData();
+
+    event.preventDefault();
   };
 
-  let content;
-
-  let universitiesOptoins;
-
-  if (universities) {
-    universitiesOptoins = universities.map((university) => (
-      <option value={university._id} key={university._id}>
-        {university.name}
-      </option>
-    ));
-  }
-
-
-  if (schools)
-    content = schools.map((school, index) => (
-      <tr key={index}>
-        <td>{school.name}</td>
-        <td>{school.address}</td>
-        <td>{school.university.name}</td>
-        <td className="text-center">
-          <div className="btn-list">
-            <button
-              type="button"
-              onClick={() => {
-                setEditedSchoolId(school._id);
-                editSchool(school);
-              }}
-              className="btn  btn-outline-primary btn-sm"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                deleteSchool(school);
-              }}
-              className="btn  btn-outline-danger "
-            >
-              Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-    ));
+  const cancelEdit = (event) => {
+    event.preventDefault();
+    clearInputs();
+    setAction("ADDING");
+  };
 
   return (
     <Fragment>
       <div className="page-header">
-        <h1 className="page-title">Écoles</h1>
+        <PageHeader title="Écoles" subTitle={`${schools.length} école(s)`} />
       </div>
       <div className="row row-cards row-deck">
-        <div className="col-8">
-          <div className="card">
-            <div className="table-responsive">
-              <table className="table card-table table-vcenter text-nowrap datatable">
-                <thead>
-                  <tr>
-                    <th>Nom</th>
-                    <th>Adresse</th>
-                    <th>Université</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>{universities ? content : ""}</tbody>
-              </table>
-            </div>
-          </div>
+        <div className="col-md-8">
+          <CRUDTable
+            columns={columns}
+            data={schools}
+            tableSkeleton={inputsSkeleton}
+            actions={[
+              { name: "Modifier", function: editSchool, style: "primary" },
+              {
+                name: "Supprimer",
+                function: deleteSchool,
+                style: "danger",
+              },
+            ]}
+          />
         </div>
-        <div className="col-4">
-          <div className="card">
-            <form onSubmit={handleSubmit}>
-              <div className="card-header">
-                <h3 className="card-title">Ajouter une nouvelle école</h3>
-              </div>
-              <div className="card-body">
-                <div className="form-group mt-2">
-                  <label className="form-label">Nom</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    onChange={handleInputsChange}
-                    value={inputs.name}
-                    onChange={handleInputsChange}
-                    name="name"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label className="form-label">Adresse</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    onChange={handleInputsChange}
-                    value={inputs.address}
-                    onChange={handleInputsChange}
-                    name="address"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label className="form-label">Université</label>
-
-                  <select
-                    name="university_id"
-                    onChange={handleInputsChange}
-                    value={inputs.university_id}
-                    className="form-control"
-                  >
-                    {universitiesOptoins}
-                  </select>
-                </div>
-              </div>
-              <div className="card-footer text-right">
-                <button type="submit" className="btn btn-primary">
-                  Soumettre
-                </button>
-              </div>
-            </form>
-          </div>
+        <div className="col-md-4">
+          <CRUDForm
+            {...{
+              inputs,
+              setInputs,
+              inputsSkeleton,
+              handleSubmit,
+              cancelEdit,
+              action,
+            }}
+          />
         </div>
       </div>
     </Fragment>
