@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useEffect } from "react";
-import makeApiServices from "./api/ApiServices";
+import makeApiServices from "../api/ApiServices";
+import { UserHelper } from "./contextHelper";
 
 let reducer = (user, newUser) => {
   if (newUser === null || newUser === undefined) {
@@ -25,7 +26,7 @@ function AppProvider(props) {
   const ApiServices = makeApiServices(user ? user.token : null);
 
   return (
-    <AppContext.Provider value={{ user, setUser, ApiServices }}>
+    <AppContext.Provider value={{ user, setUser, ApiServices, UserHelper }}>
       {props.children}
     </AppContext.Provider>
   );

@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { Router, Switch, Route as PublicRoute } from "react-router-dom";
 
 import { createBrowserHistory } from "history";
-import { AppProvider } from "./AppContext";
+import { AppProvider } from "./context/AppContext";
 
 import Route from "./routes/Route";
 
@@ -14,7 +14,7 @@ import MenuBar from "./views/_common/layout/MenuBar";
 import NavBar from "./views/_common/layout/NavBar";
 import Footer from "./views/_common/layout/Footer";
 
-import routes from "./routes/routes";
+import { routes } from "./routes/routes";
 
 import "./assets/css/datatables.css";
 import "./assets/css/tabler.css";
