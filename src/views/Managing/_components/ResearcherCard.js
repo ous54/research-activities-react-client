@@ -27,7 +27,7 @@ const ResearcherCard = ({ researcher }) => {
                 </span>
               )}
             </div>
-            <div className="col">
+            <div className="col" style={{minWidth: "F"}}>
               <h3 className="mb-0">
                 <Link to={"/author/" + researcher.name}>
                   {researcher.name ? researcher.name : ""}{" "}
