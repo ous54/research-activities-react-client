@@ -10,32 +10,28 @@ const Coauthors = withRouter(({ history, ...props }) => {
       </div>
       <div className="card-body o-auto" style={{ height: "auto" }}>
         <ul className="list-unstyled list-separated">
-          {props.author.coauthors.map(coauthor => (
-            <li className="list-separated-item" key={coauthor.id}>
+          {props.author.coauthors.map((coauthor) => (
+            <li className="list-separated-item" key={coauthor.name}>
               <div className="row align-items-center">
                 <div className="col-auto">
                   <span
                     className="avatar avatar-md d-block"
                     style={{
-                      backgroundImage:
-                        "url(" +
-                        "https://scholar.google.com/citations?view_op=medium_photo&user=" +
-                        coauthor.id +
-                        ")"
+                      backgroundImage: "url(" + coauthor.profilePicture + ")",
                     }}
                   ></span>
                 </div>
                 <div className="col">
                   <div>
                     <Link
-                      to={"/author/" + coauthor.name}
+                      to={"/author-search/" + coauthor.name}
                       className="text-inherit"
                     >
                       {coauthor.name}
                     </Link>
                   </div>
                   <small className="d-block item-except text-sm text-muted h-1x">
-                    {coauthor.affiliation}
+                    {coauthor.bio}
                   </small>
                 </div>
               </div>
