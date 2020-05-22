@@ -29,7 +29,7 @@ const ResearcherCard = ({ researcher }) => {
             </div>
             <div className="col" style={{minWidth: "auto"}}>
               <h3 className="mb-0">
-                <Link to={"/author/" + researcher.name}>
+                <Link to={"/profile/" + researcher._id}>
                   {researcher.name ? researcher.name : ""}{" "}
                 </Link>
               </h3>
@@ -46,7 +46,7 @@ const ResearcherCard = ({ researcher }) => {
             </div>
 
             <div className="text-muted pl-2 p-1 text-h5">
-              {researcher.affiliation ?? ""}
+              {researcher.university ?? ""}
             </div>
           </div>
           <div className="row align-items-center mt-1">
@@ -65,7 +65,7 @@ const ResearcherCard = ({ researcher }) => {
                 <h6 className="h5">Coauteurs </h6>
                 <div className="avatar-list   avatar-list-stacked mb-0">
                   {researcher.coauthors.map((coauthor, index) => (
-                    <Link to={"/author/" + coauthor.name}>
+                    <Link to={"/author-research/" + coauthor.name}>
                       <span key={index} className="avatar bg-blue-lt avatar-sm">
                         {coauthor.name.split(" ")[0][0]}
                         {coauthor.name.split(" ")[1][0]}
