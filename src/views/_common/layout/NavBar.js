@@ -56,7 +56,7 @@ const AuthorSearchBar = ({ history }) => {
       e.preventDefault();
       const authorName = e.target.value;
       if (authorName.trim().length === 0) return;
-      history.push("/author/" + authorName);
+      history.push("/author-search/" + authorName);
     }
   };
 
@@ -137,6 +137,9 @@ const UserMenu = ({ user, UserHelper }) => (
       </div>
     </Link>
     <div className="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+      <Link className="dropdown-item" to={"/profile/" + user._id} href="#">
+        Profile
+      </Link>
       <Link className="dropdown-item" to="/account" href="#">
         Paramètres du compte
       </Link>
