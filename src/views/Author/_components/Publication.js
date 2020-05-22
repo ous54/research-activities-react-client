@@ -1,50 +1,59 @@
-import React,{ useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { AppContext } from "../../../context/AppContext";
 
+const Publication = ({ author, publication, index }) => {
+  const { ApiServices } = useContext(AppContext);
+  const { scraperService } = ApiServices;
 
-const Publication = props => {
-  
-  const ELSEVIER_API_URL = process.env.REACT_APP_ELSEVIER_API_URL;
-  const ELSEVIER_API_KEY = process.env.REACT_APP_ELSEVIER_API_KEY;
-  const TITLE = props.publication.bib.title;
+  const [noResult, setNoResult] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
 
-  const [loading, setloading] = useState(false)
+  const [IF, setIF] = useState(null);
+  const [SJR, setSJR] = useState(null);
 
-  const url =
-    ELSEVIER_API_URL +
-    "?apiKey=" +
-    ELSEVIER_API_KEY +
-    "&title=" +
-    TITLE +
-    "&field=SJR,SNIP";
+  const getPublicationData = () => {
+    scraperService
+      .getPublicationData(publication.title)
+      .then((result) => {
+        setIsFetched(true);
+        if (result.data.error) {
+          setNoResult(true);
+        } else {
+          setIF(result.data.IF);
+          setSJR(result.data.SJR);
+        }
+      })
+      .catch((e) => {
+        setNoResult(true);
+      });
+  };
 
-  // const [isDetailsLoading, PublicationDetails] = useHttp(url, [
-  //   props.publication
-  // ]);
-
-
-  let publication_SJR = <div className="loader container "></div>;
-  let publication_IF = <div className="loader container "></div>;
-
-  // if (PublicationDetails) {
-  //   if (PublicationDetails["serial-metadata-response"].error) {
-  //     publication_SJR = <span className="badge badge-default">not found</span>;
-  //   } else {
-  //     publication_SJR =
-  //       PublicationDetails["serial-metadata-response"]["entry"][0].SJRList
-  //         .SJR[0]["$"];
-  //   }
-  // }
-
+  const NoResult = <span class="badge small p-0 bg-gray-lt">inconnue</span>;
+  const fetchedButton = (
+    <button  class="btn btn-secondary small btn-sm" onClick={getPublicationData}>
+      récupérer
+    </button>
+  );
   return (
-    <tr
-      style={{ whiteSpace: "break-spaces " }}
-      key={props.publication.bib.title}
-    >
-      <td>{props.publication.bib.title}</td>
-      <td className="text-center">{props.publication.citedby}</td>
-      <td className="text-center">{props.publication.bib.year}</td>
-      <td className="text-center">{publication_SJR}</td>
-      <td className="text-center">{publication_IF}</td>
+    <tr style={{ whiteSpace: "break-spaces " }} key={publication.title}>
+      <td>
+        {publication.title}
+        <small class="d-block text-muted text-truncate mt-n1">
+          {publication.authors.join(" ")}
+        </small>
+      </td>
+      <td className="text-center">{publication.citation}</td>
+      <td className="text-center">{publication.year}</td>
+      <td className="text-center">
+        {noResult && NoResult}
+        {IF ?? ""}
+        {!isFetched && fetchedButton}
+      </td>
+      <td className="text-center">
+        {noResult && NoResult}
+        {SJR ?? ""}
+        {!isFetched && fetchedButton}
+      </td>
     </tr>
   );
 };
