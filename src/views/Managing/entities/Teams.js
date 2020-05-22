@@ -6,7 +6,7 @@ import PageHeader from "../../_common/_components/PageHeader";
 
 const Teams = (props) => {
   const { user, ApiServices, UserHelper } = useContext(AppContext);
-  const { teamService, laboratoryService } = ApiServices;
+  const { teamService } = ApiServices;
 
   const [teams, setTeams] = useState([]);
   const [laboratories, setLaboratories] = useState([]);
@@ -43,19 +43,23 @@ const Teams = (props) => {
 
   const updateTeamData = () => {
     teamService.findAllTeams().then((response) => {
-      setTeams(
-        response.data.map((team) => ({
+      const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
+        ({ _id }) => _id
+      );
+      const filteredTeams = response.data
+        .filter(
+          (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
+        )
+        .map((team) => ({
           ...team,
           laboratory: team.laboratory.name,
-        }))
-      );
+        }));
+      setTeams(filteredTeams);
     });
   };
 
   const updateLaboratoriesData = () => {
-    laboratoryService.findAllLaboratories().then((response) => {
-      setLaboratories(response.data);
-    });
+    setLaboratories(user.laboratoriesHeaded);
   };
 
   const editTeam = (team) => {
