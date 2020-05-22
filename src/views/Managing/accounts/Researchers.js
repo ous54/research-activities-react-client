@@ -8,12 +8,16 @@ const Researchers = ({}) => {
   const [researchers, setResearchers] = useState([]);
   const [newEmail, setNewEmail] = useState("");
 
-  const { ApiServices } = useContext(AppContext);
+  const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
     userService.getResearchers().then((response) => {
-      setResearchers(response.data);
+      const filteredResearchers = response.data.filter(
+        (researcher) => researcher.creatorId === user._id
+      );
+
+      setResearchers(filteredResearchers);
     });
   }, []);
 
@@ -30,6 +34,7 @@ const Researchers = ({}) => {
         email: newEmail,
         password,
         role: "RESEARCHER",
+        creatorId: user._id,
       })
       .then((response) => {
         setResearchers([...researchers, response.data]);
