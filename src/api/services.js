@@ -3,8 +3,13 @@ const makeAuthentificationService = (api) => ({
   login: (user) => api.post(`/login`, user),
 });
 
-const makeAuthorService = (api) => ({
-  getAuthorByName: (authorName) => api.get(`/authors/${authorName}`),
+const makeScraperService = (api) => ({
+  authorSearch: (authorName) => api.get(`/author-search/${authorName}`),
+  getAuthorData: (scholarId) => api.get(`/author/${scholarId}`),
+  getPublicationData: (publicationName) =>
+    api.get(`/publication/${publicationName}`),
+  getPublicationDetails: (scholarId, publicationName) =>
+    api.get(`/publication-details/${scholarId}/${publicationName}`),
 });
 
 const makeUserService = (api) => ({
@@ -50,7 +55,7 @@ const makeLaboratoryService = (api) => ({
   findLaboratory: (_id) => api.get(`/laboratories/${_id}`),
   findAllLaboratories: () => api.get(`/laboratories`),
   deleteLaboratory: (_id) => api.delete(`/laboratories/${_id}`),
-  getTeamsOfLaboratory: (_id) => api.get(`/laboratories/${_id}/teamss`),
+  getTeamsOfLaboratory: (_id) => api.get(`/laboratories/${_id}/teams`),
   getLaboratoryOfHead: (head_id) => api.get(`/laboratories-of-head/${head_id}`),
   getFreeLaboratories: () => api.get(`/free-laboratories`),
   associateHeadToLaboratory: (head_id, lab_id) =>
@@ -70,8 +75,7 @@ const makeTeamService = (api) => ({
 });
 
 const makeStatisticsService = (api) => ({
-  getPublicationsBetweenTwoDates: (start, end) =>
-    api.get(`/statistics/?start=${start}&end=${end}`),
+  getStatistics: (filter) => api.get(`/statistics`, { params: filter }),
 });
 
 export {
@@ -80,7 +84,7 @@ export {
   makeSchoolService,
   makeLaboratoryService,
   makeTeamService,
-  makeAuthorService,
+  makeScraperService,
   makeAuthentificationService,
   makeStatisticsService,
 };

@@ -6,7 +6,7 @@ import {
   makeSchoolService,
   makeLaboratoryService,
   makeTeamService,
-  makeAuthorService,
+  makeScraperService,
   makeAuthentificationService,
   makeStatisticsService
 } from "./services";
@@ -30,7 +30,7 @@ const setUpInterceptors = (api) => {
 
 const makeApiServices = (token) => {
   const backendApiNoAuth = axios.create({
-    baseURL: process.env.REACT_APP_BACKEND_API_URL + "/auth",
+    baseURL: process.env.REACT_APP_BACKEND_URL + "/auth",
     timeout: 10000,
     headers: { "Content-Type": "application/json" },
   });
@@ -43,7 +43,7 @@ const makeApiServices = (token) => {
     };
 
   const backendApi = axios.create({
-    baseURL: process.env.REACT_APP_BACKEND_API_URL + "/api",
+    baseURL: process.env.REACT_APP_BACKEND_URL + "/api",
     timeout: 10000,
     headers: {
       "Content-Type": "application/json",
@@ -51,18 +51,18 @@ const makeApiServices = (token) => {
     },
   });
 
-  const schoolaryApi = axios.create({
-    baseURL: process.env.REACT_APP_SCHOOLARY_API_URL,
-    timeout: 10000,
+  const scraperApi = axios.create({
+    baseURL: process.env.REACT_APP_SCRAPER_URL,
+    timeout: 30000,
     headers: { "Content-Type": "application/json" },
   });
 
-  setUpInterceptors(schoolaryApi);
+  setUpInterceptors(scraperApi);
   setUpInterceptors(backendApi);
 
   return {
     authentificationService: makeAuthentificationService(backendApiNoAuth),
-    authorService: makeAuthorService(schoolaryApi),
+    scraperService: makeScraperService(scraperApi),
     userService: makeUserService(backendApi),
     universityService: makeUniversityService(backendApi),
     schoolService: makeSchoolService(backendApi),
