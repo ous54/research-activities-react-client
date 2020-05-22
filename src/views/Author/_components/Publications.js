@@ -3,7 +3,7 @@ import Publication from "./Publication";
 import $ from "jquery";
 import "datatables";
 
-const Publications = (props) => {
+const Publications = ({ author }) => {
   useEffect(() => {
     $(".datatable").DataTable();
   }, []);
@@ -22,11 +22,12 @@ const Publications = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.author.publications.map((publication, index) => (
+            {author.publications.map((publication, index) => (
               <Publication
                 index={index}
-                key={publication.bib.title}
+                key={publication.title}
                 publication={publication}
+                author={author}
               />
             ))}
           </tbody>
