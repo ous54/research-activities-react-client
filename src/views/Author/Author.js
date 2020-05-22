@@ -18,7 +18,7 @@ import {
 import SettingsAlert from "../Settings/_components/SettingsAlert";
 
 const Author = () => {
-  let { authorName } = useParams();
+  let { scholarId } = useParams();
 
   const [author, setAuthor] = useState(null);
   const [followedUser, setFollowedUser] = useState(null);
@@ -33,15 +33,14 @@ const Author = () => {
 
   const [users, setUsers] = useState([]);
   const { user, ApiServices } = useContext(AppContext);
-  const { authorService, userService } = ApiServices;
+  const { scraperService, userService } = ApiServices;
   useEffect(() => {
     setAuthor();
     if (isError) setIsError(false);
     if (noResult) setNoResult(false);
 
-    const authorNamePath = authorName.replace(" ", "%20");
-    authorService
-      .getAuthorByName(authorNamePath)
+    scraperService
+      .getAuthorData(scholarId)
       .then((result) => {
         if (result.status === 200) {
           if (isError) setIsError(false);
@@ -55,13 +54,13 @@ const Author = () => {
       .catch((e) => {
         setNoResult(true);
       });
-  }, [authorName]);
+  }, [scholarId]);
 
   useEffect(() => {
     if (!author) return;
 
     userService
-      .isFollowing(authorName)
+      .isFollowing(scholarId)
       .then((response) => {
         if (response.data.isFollowing) {
           setIsFollowed(true);
@@ -104,7 +103,7 @@ const Author = () => {
     setsSendingFollow(false);
   };
 
-  if (noResult) return <NoResult searchTerm={authorName} />;
+  if (noResult) return <NoResult searchTerm={scholarId} />;
 
   if (author == null) return <LoadingResult />;
 
