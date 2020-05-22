@@ -8,7 +8,7 @@ const LaboratoryHeads = (props) => {
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [newEmail, setNewEmail] = useState("");
 
-  const { ApiServices } = useContext(AppContext);
+  const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const LaboratoryHeads = (props) => {
         email: newEmail,
         password,
         role: "LABORATORY_HEAD",
+        creatorId: user._id,
       })
       .then((response) => {
         setLaboratoryHeads([...laboratoryHeads, response.data]);
