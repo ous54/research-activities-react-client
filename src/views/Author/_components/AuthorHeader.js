@@ -158,11 +158,7 @@ const AuthorPicture = ({ author }) => (
   <span
     className="avatar avatar-lg"
     style={{
-      backgroundImage:
-        "url(" +
-        "https://scholar.google.com/citations?view_op=medium_photo&user=" +
-        author.id +
-        ")",
+      backgroundImage: "url(" + author.profilePicture + ")",
     }}
   ></span>
 );
