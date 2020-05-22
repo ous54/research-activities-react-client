@@ -20,8 +20,7 @@ const AuthorHeader = ({
             <div className="mb-2">
               <h4 className="m-0">
                 {author.name}
-
-                {user.role === "CED_HEAD" && (
+                {user.role === "LABORATORY_HEAD" && (
                   <FollowingButton
                     isFollowed={isFollowed}
                     isSendingFollow={isSendingFollow}
@@ -70,7 +69,7 @@ const FollowingButton = ({ isFollowed, isSendingFollow }) => (
 
 const AuthorDetails = ({ author }) => (
   <Fragment>
-    <p className="text-muted mb-0">{author.affiliation}</p>
+    <p className="text-muted mb-0">{author.university}</p>
     <p className="text-muted mb-0">Adresse e-mail validée de {author.email}</p>
     <div className=" list-inline mb-0 mt-2">
       {author.interests.map((interest) => (
