@@ -1,20 +1,33 @@
-import React, { useContext, useState, useEffect } from "react";
-
+import React, { useContext, useEffect, useState } from "react";
+import ResearchersFilter from "../Managing/_components/ResearchersFilter";
 import PageHeader from "../_common/_components/PageHeader";
+import StatisticsTable from "./_components/StatisticsTable";
 import { AppContext } from "../../context/AppContext";
+import StatisticsFilter from "./_components/StatisticsFilter";
 
 import C3Chart from "react-c3js";
 import "c3/c3.css";
 
-const Statistics = () => {
-  const { ApiServices } = useContext(AppContext);
-  const { statisticsService } = ApiServices;
+const ResearchersStatistics = () => {
+  const [researchersStatistics, setResearchersStatistics] = useState([]);
+  const [
+    filteredResearchersStatistics,
+    setFilteredResearchersStatistics,
+  ] = useState([]);
 
-  const [usersStatistics, setUsersStatistics] = useState([]);
   const [dateRange, setDateRange] = useState({
     start: 2010,
     end: new Date().getFullYear(),
   });
+
+  const [filter, setFilter] = useState(null);
+  const [filteringOptions, setFilteringOptions] = useState(null);
+
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { ApiServices } = useContext(AppContext);
+  const { statisticsService, userService } = ApiServices;
 
   const [chart, setChart] = useState({
     data: {
@@ -26,77 +39,110 @@ const Statistics = () => {
 
   useEffect(() => {
     updateChart();
-  }, [usersStatistics]);
+  }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {
-    updateStatistics();
+    updateFilteringOptionsData();
   }, []);
 
-  const updateChart = () => {
-    if (!usersStatistics.length) return;
+  useEffect(() => {
+    if (!filter) return;
+    if (!isSearchActive) setIsSearchActive(true);
+    updateFollowedUsersData();
+  }, [filter]);
 
-    const columns = usersStatistics
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredResearchersStatistics(researchersStatistics);
+      return;
+    }
+
+    const a = researchersStatistics.filter(
+      (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    );
+    setFilteredResearchersStatistics(a);
+  }, [searchTerm, researchersStatistics]);
+
+  const updateChart = () => {
+    let yearsRange = [];
+    for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
+
+    const columns = filteredResearchersStatistics
       .map((usersStatistic) =>
         [usersStatistic.name].concat(
-          Object.keys(usersStatistic.publicationStatistics)
-            .map((key, index) => key)
-            .map((year) => usersStatistic.publicationStatistics[year])
+          yearsRange.map((year) => usersStatistic.yearlyPublications[year] ?? 0)
         )
       )
-      .concat([
-        ["x"].concat(
-          Object.keys(usersStatistics[0].publicationStatistics)
-            .map((key, index) => key)
-            .map((year) => parseInt(year))
-        ),
-      ]);
+      .concat([["x"].concat(yearsRange)]);
 
     setChart(() => ({
-      ...chart,
-      data: { columns },
+      data: {
+        ...chart.data,
+        columns,
+      },
     }));
   };
 
-  const updateStatistics = () => {
-    statisticsService
-      .getPublicationsBetweenTwoDates(dateRange.start, dateRange.end)
-      .then((response) => {
-        setUsersStatistics(response.data);
-      })
-      .catch((error) => {});
+  const updateFilteringOptionsData = () => {
+    userService.getFilteringOptions({}).then((response) => {
+      setFilteringOptions(response.data);
+    });
   };
+
+  const updateFollowedUsersData = () => {
+    statisticsService.getStatistics(filter).then((response) => {
+      setResearchersStatistics(response.data);
+    });
+  };
+
+  const updateStatistics = () => {};
 
   return (
     <div className="container">
-      <PageHeader title="Statistiques" />
+      <PageHeader
+        title="Statistics"
+        subTitle={filteredResearchersStatistics.length + " chercheurs"}
+      />
       <div className="row">
-        <div className="col-4">
+        <div className="col-md-4">
           <StatisticsFilter
             dateRange={dateRange}
             setDateRange={setDateRange}
             updateStatistics={updateStatistics}
           />
+          <ResearchersFilter
+            {...{
+              filter,
+              setFilter,
+              filteringOptions,
+              setSearchTerm,
+              searchTerm,
+              isSearchActive,
+              setIsSearchActive,
+            }}
+          />
         </div>
-        <div className="col-8">
+        <div className="col-md-8">
           <div className="card">
             <div id="chart-development-activity" className="mt-4">
               <div
                 id="apexcharts28b504"
                 className="apexcharts-canvas apexcharts28b504 apexcharts-theme-light"
               >
-                <C3Chart
-                  data={chart.data}
-                  axis={chart.axis}
-                  legend={{
-                    show: true,
-                  }}
-                />
+                {filteredResearchersStatistics.length > 0 && (
+                  <C3Chart
+                    data={chart.data}
+                    legend={{
+                      show: true,
+                    }}
+                  />
+                )}
               </div>
             </div>
             <div className="table-responsive">
-              {usersStatistics.length > 1 && (
+              {filteredResearchersStatistics.length > 0 && (
                 <StatisticsTable
-                  usersStatistics={usersStatistics}
+                  usersStatistics={filteredResearchersStatistics}
                   dateRange={dateRange}
                 />
               )}
@@ -114,112 +160,4 @@ const Statistics = () => {
   );
 };
 
-export default Statistics;
-
-const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
-  const handleInputsChange = (event) => {
-    event.persist();
-
-    const { value, name } = event.target;
-    setDateRange((dateRange) => ({
-      ...dateRange,
-      [name]: value,
-    }));
-  };
-  const handelFormSubmit = (event) => {
-    event.preventDefault();
-    setDateRange(dateRange);
-    updateStatistics();
-  };
-
-  const thisYear = new Date().getFullYear();
-
-  return (
-    <form action="" method="get" onSubmit={handelFormSubmit}>
-      <div className="subheader mb-2">Date range</div>
-      <div className="row row-sm align-items-center mb-3">
-        <div className="col">
-          <div className="input-group">
-            <div className="input-group-prepend ">
-              <span className="input-group-text">Start</span>
-            </div>
-            <input
-              onChange={handleInputsChange}
-              name="start"
-              type="number"
-              min={thisYear - 20}
-              max={dateRange.end}
-              className="form-control"
-              value={dateRange.start}
-            />
-          </div>
-        </div>
-        <div className="col-auto">—</div>
-        <div className="col">
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text">End</span>
-            </div>
-            <input
-              onChange={handleInputsChange}
-              name="end"
-              type="number"
-              min={dateRange.start}
-              max={thisYear}
-              className="form-control"
-              value={dateRange.end}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-5">
-        <button className="btn btn-primary btn-block">Update statistics</button>
-      </div>
-    </form>
-  );
-};
-
-const StatisticsTable = ({ usersStatistics, dateRange }) => {
-  return (
-    <table className="table card-table table-vcenter">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th></th>
-          {Object.keys(usersStatistics[0].publicationStatistics)
-            .map((key, index) => key)
-            .map((year) => (
-              <th>{year}</th>
-            ))}
-        </tr>
-      </thead>
-      <tbody>
-        {usersStatistics.map((userStatistics) => (
-          <tr>
-            <td className="w-1">
-              <span
-                className="avatar"
-                style={{
-                  backgroundImage:
-                    "url(" +
-                    "https://scholar.google.com/citations?view_op=medium_photo&user=" +
-                    userStatistics.id +
-                    ")",
-                }}
-              ></span>
-            </td>
-            <td className="">{userStatistics.name}</td>
-            {Object.keys(usersStatistics[0].publicationStatistics)
-              .map((key, index) => key)
-              .map((year) => (
-                <td className="">
-                  {userStatistics.publicationStatistics[year]}
-                </td>
-              ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-};
+export default ResearchersStatistics;
