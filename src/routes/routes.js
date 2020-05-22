@@ -1,4 +1,5 @@
 import Author from "../views/Author/Author";
+import AuthorSearch from "../views/Author/AuthorSearch";
 import HomePage from "../views/HomePage";
 import NotFoundPage from "../views/NotFoundPage";
 
@@ -17,12 +18,12 @@ import Statistics from "../views/Statistics/Statistics";
 
 import {
   HomeIcon,
-  ConfigurationIcon,
   StatisticsIcon,
   UserCheckIcon,
   TeamIcon,
   SettingsIcon,
 } from "../views/_common/_components/icons";
+import Profile from "../views/Profile";
 
 const allRoles = ["ADMIN", "CED_HEAD", "LABORATORY_HEAD", "RESEARCHER"];
 
@@ -109,7 +110,7 @@ const StatisticsPaths = {
       component: Statistics,
       icon: StatisticsIcon,
       inMenu: true,
-      roles: allRoles,
+      roles: ["LABORATORY_HEAD"],
     },
   ],
 };
@@ -123,7 +124,7 @@ const followedResearchersPaths = {
       path: "/followed-researchers",
       component: FollowedResearchers,
       icon: UserCheckIcon,
-      roles: ["ADMIN", "CED_HEAD"],
+      roles: ["LABORATORY_HEAD"],
       inMenu: true,
     },
   ],
@@ -137,6 +138,13 @@ const communPathsCategory = {
       component: HomePage,
       icon: HomeIcon,
       inMenu: true,
+      roles: allRoles,
+    },
+    {
+      title: "Profile",
+      path: "/Profile/:id",
+      component: Profile,
+      inMenu: false,
       roles: allRoles,
     },
     {
@@ -155,8 +163,15 @@ const authorPathsCategory = {
   routes: [
     {
       title: "Auteur",
-      path: "/author/:authorName",
+      path: "/author/:scholarId",
       component: Author,
+      inMenu: false,
+      roles: allRoles,
+    },
+    {
+      title: "Recherche d'auteur",
+      path: "/author-search/:authorName",
+      component: AuthorSearch,
       inMenu: false,
       roles: allRoles,
     },
