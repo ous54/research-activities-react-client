@@ -8,7 +8,7 @@ const UserPicture = ({ user, size, badge }) => {
         <span
           className={`avatar avatar-${size}`}
           style={{
-            backgroundImage: `url(${process.env.REACT_APP_BACKEND_API_URL}/pictures/${user.profilePicture})`,
+            backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${user.profilePicture})`,
           }}
         >
           {badge && <span className="badge bg-green"></span>}
