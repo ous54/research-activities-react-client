@@ -20,7 +20,13 @@ const ResearchersAssociation = () => {
       setResearchers(response.data);
     });
     teamService.findAllTeams().then((response) => {
-      setTeams(response.data);
+      const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
+        ({ _id }) => _id
+      );
+      const filteredTeams = response.data.filter(
+        (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
+      );
+      setTeams(filteredTeams);
     });
   };
 
@@ -79,34 +85,36 @@ const TeamBox = ({ researchers, team, addToTeam, removeFromTeam }) => {
           <h3 className="card-title ">{team.abbreviation}</h3>
           <div className=" text-muted text-4">{team.name}</div>
         </div>
-        <div className="card-body">
-          <div className="row mb-n3">
-            {team.members.map((user) => (
-              <div className="col-6 row row-sm mb-3 align-items-center">
-                <UserPicture user={user} />
-                <div className="col text-truncate">
-                  <Link
-                    to={`/author/${user.firstName} ${user.lastName} `}
-                    className="text-body d-block text-truncate"
-                  >
-                    {`${user.firstName} ${user.lastName}`}
-                  </Link>
-
-                  <small className="d-block text-muted text-truncate mt-n1">
+        {team.members.length > 0 && (
+          <div className="card-body">
+            <div className="row mb-n3">
+              {team.members.map((user) => (
+                <div className="col-6 row row-sm mb-3 align-items-center">
+                  <UserPicture user={user} />
+                  <div className="col text-truncate">
                     <Link
-                      onClick={() => {
-                        removeFromTeam(user._id);
-                      }}
+                      to={`/profile/${user._id}`}
                       className="text-body d-block text-truncate"
                     >
-                      Retirer
+                      {`${user.firstName} ${user.lastName}`}
                     </Link>
-                  </small>
+
+                    <small className="d-block text-muted text-truncate mt-n1">
+                      <Link
+                        onClick={() => {
+                          removeFromTeam(user._id);
+                        }}
+                        className="text-body d-block text-truncate"
+                      >
+                        Retirer
+                      </Link>
+                    </small>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div className="card-body">
           <form onSubmit={handSubmit}>
             <label className="form-label m-2">Ajouter un chercher</label>
