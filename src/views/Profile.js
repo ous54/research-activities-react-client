@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState, Fragment } from "react";
-import PageHeader from "./_common/_components/PageHeader";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import UserPicture from "./_common/_components/UserPicture";
@@ -9,6 +8,7 @@ import Coauthors from "./Author/_components/Coauthors";
 
 const Profile = () => {
   const { id } = useParams();
+  
   const [profileUser, setProfileUser] = useState(null);
   const { ApiServices, UserHelper } = useContext(AppContext);
   const { userService } = ApiServices;
