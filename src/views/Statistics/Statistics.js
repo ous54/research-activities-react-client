@@ -26,7 +26,7 @@ const ResearchersStatistics = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { ApiServices } = useContext(AppContext);
+  const {user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
   const [chart, setChart] = useState({
@@ -84,7 +84,7 @@ const ResearchersStatistics = () => {
   };
 
   const updateFilteringOptionsData = () => {
-    userService.getFilteringOptions({}).then((response) => {
+    userService.getFilteringOptions(user._id).then((response) => {
       setFilteringOptions(response.data);
     });
   };
