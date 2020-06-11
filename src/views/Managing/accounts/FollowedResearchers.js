@@ -18,7 +18,7 @@ const FollowedResearchers = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { ApiServices } = useContext(AppContext);
+  const { user,ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const FollowedResearchers = () => {
   }, [searchTerm, followedResearchers]);
 
   const updateFilteringOptionsData = () => {
-    userService.getFilteringOptions({}).then((response) => {
+    userService.getFilteringOptions(user._id).then((response) => {
       setFilteringOptions(response.data);
     });
   };
@@ -82,6 +82,17 @@ const FollowedResearchers = () => {
             {filteredFollowedResearchers.map((researcher) => (
               <ResearcherCard researcher={researcher} />
             ))}
+
+            {filteredFollowedResearchers.length === 0 && (
+              <div className="text-muted container text-center">
+                <p className="h4 text-muted font-weight-normal m-2 m-5">
+                  aucun résultat ne correspond au filtre cournat
+                </p>{" "}
+                <p className="h4 text-muted font-weight-normal m-1">
+                  veuillez essayer un autre filtre
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
