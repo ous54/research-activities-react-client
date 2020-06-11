@@ -6,8 +6,8 @@ const makeAuthentificationService = (api) => ({
 const makeScraperService = (api) => ({
   authorSearch: (authorName) => api.get(`/author-search/${authorName}`),
   getAuthorData: (scholarId) => api.get(`/author/${scholarId}`),
-  getPublicationData: (publicationName) =>
-    api.get(`/publication/${publicationName}`),
+  getPublicationData: (scholarId, publicationName) =>
+    api.get(`/publication/${scholarId}/${publicationName}`),
   getPublicationDetails: (scholarId, publicationName) =>
     api.get(`/publication-details/${scholarId}/${publicationName}`),
 });
@@ -28,7 +28,8 @@ const makeUserService = (api) => ({
   unfollowUser: (_id) => api.get(`/unfollow/${_id}`),
   isFollowing: (name) => api.get(`/is-following/${name}`),
   getFollowedUsers: (filter) => api.get(`/followed-users`, { params: filter }),
-  getFilteringOptions: () => api.get(`/filtering-options`),
+  getFilteringOptions: (laboratoryHeadId) =>
+    api.get(`/filtering-options/${laboratoryHeadId}`),
 });
 
 const makeUniversityService = (api) => ({
@@ -72,6 +73,8 @@ const makeTeamService = (api) => ({
     api.get(`/add-to-team/${team_id}/${user_id}`),
   removeFromTeam: (team_id, user_id) =>
     api.get(`/remove-from-team/${team_id}/${user_id}`),
+  associateHeadToTeam: (team_id, head_id) =>
+    api.get(`/team-head-association/${team_id}/${head_id}`),
 });
 
 const makeStatisticsService = (api) => ({
