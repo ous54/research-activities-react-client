@@ -42,6 +42,12 @@ const ResearchersAssociation = () => {
     });
   };
 
+  const makeAsTeamHead = (team_id) => (user_id) => {
+    teamService.associateHeadToTeam(team_id, user_id).then((response) => {
+      updateData();
+    });
+  };
+
   return (
     <div className="container">
       <PageHeader
@@ -55,6 +61,7 @@ const ResearchersAssociation = () => {
           <TeamBox
             addToTeam={addToTeam(team._id)}
             removeFromTeam={removeFromTeam(team._id)}
+            makeAsTeamHead={makeAsTeamHead(team._id)}
             team={team}
             researchers={researchers}
           />
@@ -66,7 +73,13 @@ const ResearchersAssociation = () => {
 
 export default ResearchersAssociation;
 
-const TeamBox = ({ researchers, team, addToTeam, removeFromTeam }) => {
+const TeamBox = ({
+  researchers,
+  team,
+  addToTeam,
+  removeFromTeam,
+  makeAsTeamHead,
+}) => {
   const [selectedResearcher, setSelectedResearcher] = useState(null);
 
   const handleSelectedResearcherChange = (event) => {
@@ -108,6 +121,19 @@ const TeamBox = ({ researchers, team, addToTeam, removeFromTeam }) => {
                       >
                         Retirer
                       </Link>
+                      {team.head_id === user._id && (
+                        <span className="badge bg-primary">chef d'équipe</span>
+                      )}
+                      {team.head_id !== user._id && (
+                        <Link
+                          onClick={() => {
+                            makeAsTeamHead(user._id);
+                          }}
+                          className="text-body d-block text-truncate"
+                        >
+                          Maitre comme chef d'équipe
+                        </Link>
+                      )}
                     </small>
                   </div>
                 </div>
