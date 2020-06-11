@@ -5,11 +5,13 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
     event.persist();
 
     const { value, name } = event.target;
-    setDateRange((dateRange) => ({
-      ...dateRange,
-      [name]: value,
-    }));
+    if (value > 200)
+      setDateRange((dateRange) => ({
+        ...dateRange,
+        [name]: value,
+      }));
   };
+
   const handelFormSubmit = (event) => {
     event.preventDefault();
     setDateRange(dateRange);
@@ -56,8 +58,7 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
           </div>
         </div>
       </div>
-      <div className="mt-5 mb-5">
-      </div>
+      <div className="mt-5 mb-5"></div>
     </form>
   );
 };
