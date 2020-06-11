@@ -15,10 +15,11 @@ const Publications = ({ author }) => {
           <thead>
             <tr>
               <th>Titre</th>
-              <th className="text-center"> Citée </th>
               <th className="text-center">Année</th>
+              <th className="text-center">Citée</th>
               <th className="text-center">SJR</th>
               <th className="text-center">IF</th>
+              <th className="text-center">Récupération <br/> des données</th>
             </tr>
           </thead>
           <tbody>

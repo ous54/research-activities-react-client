@@ -25,10 +25,10 @@ const AuthorCitations = (props) => {
   };
 
   chart.data.columns[0] = ["data1"].concat(
-    props.author.citationsPerYear.map((a) => a.year)
+    props.author.citationsPerYear.slice(-5).map((a) => a.year)
   );
 
-  chart.axis.x.categories = props.author.citationsPerYear.map(
+  chart.axis.x.categories = props.author.citationsPerYear.slice(-5).map(
     (a) => a.citations
   );
 

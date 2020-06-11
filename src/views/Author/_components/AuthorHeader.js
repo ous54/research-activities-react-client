@@ -1,6 +1,8 @@
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import { CrossIcon, ConfirmationIcon } from "../../_common/_components/icons";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import AuthorReport from "../AuthorReport";
 const AuthorHeader = ({
   toggleFollow,
   isFollowed,
@@ -26,6 +28,16 @@ const AuthorHeader = ({
                     isSendingFollow={isSendingFollow}
                   />
                 )}
+
+                <PDFDownloadLink
+                className="btn  btn-sm m-1 btn-outline-primary"
+                  document={<AuthorReport author={author} />}
+                  fileName={author.name + ".pdf"}
+                >
+                  {({ blob, url, loading, error }) =>
+                    loading ? "Loading document..." : "Imprimer le rapport!"
+                  }
+                </PDFDownloadLink>
               </h4>
 
               <AuthorDetails author={author} />
@@ -49,7 +61,6 @@ export default AuthorHeader;
 const FollowingButton = ({ isFollowed, isSendingFollow }) => (
   <a
     href="#"
-    className="btn btn-secondary"
     data-toggle="modal"
     data-target="#modal-info"
     type="button"

@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 
 import { useParams, Link } from "react-router-dom";
+import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
 
 import AuthorHeader from "./_components/AuthorHeader";
 import Coauthors from "./_components/Coauthors";
@@ -16,6 +17,7 @@ import {
   ConfigurationIcon,
 } from "../_common/_components/icons";
 import SettingsAlert from "../Settings/_components/SettingsAlert";
+import AuthorReport from "./AuthorReport";
 
 const Author = () => {
   let { scholarId } = useParams();
@@ -110,6 +112,7 @@ const Author = () => {
   if (author)
     return (
       <div className="row">
+
         {isAuthorUpdatesModelVisible && (
           <SettingsAlert message="AUTHOR_HAS_UPDATES" badge="info" />
         )}

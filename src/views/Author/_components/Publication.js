@@ -7,30 +7,37 @@ const Publication = ({ author, publication, index }) => {
 
   const [noResult, setNoResult] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [IF, setIF] = useState(null);
   const [SJR, setSJR] = useState(null);
 
   const getPublicationData = () => {
+    setIsLoading(true);
     scraperService
-      .getPublicationData(publication.title)
+      .getPublicationData(author.scholarId, publication.title)
       .then((result) => {
         setIsFetched(true);
         if (result.data.error) {
           setNoResult(true);
         } else {
-          setIF(result.data.IF);
-          setSJR(result.data.SJR);
+          setIF(result.data["Impact Factor"]);
+          setSJR(result.data["SJR"]);
         }
+        setIsLoading(false);
       })
       .catch((e) => {
+        setIsLoading(false);
         setNoResult(true);
       });
   };
 
   const NoResult = <span class="badge small p-0 bg-gray-lt">inconnue</span>;
+  const Loading = (
+    <div style={{ height: "15px", width: "15px" }} className="loader"></div>
+  );
   const fetchedButton = (
-    <button  class="btn btn-secondary small btn-sm" onClick={getPublicationData}>
+    <button class="btn  btn-sm m-3 btn-outline-secondary " onClick={getPublicationData}>
       récupérer
     </button>
   );
@@ -39,19 +46,21 @@ const Publication = ({ author, publication, index }) => {
       <td>
         {publication.title}
         <small class="d-block text-muted text-truncate mt-n1">
-          {publication.authors.join(" ")}
+          {publication.authors.join(", ")}
         </small>
       </td>
-      <td className="text-center">{publication.citation}</td>
       <td className="text-center">{publication.year}</td>
+      <td className="text-center">{publication.citation}</td>
       <td className="text-center">
-        {noResult && NoResult}
+        {isLoading && Loading}
         {IF ?? ""}
-        {!isFetched && fetchedButton}
+      </td>
+      <td className="text-center">
+        {isLoading && Loading}
+        {SJR ?? ""}
       </td>
       <td className="text-center">
         {noResult && NoResult}
-        {SJR ?? ""}
         {!isFetched && fetchedButton}
       </td>
     </tr>
