@@ -11,15 +11,11 @@ const ResearchersFilter = ({
   isSearchActive,
   setIsSearchActive,
 }) => {
-  const [laboratories, setLaboratories] = useState([]);
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     if (!filteringOptions) return;
 
-    setLaboratories(
-      filteringOptions.filter(({ optionType }) => optionType === "laboratory")
-    );
     setTeams(
       filteringOptions.filter(({ optionType }) => optionType === "team")
     );
@@ -42,16 +38,6 @@ const ResearchersFilter = ({
           </span>
         </div>
       </div>
-      {
-        <FilteringCategory
-          {...{
-            options: laboratories,
-            category: "laboratoires",
-            setFilter,
-            filter,
-          }}
-        />
-      }
 
       {
         <FilteringCategory
