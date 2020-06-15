@@ -13,6 +13,7 @@ const Notifications = () => {
   useEffect(() => {
     userService.getFollowedUsers().then((response) => {
       setFollowedUsers(response.data);
+      if (response.data.length === 0) setLoading(false);
     });
   }, []);
 
