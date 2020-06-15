@@ -100,7 +100,7 @@ const ResearchersStatistics = () => {
   return (
     <div className="container">
       <PageHeader
-        title="Statistics"
+        title="Statistiques"
         subTitle={filteredResearchersStatistics.length + " chercheurs"}
       />
       <div className="row">
