@@ -25,6 +25,7 @@ const Author = () => {
   const [author, setAuthor] = useState(null);
   const [followedUser, setFollowedUser] = useState(null);
   const [isError, setIsError] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [noResult, setNoResult] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSendingFollow, setsSendingFollow] = useState(false);
@@ -59,21 +60,24 @@ const Author = () => {
   }, [scholarId]);
 
   useEffect(() => {
-    if (!author) return;
+    if (author == null) return;
 
     userService
       .isFollowing(scholarId)
       .then((response) => {
-        if (response.data.isFollowing) {
-          setIsFollowed(true);
-
-          setFollowedUser(response.data.user);
-          if (
-            response.data.user.publications.length < author.publications.length
-          ) {
-            setIsAuthorUpdatesModelVisible(true);
-          }
-        } else setIsFollowed(false);
+        if (response.data.isFollowing) setIsFollowed(true);
+        if (
+          response.data.oldNumberOfPublications < author.publications.length
+        ) {
+          setIsUpdating(true);
+          userService
+            .updateFollowUser(author)
+            .then((response) => {
+              console.log("done");
+              setIsUpdating(false);
+            })
+            .catch(() => {});
+        }
       })
       .catch((error) => {});
   }, [author]);
@@ -90,14 +94,11 @@ const Author = () => {
   const toggleFollow = (user_id) => {
     setsSendingFollow(true);
     const service = isFollowed
-      ? userService.unfollowUser(followedUser._id)
+      ? userService.unfollowUser(scholarId)
       : userService.followUser({ ...author, user_id });
 
     service
       .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
         setIsFollowed(!isFollowed);
       })
       .catch((error) => {});
@@ -112,12 +113,12 @@ const Author = () => {
   if (author)
     return (
       <div className="row">
-
         {isAuthorUpdatesModelVisible && (
           <SettingsAlert message="AUTHOR_HAS_UPDATES" badge="info" />
         )}
         <div className="col-lg-8">
           <AuthorHeader
+            isUpdating={isUpdating}
             users={users}
             user={user}
             author={author}

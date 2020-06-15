@@ -10,6 +10,7 @@ const AuthorHeader = ({
   author,
   user,
   users,
+  isUpdating,
 }) => {
   return (
     <div className="card">
@@ -22,6 +23,18 @@ const AuthorHeader = ({
             <div className="mb-2">
               <h4 className="m-0">
                 {author.name}
+                {isUpdating && (
+                  <a
+                    href="#"
+                    className="btn  btn-sm m-3 mr-1 ml-1 btn-outline-primary"
+                  >
+                    En mise à jour
+                    <span
+                      style={{ height: "15px", width: "15px" }}
+                      className=" ml-2 loader"
+                    ></span>
+                  </a>
+                )}
                 {user.role === "LABORATORY_HEAD" && (
                   <FollowingButton
                     isFollowed={isFollowed}
@@ -30,12 +43,12 @@ const AuthorHeader = ({
                 )}
 
                 <PDFDownloadLink
-                className="btn  btn-sm m-1 btn-outline-primary"
+                  className="btn  btn-sm m-1 ml-0 btn-outline-primary"
                   document={<AuthorReport author={author} />}
                   fileName={author.name + ".pdf"}
                 >
                   {({ blob, url, loading, error }) =>
-                    loading ? "Loading document..." : "Imprimer le rapport!"
+                    loading ? "Loading document..." : "Imprimer le rapport"
                   }
                 </PDFDownloadLink>
               </h4>
@@ -65,7 +78,7 @@ const FollowingButton = ({ isFollowed, isSendingFollow }) => (
     data-target="#modal-info"
     type="button"
     className={
-      "btn  btn-sm m-3 btn-outline-" + (isFollowed ? "success" : "primary")
+      "btn  btn-sm m-3 mr-1 btn-outline-" + (isFollowed ? "success" : "primary")
     }
   >
     {isFollowed ? "Ne plus suivre" : "Suivre"}
