@@ -22,12 +22,12 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
 
   return (
     <form action="" method="get" onSubmit={handelFormSubmit}>
-      <div className="subheader mb-2">Date range</div>
+      <div className="subheader mb-2">Date</div>
       <div className="row row-sm align-items-center mb-3">
         <div className="col">
           <div className="input-group">
             <div className="input-group-prepend ">
-              <span className="input-group-text">Start</span>
+              <span className="input-group-text">Début</span>
             </div>
             <input
               onChange={handleInputsChange}
@@ -44,7 +44,7 @@ const StatisticsFilter = ({ dateRange, setDateRange, updateStatistics }) => {
         <div className="col">
           <div className="input-group">
             <div className="input-group-prepend">
-              <span className="input-group-text">End</span>
+              <span className="input-group-text">Fin</span>
             </div>
             <input
               onChange={handleInputsChange}

@@ -43,7 +43,7 @@ const ResearchersFilter = ({
         <FilteringCategory
           {...{
             options: teams,
-            category: "teams",
+            category: "Équipes",
             setFilter,
             filter,
           }}
