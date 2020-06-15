@@ -25,8 +25,9 @@ const makeUserService = (api) => ({
   getLaboratoryHeads: () => api.get(`/laboratory-heads`),
   getResearchers: () => api.get(`/researchers`),
   followUser: (user) => api.post(`/follow`, user),
-  unfollowUser: (_id) => api.get(`/unfollow/${_id}`),
-  isFollowing: (name) => api.get(`/is-following/${name}`),
+  updateFollowUser: (user) => api.post(`/update-followed-user`, user),
+  unfollowUser: (scholarId) => api.get(`/unfollow/${scholarId}`),
+  isFollowing: (scholarId) => api.get(`/is-following/${scholarId}`),
   getFollowedUsers: (filter) => api.get(`/followed-users`, { params: filter }),
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
