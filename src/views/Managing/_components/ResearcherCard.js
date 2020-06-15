@@ -29,7 +29,7 @@ const ResearcherCard = ({ researcher }) => {
             </div>
             <div className="col" style={{minWidth: "auto"}}>
               <h3 className="mb-0">
-                <Link to={"/profile/" + researcher._id}>
+                <Link to={"/profile/" + researcher.user_id}>
                   {researcher.name ? researcher.name : ""}{" "}
                 </Link>
               </h3>
