@@ -126,7 +126,7 @@ const Author = () => {
             isFollowed={isFollowed}
             isSendingFollow={isSendingFollow}
           />
-          <Publications author={author} />
+          <Publications author={author} setAuthor={setAuthor} />
         </div>
         <div className="col-lg-4">
           <AuthorCitations author={author} />
