@@ -8,14 +8,17 @@ import Coauthors from "./Author/_components/Coauthors";
 
 const Profile = () => {
   const { id } = useParams();
-  
   const [profileUser, setProfileUser] = useState(null);
+  const [correspondingFollowedUser, setCorrespondingFollowedUser] = useState(
+    null
+  );
   const { ApiServices, UserHelper } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
     userService.findUser(id).then((response) => {
       setProfileUser(response.data);
+      setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
     });
   }, []);
 
@@ -25,17 +28,17 @@ const Profile = () => {
         <Fragment>
           <div className="row">
             <div className="col-md-4">
-              <div class="card">
-                <div class="card-body text-center">
-                  <h2 class="mb-3">
+              <div className="card">
+                <div className="card-body text-center">
+                  <h2 className="mb-3">
                     {profileUser.firstName ? profileUser.firstName : ""}{" "}
                     {profileUser.lastName ? profileUser.lastName : ""}
                   </h2>
-                  <p class="mb-4">
-                    <div class="media">
+                  <p className="mb-4">
+                    <div className="media">
                       <UserPicture user={profileUser} size="xl" />
-                      <div class="media-body m-4">
-                        <p class="text-muted mb-0">
+                      <div className="media-body m-4">
+                        <p className="text-muted mb-0">
                           {UserHelper.userShortBio(profileUser)}
                         </p>
                       </div>
@@ -45,25 +48,24 @@ const Profile = () => {
               </div>
             </div>
             <div className="col-md-8">
-              {profileUser.correspondingFollowedUser != null && ""}
+              {correspondingFollowedUser != null && ""}
             </div>
           </div>
-          {profileUser.correspondingFollowedUser != null && (
+          {correspondingFollowedUser != null && (
             <div className="row">
               <div className="col-md-8">
-                {profileUser.correspondingFollowedUser != null && (
+                {correspondingFollowedUser != null && (
                   <Fragment>
                     <Publications
-                      author={profileUser.correspondingFollowedUser}
+                      author={correspondingFollowedUser}
+                      setAuthor={setCorrespondingFollowedUser}
                     />
                   </Fragment>
                 )}
               </div>
               <div className="col-md-4">
-                <AuthorCitations
-                  author={profileUser.correspondingFollowedUser}
-                />
-                <Coauthors author={profileUser.correspondingFollowedUser} />
+                <AuthorCitations author={correspondingFollowedUser} />
+                <Coauthors author={correspondingFollowedUser} />
               </div>
             </div>
           )}
