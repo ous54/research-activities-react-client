@@ -51,6 +51,25 @@ const AuthorHeader = ({
                     loading ? "Loading document..." : "Imprimer le rapport"
                   }
                 </PDFDownloadLink>
+                <div className="text-info small">
+                  {`Nous avons réussi à récupérer le SJR et IF de ${
+                    author.publications.filter((p) => p.IF || p.SJR).length
+                  } / ${author.publications.length} publications`}
+                </div>
+                <div className="text-info small">
+                  {`${
+                    author.publications.filter((p) => p.searchedFor).length
+                  } / ${author.publications.length}
+                  publications were treated `}
+
+                  {author.publications.filter((p) => p.searchedFor).length !==
+                    author.publications.length && (
+                    <span
+                      className="loader ml-2 d-inline-block"
+                      style={{ height: "15px", width: "15px" }}
+                    ></span>
+                  )}
+                </div>
               </h4>
 
               <AuthorDetails author={author} />
