@@ -3,10 +3,19 @@ import Publication from "./Publication";
 import $ from "jquery";
 import "datatables";
 
-const Publications = ({ author }) => {
+const Publications = ({ author, setAuthor }) => {
   useEffect(() => {
     $(".datatable").DataTable();
   }, []);
+
+  const updatePublication = (index, publication) => {
+    let tempPublications = author.publications;
+    tempPublications[index] = publication;
+    setAuthor(() => ({
+      ...author,
+      publications: tempPublications,
+    }));
+  };
 
   return (
     <div className="card">
@@ -19,7 +28,9 @@ const Publications = ({ author }) => {
               <th className="text-center">Citée</th>
               <th className="text-center">SJR</th>
               <th className="text-center">IF</th>
-              <th className="text-center">Récupération <br/> des données</th>
+              <th className="text-center">
+                Récupération <br /> des données
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -28,6 +39,7 @@ const Publications = ({ author }) => {
                 index={index}
                 key={publication.title}
                 publication={publication}
+                updatePublication={updatePublication}
                 author={author}
               />
             ))}
