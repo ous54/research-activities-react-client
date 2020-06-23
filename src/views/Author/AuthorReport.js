@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Page,
   Text,
@@ -39,21 +39,21 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 12,
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
     color: "grey",
   },
   table: {
     display: "table",
     borderStyle: "solid",
-    borderColor:"#eceeef",
+    borderColor: "#eceeef",
     borderWidth: 1,
     marginBottom: "2rem",
   },
   tableRow: { margin: "auto", flexDirection: "row" },
   tableCol: {
     borderStyle: "solid",
-    borderColor:"#eceeef",
+    borderColor: "#eceeef",
     borderWidth: 1,
     padding: "1rem",
   },
@@ -66,6 +66,11 @@ const AuthorReport = ({ author }) => {
     family: "Oswald",
     src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
   });
+
+  useEffect(() => {
+    console.log("should update");
+    
+  }, [author])
 
   return (
     <Document
@@ -81,25 +86,27 @@ const AuthorReport = ({ author }) => {
         <View style={styles.table}>
           {/* TableHeader */}
           <View style={styles.tableRow}>
-            <View style={{...styles.tableCol, width:"40%"}}>
+            <View style={{ ...styles.tableCol, width: "40%" }}>
               <Text style={styles.tableCell}></Text>
             </View>
-            <View style={{...styles.tableCol, width:"30%"}}>
+            <View style={{ ...styles.tableCol, width: "30%" }}>
               <Text style={styles.tableCell}>Toutes</Text>
             </View>
-            <View style={{...styles.tableCol,width:"30%"}}>
-              <Text style={styles.tableCell}>Depuis {new Date().getFullYear() - 5}</Text>
+            <View style={{ ...styles.tableCol, width: "30%" }}>
+              <Text style={styles.tableCell}>
+                Depuis {new Date().getFullYear() - 5}
+              </Text>
             </View>
           </View>
-          {author.indexes.map(({ name, total, lastFiveYears }) => (
-            <View style={styles.tableRow}>
-              <View style={{...styles.tableCol, width:"40%"}}>
+          {author.indexes.map(({ name, total, lastFiveYears }, index) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={{ ...styles.tableCol, width: "40%" }}>
                 <Text style={styles.tableCell}>{name}</Text>
               </View>
-              <View style={{...styles.tableCol, width:"30%"}}>
+              <View style={{ ...styles.tableCol, width: "30%" }}>
                 <Text style={styles.tableCell}>{total} </Text>
               </View>
-              <View style={{...styles.tableCol, width:"30%"}}>
+              <View style={{ ...styles.tableCol, width: "30%" }}>
                 <Text style={styles.tableCell}>{lastFiveYears}</Text>
               </View>
             </View>
@@ -109,27 +116,42 @@ const AuthorReport = ({ author }) => {
         <View style={styles.table}>
           {/* TableHeader */}
           <View style={styles.tableRow}>
-            <View style={{...styles.tableCol, width:"80%"}}>
+            <View style={{ ...styles.tableCol, width: "80%" }}>
               <Text style={styles.tableCell}>Title</Text>
             </View>
-            <View style={{...styles.tableCol, width:"20%"}}>
+            <View style={{ ...styles.tableCol, width: "10%" }}>
               <Text style={styles.tableCell}>Année</Text>
             </View>
-            <View style={{...styles.tableCol,width:"20%"}}>
+            <View style={{ ...styles.tableCol, width: "10%" }}>
               <Text style={styles.tableCell}>citations</Text>
             </View>
+            <View style={{ ...styles.tableCol, width: "10%" }}>
+              <Text style={styles.tableCell}>SJR</Text>
+            </View>
+
+            <View style={{ ...styles.tableCol, width: "10%" }}>
+              <Text style={styles.tableCell}>IF</Text>
+            </View>
           </View>
-          {author.publications.map((publication) => (
-            <View style={styles.tableRow}>
-              <View style={{...styles.tableCol, width:"80%"}}>
+          {author.publications.map((publication, index) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={{ ...styles.tableCol, width: "80%" }}>
                 <Text style={styles.tableCell}>{publication.title}</Text>
-                <Text style={{...styles.tableCell,color:"gray" }}>{publication.authors.join(", ")}</Text>
+                <Text style={{ ...styles.tableCell, color: "gray" }}>
+                  {publication.authors.join(", ")}
+                </Text>
               </View>
-              <View style={{...styles.tableCol, width:"20%"}}>
+              <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.year} </Text>
               </View>
-              <View style={{...styles.tableCol, width:"20%"}}>
+              <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.citation}</Text>
+              </View>
+              <View style={{ ...styles.tableCol, width: "10%" }}>
+                <Text style={styles.tableCell}>{publication.SJR ?? ""}</Text>
+              </View>
+              <View style={{ ...styles.tableCol, width: "10%" }}>
+                <Text style={styles.tableCell}>{publication.IF ?? ""}</Text>
               </View>
             </View>
           ))}
