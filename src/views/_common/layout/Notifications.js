@@ -59,7 +59,7 @@ const Notifications = () => {
           <span style={{ height: "10px", width: "10px" }} className="loader" />
         )}
         {!loading && (
-          <span href="#" class="badge bg-red">
+          <span href="#" className="badge bg-red">
             {notifications.length}
           </span>
         )}
