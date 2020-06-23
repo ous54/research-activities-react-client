@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AppContext } from "../../../context/AppContext";
 
-const Publication = ({ author, publication, index }) => {
+const Publication = ({ author, publication, updatePublication, index }) => {
   const { ApiServices } = useContext(AppContext);
   const { scraperService } = ApiServices;
 
@@ -9,8 +9,12 @@ const Publication = ({ author, publication, index }) => {
   const [isFetched, setIsFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [IF, setIF] = useState(null);
-  const [SJR, setSJR] = useState(null);
+  useEffect(() => {
+    if (!publication.IF && !publication.SJR && !publication.searchedFor)
+      setTimeout(() => {
+        getPublicationData();
+      }, index * 2000);
+  }, []);
 
   const getPublicationData = () => {
     setIsLoading(true);
@@ -20,24 +24,39 @@ const Publication = ({ author, publication, index }) => {
         setIsFetched(true);
         if (result.data.error) {
           setNoResult(true);
+          updatePublication(index, {
+            ...publication,
+            searchedFor: true,
+          });
         } else {
-          setIF(result.data["Impact Factor"]);
-          setSJR(result.data["SJR"]);
+          updatePublication(index, {
+            ...publication,
+            IF: result.data["Impact Factor"],
+            SJR: result.data["SJR"],
+            searchedFor: true,
+          });
         }
         setIsLoading(false);
       })
       .catch((e) => {
+        updatePublication(index, {
+          ...publication,
+          searchedFor: true,
+        });
         setIsLoading(false);
         setNoResult(true);
       });
   };
 
-  const NoResult = <span class="badge small p-0 bg-gray-lt">inconnue</span>;
+  const NoResult = <span className="badge small p-0 bg-gray-lt">inconnue</span>;
   const Loading = (
     <div style={{ height: "15px", width: "15px" }} className="loader"></div>
   );
   const fetchedButton = (
-    <button class="btn  btn-sm m-3 btn-outline-secondary " onClick={getPublicationData}>
+    <button
+      className="btn  btn-sm m-3 btn-outline-secondary "
+      onClick={getPublicationData}
+    >
       récupérer
     </button>
   );
@@ -45,23 +64,23 @@ const Publication = ({ author, publication, index }) => {
     <tr style={{ whiteSpace: "break-spaces " }} key={publication.title}>
       <td>
         {publication.title}
-        <small class="d-block text-muted text-truncate mt-n1">
+        <small className="d-block text-muted text-truncate mt-n1">
           {publication.authors.join(", ")}
         </small>
       </td>
       <td className="text-center">{publication.year}</td>
-      <td className="text-center">{publication.citation}</td>
+      <td className="text-center">{publication.citation.replace("*", "")}</td>
       <td className="text-center">
+        {publication.IF ?? " "}
         {isLoading && Loading}
-        {IF ?? ""}
       </td>
       <td className="text-center">
+        {publication.SJR ?? " "}
         {isLoading && Loading}
-        {SJR ?? ""}
       </td>
       <td className="text-center">
         {noResult && NoResult}
-        {!isFetched && fetchedButton}
+        {!isFetched && !publication.searchedFor && !isLoading && fetchedButton}
       </td>
     </tr>
   );
