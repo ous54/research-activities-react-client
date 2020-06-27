@@ -131,7 +131,7 @@ const TeamBox = ({
                           }}
                           className="text-body d-block text-truncate"
                         >
-                          Maitre comme chef d'équipe
+                          Mettre comme chef d'équipe
                         </Link>
                       )}
                     </small>
