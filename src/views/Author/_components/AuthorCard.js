@@ -25,13 +25,13 @@ const AuthorCard = ({ author }) => {
               </h3>
             </div>
           </div>
-          <div className="row align-items-center  mt-2" >
+          <div className="row align-items-center  mt-2">
             <div className="col">
               <div className="inline-block h-3 small mb-0">
                 {author.interests.slice(0, 2).map((interest, index) => (
                   <span key={index} className="badge bg-blue-lt  mr-2">
-                    {interest.length > 40/(1+index)
-                      ? interest.substr(1, 40/(1+index)).concat("...")
+                    {interest.length > 30 / (1 + index)
+                      ? interest.substr(1, 30 / (1 + index)).concat("...")
                       : interest}
                   </span>
                 ))}
