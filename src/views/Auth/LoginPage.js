@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import image from "../../assets/images/tabler.svg";
+import image from "../../assets/images/tabler.png";
 import { AppContext } from "../../context/AppContext";
 
 function LoginPage() {
