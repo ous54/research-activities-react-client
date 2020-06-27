@@ -48,7 +48,7 @@ const AuthorHeader = ({
                   fileName={author.name + ".pdf"}
                 >
                   {({ blob, url, loading, error }) =>
-                    loading ? "Loading document..." : "Imprimer le rapport"
+                    loading ? "Chargement du document..." : "Imprimer le rapport"
                   }
                 </PDFDownloadLink>
                 <div className="text-info small">
@@ -60,7 +60,7 @@ const AuthorHeader = ({
                   {`${
                     author.publications.filter((p) => p.searchedFor).length
                   } / ${author.publications.length}
-                  publications were treated `}
+                   publications ont été traitées `}
 
                   {author.publications.filter((p) => p.searchedFor).length !==
                     author.publications.length && (
@@ -154,10 +154,10 @@ const ConfirmationModel = ({ isFollowed, toggleFollow, users }) => {
           </button>
           <div className="modal-body text-center py-5">
             <ConfirmationIcon />
-            <h3>ConfirmationModel</h3>
+            <h3>Confirmation</h3>
             <div className="text-muted">
               {!isFollowed &&
-                " This author will be associated to the it's user account in this platform please select the user account"}
+                "Cet auteur sera associé au compte utilisateur de cette plateforme, veuillez sélectionner le compte utilisateur"}
             </div>
           </div>
 
