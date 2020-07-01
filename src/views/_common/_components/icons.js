@@ -210,6 +210,67 @@ const UserCheckIcon = () => (
   </svg>
 );
 
+const BookIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="icon mr-2 text-muted"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    stroke-width="2"
+    stroke="currentColor"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z"></path>
+    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
+    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
+    <line x1="3" y1="6" x2="3" y2="19"></line>
+    <line x1="12" y1="6" x2="12" y2="19"></line>
+    <line x1="21" y1="6" x2="21" y2="19"></line>
+  </svg>
+);
+
+const LocationIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="icon mr-2 text-muted"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    stroke-width="2"
+    stroke="currentColor"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z"></path>
+    <circle cx="12" cy="11" r="3"></circle>
+    <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1 -2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"></path>
+  </svg>
+);
+
+const EditingIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="icon ml-1"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    stroke-width="2"
+    stroke="currentColor"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z"></path>
+    <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path>
+    <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path>
+    <line x1="16" y1="5" x2="19" y2="8"></line>
+  </svg>
+);
+
 export {
   HomeIcon,
   SettingsIcon,
@@ -222,4 +283,7 @@ export {
   ConfirmationIcon,
   StatisticsIcon,
   UserCheckIcon,
+  BookIcon,
+  LocationIcon,
+  EditingIcon,
 };
