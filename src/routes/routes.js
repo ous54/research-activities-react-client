@@ -3,7 +3,7 @@ import AuthorSearch from "../views/Author/AuthorSearch";
 import HomePage from "../views/HomePage";
 import NotFoundPage from "../views/NotFoundPage";
 
-import Universities from "../views/Managing/entities/Universities";
+import University from "../views/Managing/entities/University";
 import Schools from "../views/Managing/entities/Schools";
 import Laboratories from "../views/Managing/entities/Laboratories";
 import Teams from "../views/Managing/entities/Teams";
@@ -33,9 +33,9 @@ const entitiesPathsCategory = {
   icon: SettingsIcon,
   routes: [
     {
-      title: "Universités",
-      path: "/universities",
-      component: Universities,
+      title: "Université",
+      path: "/university",
+      component: University,
       roles: ["ADMIN", "CED_HEAD"],
       inMenu: true,
     },
