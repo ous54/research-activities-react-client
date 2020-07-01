@@ -3,6 +3,11 @@ import { AppContext } from "../../../context/AppContext";
 import CRUDTable from "../../_common/_components/CRUDTable";
 import CRUDForm from "../../_common/_components/CRUDForm";
 import PageHeader from "../../_common/_components/PageHeader";
+import {
+  BookIcon,
+  LocationIcon,
+  EditingIcon,
+} from "../../_common/_components/icons";
 
 const Universities = (props) => {
   const { ApiServices } = useContext(AppContext);
@@ -89,38 +94,54 @@ const Universities = (props) => {
   return (
     <Fragment>
       <div className="page-header">
-        <PageHeader
-          title="Universités"
-          subTitle={`${universities.length} université(s)`}
-        />
+        <PageHeader title="Votre université" subTitle="" />
       </div>
       <div className="row row-cards row-deck">
-        <div className="col-md-8">
-          <CRUDTable
-            columns={columns}
-            data={universities}
-            tableSkeleton={inputsSkeleton}
-            actions={[
-              { name: "Modifier", function: editUniversity, style: "primary" },
-              {
-                name: "Supprimer",
-                function: deleteUniversity,
-                style: "danger",
-              },
-            ]}
-          />
+        <div className="col-md-6">
+          {universities.length === 0 && (
+            <div className="text-muted text-center">
+              les informations de votre université ne sont pas encore
+              enregistrées
+              <br /> Veuillez remplir le formulaire
+            </div>
+          )}
+          {universities.length !== 0 && (
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">Informations de votre université </div>
+                <div class="mb-2">
+                  <BookIcon /> {universities[0].abbreviation} :{" "}
+                  <strong>{universities[0].name}</strong>
+                </div>
+                <div class="mb-2">
+                  <LocationIcon /> situé à :{" "}
+                  <strong>
+                    {" "}
+                    {universities[0].city}, {universities[0].country}
+                  </strong>
+                </div>
+                <div class="card-actions">
+                  <a href="#" onClick={() => editUniversity(universities[0])}>
+                    <EditingIcon /> Modifier les informations de l'université
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="col-md-4">
-          <CRUDForm
-            {...{
-              inputs,
-              setInputs,
-              inputsSkeleton,
-              handleSubmit,
-              cancelEdit,
-              action,
-            }}
-          />
+        <div className="col-md-6">
+          {(action === "EDITING" || universities.length === 0) && (
+            <CRUDForm
+              {...{
+                inputs,
+                setInputs,
+                inputsSkeleton,
+                handleSubmit,
+                cancelEdit,
+                action,
+              }}
+            />
+          )}
         </div>
       </div>
     </Fragment>
