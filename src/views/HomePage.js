@@ -1,6 +1,6 @@
 import React from "react";
 
-import image from "../assets/images/illustrations/undraw_bug_fixing_oc7a.svg";
+import image from "../assets/images/illustrations/undraw_people_search_wctu.svg";
 import { Link } from "react-router-dom";
 import { LoopIcon } from "./_common/_components/icons";
 
