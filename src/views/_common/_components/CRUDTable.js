@@ -16,19 +16,21 @@ const CRUDTable = ({ columns, data, actions, tableSkeleton }) => {
         <table className="table card-table table-vcenter text-nowrap datatable">
           <thead>
             <tr>
-              {columns.map((column) => (
-                <th>{column}</th>
+              {columns.map((column, index) => (
+                <th key={index}>{column}</th>
               ))}
               <th className="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((objectRow, index) => (
-              <tr key={index}>
-                {objectToDisplayRow(objectRow).map((element, index) => (
+            {data.map((objectRow, indextr) => (
+              <tr key={indextr}>
+                {objectToDisplayRow(objectRow).map((element, indextd) => (
                   <td
+                    key={indextd}
                     style={{
-                      whiteSpace: element.length > 40 ? "break-spaces" : "nowrap ",
+                      whiteSpace:
+                        element.length > 40 ? "break-spaces" : "nowrap ",
                     }}
                   >
                     {element}
@@ -36,8 +38,8 @@ const CRUDTable = ({ columns, data, actions, tableSkeleton }) => {
                 ))}
                 <td className="text-right">
                   <div className="btn-list d-block">
-                    {actions.map((action) => (
-                      <button
+                    {actions.map((action,index) => (
+                      <button key={index}
                         type="button"
                         onClick={() => {
                           action.function(objectRow);

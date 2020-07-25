@@ -23,8 +23,8 @@ const MenuBar = withRouter(({ history, location, ...props }) => {
                   <Dropdown menu={menu} location={location} />
                 )}
                 {!menu.isDropdown &&
-                  menu.subMenus.map((subMenu) => (
-                    <NotDropdown menu={subMenu} location={location} />
+                  menu.subMenus.map((subMenu,index) => (
+                    <NotDropdown menu={subMenu} key={index} location={location} />
                   ))}
               </li>
             ))}

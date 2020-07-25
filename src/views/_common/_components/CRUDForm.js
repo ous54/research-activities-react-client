@@ -29,7 +29,7 @@ const CRUDForm = ({
           [input.name + "_id"]: input.options[0]._id,
         }));
     });
-  }, [inputsSkeleton]);
+  }, [inputs, inputsSkeleton, setInputs]);
 
   return (
     <div className="card">
@@ -45,8 +45,8 @@ const CRUDForm = ({
         </div>
 
         <div className="card-body">
-          {inputsSkeleton.map((input) => (
-            <Fragment>
+          {inputsSkeleton.map((input,index) => (
+            <Fragment key={index}>
               {input.type === "input" && (
                 <div className="form-group mt-2">
                   <label className="form-label">{input.label}</label>
@@ -71,7 +71,7 @@ const CRUDForm = ({
                     className="form-control"
                   >
                     {input.options.map((option, index) => (
-                      <option value={option._id} key={option._id}>
+                      <option value={option._id}  key={index}>
                         {option.name}
                       </option>
                     ))}

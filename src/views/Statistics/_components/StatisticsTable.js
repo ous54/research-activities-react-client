@@ -10,14 +10,14 @@ const StatisticsTable = ({ usersStatistics, dateRange }) => {
         <tr>
           <th>User</th>
           <th></th>
-          {yearsRange.map((year) => (
-            <th>{year}</th>
+          {yearsRange.map((year,index) => (
+            <th key={index}>{year}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {usersStatistics.map((userStatistics) => (
-          <tr>
+        {usersStatistics.map((userStatistics,indextr) => (
+          <tr key={indextr} >
             <td className="w-1">
               <span
                 className="avatar"
@@ -27,8 +27,8 @@ const StatisticsTable = ({ usersStatistics, dateRange }) => {
               ></span>
             </td>
             <td className="">{userStatistics.name}</td>
-            {yearsRange.map((year) => (
-              <td className="">{userStatistics.yearlyPublications[year] ?? 0}</td>
+            {yearsRange.map((year,index) => (
+              <td className="" key={index}>{userStatistics.yearlyPublications[year] ?? 0}</td>
             ))}
           </tr>
         ))}

@@ -49,8 +49,8 @@ const AuthorCitations = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.author.indexes.map(({ name, total, lastFiveYears }) => (
-              <tr>
+            {props.author.indexes.map(({ name, total, lastFiveYears },index) => (
+              <tr key={index}>
                 <td>{name}</td>
                 <td className="text-center">{total}</td>
                 <td className="text-center">{lastFiveYears}</td>

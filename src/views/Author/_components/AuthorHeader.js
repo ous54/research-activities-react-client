@@ -21,11 +21,11 @@ const AuthorHeader = ({
           </div>
           <div className="col">
             <div className="mb-2">
-              <h4 className="m-0">
+              <h4 className="m-0 ">
                 {author.name}
                 {isUpdating && (
                   <a
-                    href="#"
+                    href="/#"
                     className="btn  btn-sm m-3 mr-1 ml-1 btn-outline-primary"
                   >
                     En mise à jour
@@ -43,12 +43,14 @@ const AuthorHeader = ({
                 )}
 
                 <PDFDownloadLink
-                  className="btn  btn-sm m-1 ml-0 btn-outline-primary"
+                  className="btn  btn-sm m-1  btn-outline-primary"
                   document={<AuthorReport author={author} />}
                   fileName={author.name + ".pdf"}
                 >
                   {({ blob, url, loading, error }) =>
-                    loading ? "Chargement du document..." : "Imprimer le rapport"
+                    loading
+                      ? "Chargement du document..."
+                      : "Imprimer le rapport"
                   }
                 </PDFDownloadLink>
                 <div className="text-info small">
@@ -92,7 +94,7 @@ export default AuthorHeader;
 
 const FollowingButton = ({ isFollowed, isSendingFollow }) => (
   <a
-    href="#"
+    href="/#"
     data-toggle="modal"
     data-target="#modal-info"
     type="button"
@@ -115,10 +117,10 @@ const AuthorDetails = ({ author }) => (
     <p className="text-muted mb-0">{author.university}</p>
     <p className="text-muted mb-0">Adresse e-mail validée de {author.email}</p>
     <div className=" list-inline mb-0 mt-2">
-      {author.interests.map((interest) => (
+      {author.interests.map((interest, index) => (
         <Link
           to={interest}
-          key={interest}
+          key={index}
           className="btn btn-primary btn-sm mb-2 mr-2 mb-1"
         >
           {interest}
@@ -172,8 +174,11 @@ const ConfirmationModel = ({ isFollowed, toggleFollow, users }) => {
                     setUserId(e.target.value);
                   }}
                 >
-                  {users.map(({ firstName, lastName, _id }) => (
-                    <option value={_id}>{`${firstName} ${lastName}`}</option>
+                  {users.map(({ firstName, lastName, _id }, index) => (
+                    <option
+                      key={index}
+                      value={_id}
+                    >{`${firstName} ${lastName}`}</option>
                   ))}
                 </select>
               </div>
@@ -182,7 +187,7 @@ const ConfirmationModel = ({ isFollowed, toggleFollow, users }) => {
 
           <div className="modal-footer">
             <Link
-              href="#"
+              href="/#"
               onClick={() => toggleFollow(userId)}
               className="btn btn-primary btn-block"
               data-dismiss="modal"

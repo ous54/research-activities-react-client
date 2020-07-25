@@ -65,8 +65,8 @@ const ResearcherCard = ({ researcher }) => {
                 <h6 className="h5">Coauteurs </h6>
                 <div className="avatar-list   avatar-list-stacked mb-0">
                   {researcher.coauthors.map((coauthor, index) => (
-                    <Link to={"/author-research/" + coauthor.name}>
-                      <span key={index} className="avatar bg-blue-lt avatar-sm">
+                    <Link key={index} to={"/author-research/" + coauthor.name}>
+                      <span className="avatar bg-blue-lt avatar-sm">
                         {coauthor.name.split(" ")[0][0]}
                         {coauthor.name.split(" ")[1][0]}
                       </span>
