@@ -60,8 +60,8 @@ const FilteringCategory = ({ category, options, setFilter, filter }) => {
     <Fragment>
       <div className="subheader mb-2">{category}</div>
       <div className="list-group list-group-transparent mb-3">
-        {options.map((option) => (
-          <FilteringOption {...{ option, setFilter, filter }} />
+        {options.map((option,index) => (
+          <FilteringOption key={index} {...{ option, setFilter, filter }} />
         ))}
       </div>
     </Fragment>

@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 const UserPicture = ({ user, size, badge }) => {
   return (
     <div className="col-auto">
-
       {user.profilePicture && (
         <span
           className={`avatar avatar-${size}`}
@@ -20,7 +19,6 @@ const UserPicture = ({ user, size, badge }) => {
           {user.lastName ? user.lastName[0] : ""}
         </span>
       )}
-      
     </div>
   );
 };

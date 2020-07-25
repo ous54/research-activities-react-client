@@ -9,10 +9,10 @@ const UserBox = ({ user }) => (
 
       <div className="col">
         <h4 className="mb-0">
-          <Link  to={`/profile/${user._id}`} href="#">
+         
             {user.firstName ? user.firstName : ""}{" "}
             {user.lastName ? user.lastName : ""}
-          </Link>
+       
         </h4>
         <div className="text-muted text-h6">{user.email ? user.email : ""}</div>
       </div>
