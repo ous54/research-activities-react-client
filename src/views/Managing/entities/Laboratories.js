@@ -1,4 +1,10 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, {
+  Fragment,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import { AppContext } from "../../../context/AppContext";
 import CRUDTable from "../../_common/_components/CRUDTable";
 import CRUDForm from "../../_common/_components/CRUDForm";
@@ -6,57 +12,57 @@ import PageHeader from "../../_common/_components/PageHeader";
 
 const Laboratories = (props) => {
   const { ApiServices } = useContext(AppContext);
-  const { laboratoryService, schoolService } = ApiServices;
+  const { laboratoryService, establishmentService } = ApiServices;
 
   const [laboratories, setLaboratories] = useState([]);
-  const [schools, setSchools] = useState([]);
+  const [establishments, setEstablishments] = useState([]);
 
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
 
-  const columns = ["Nom", "Abréviation", "École"];
+  const columns = ["Nom", "Abréviation", "Établissement"];
 
   const inputsSkeleton = [
     { name: "name", label: columns[0], type: "input" },
     { name: "abbreviation", label: columns[1], type: "input" },
     {
-      name: "school",
+      name: "establishment",
       label: columns[2],
       type: "select",
-      options: schools,
+      options: establishments,
     },
   ];
 
   const clearInputs = () => {
     setInputs((inputs) => ({
-      name: " ",
-      abbreviation: " ",
-      school_id: "",
+      name: "",
+      abbreviation: "",
+      establishment_id: "",
     }));
   };
 
-  useEffect(() => {
-    updateLaboratoryData();
-    updateSchoolsData();
-    clearInputs();
-  }, []);
-
-  const updateLaboratoryData = () => {
+  const updateLaboratoryData = useCallback(() => {
     laboratoryService.findAllLaboratories().then((response) => {
       setLaboratories(
         response.data.map((laboratory) => ({
           ...laboratory,
-          school: laboratory.school.name,
+          establishment: laboratory.establishment.name,
         }))
       );
     });
-  };
+  }, [laboratoryService]);
 
-  const updateSchoolsData = () => {
-    schoolService.findAllSchools().then((response) => {
-      setSchools(response.data);
+  const updateEstablishmentsData = useCallback(() => {
+    establishmentService.findAllEstablishments().then((response) => {
+      setEstablishments(response.data);
     });
-  };
+  }, [establishmentService]);
+
+  useEffect(() => {
+    updateLaboratoryData();
+    updateEstablishmentsData();
+    clearInputs();
+  }, [updateEstablishmentsData, updateLaboratoryData]);
 
   const editLaboratory = (laboratory) => {
     setAction("EDITING");

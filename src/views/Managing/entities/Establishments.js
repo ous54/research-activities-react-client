@@ -1,14 +1,14 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, { Fragment, useEffect, useState, useContext, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 import CRUDTable from "../../_common/_components/CRUDTable";
 import CRUDForm from "../../_common/_components/CRUDForm";
 import PageHeader from "../../_common/_components/PageHeader";
 
-const Schools = (props) => {
+const Establishments = (props) => {
   const { ApiServices } = useContext(AppContext);
-  const { schoolService, universityService } = ApiServices;
+  const { establishmentService, universityService } = ApiServices;
 
-  const [schools, setSchools] = useState([]);
+  const [establishments, setEstablishments] = useState([]);
   const [universities, setUniversities] = useState([]);
 
   const [inputs, setInputs] = useState({});
@@ -30,67 +30,69 @@ const Schools = (props) => {
 
   const clearInputs = () => {
     setInputs((inputs) => ({
-      name: " ",
-      abbreviation: " ",
-      address: " ",
+      name: "",
+      abbreviation: "",
+      address: "",
       university_id: "",
     }));
   };
 
-  useEffect(() => {
-    updateSchoolData();
-    updateUniversitiesData();
-    clearInputs();
-  }, []);
-
-  const updateSchoolData = () => {
-    schoolService.findAllSchools().then((response) => {
-      setSchools(
-        response.data.map((school) => ({
-          ...school,
-          university: school.university.name,
+  
+  const updateEstablishmentData = useCallback(() => {
+    establishmentService.findAllEstablishments().then((response) => {
+      setEstablishments(
+        response.data.map((establishment) => ({
+          ...establishment,
+          university: establishment.university.name,
         }))
       );
     });
-  };
+  },[establishmentService]);
 
-  const updateUniversitiesData = () => {
+  const updateUniversitiesData = useCallback(() => {
     universityService.findAllUniversities().then((response) => {
       setUniversities(response.data);
     });
-  };
+  },[universityService]);
 
-  const editSchool = (school) => {
+  useEffect(() => {
+    updateEstablishmentData();
+    updateUniversitiesData();
+    clearInputs();
+  }, [updateEstablishmentData, updateUniversitiesData]);
+
+
+  const editEstablishment = (establishment) => {
     setAction("EDITING");
     setInputs((inputs) => ({
       ...inputs,
-      ...school,
+      ...establishment,
     }));
   };
 
-  const addSchool = () => {
-    schoolService.createSchool(inputs).then((response) => {
-      updateSchoolData();
+  const addEstablishment = () => {
+    establishmentService.createEstablishment(inputs).then((response) => {
+      updateEstablishmentData();
       clearInputs();
     });
   };
 
-  const updateSchool = (school) => {
-    schoolService
-      .updateSchool({
-        ...school,
+  const updateEstablishment = (establishment) => {
+    establishmentService
+      .updateEstablishment({
+        ...establishment,
         ...inputs,
       })
       .then((response) => {
         setAction("ADDING");
-        updateSchoolData();
+        updateEstablishmentData();
         clearInputs();
       });
   };
 
-  const deleteSchool = (school) => {
-    schoolService.deleteSchool(school._id).then((response) => {
-      updateSchoolData();
+  const deleteEstablishment = (establishment) => {
+    establishmentService.deleteEstablishment(establishment._id).then((response) => {
+      updateEstablishmentData();
     });
   };
 
@@ -102,10 +104,10 @@ const Schools = (props) => {
       }));
 
     action === "ADDING"
-      ? addSchool()
+      ? addEstablishment()
       : action === "EDITING"
-      ? updateSchool()
-      : updateSchoolData();
+      ? updateEstablishment()
+      : updateEstablishmentData();
 
     event.preventDefault();
   };
@@ -119,19 +121,19 @@ const Schools = (props) => {
   return (
     <Fragment>
       <div className="page-header">
-        <PageHeader title="Écoles" subTitle={`${schools.length} école(s)`} />
+        <PageHeader title="Établissements" subTitle={`${establishments.length} établissement(s)`} />
       </div>
       <div className="row row-cards row-deck">
         <div className="col-md-8">
           <CRUDTable
             columns={columns}
-            data={schools}
+            data={establishments}
             tableSkeleton={inputsSkeleton}
             actions={[
-              { name: "Modifier", function: editSchool, style: "primary" },
+              { name: "Modifier", function: editEstablishment, style: "primary" },
               {
                 name: "Supprimer",
-                function: deleteSchool,
+                function: deleteEstablishment,
                 style: "danger",
               },
             ]}
@@ -154,4 +156,4 @@ const Schools = (props) => {
   );
 };
 
-export default Schools;
+export default Establishments;

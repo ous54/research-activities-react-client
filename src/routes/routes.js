@@ -4,7 +4,7 @@ import HomePage from "../views/HomePage";
 import NotFoundPage from "../views/NotFoundPage";
 
 import University from "../views/Managing/entities/University";
-import Schools from "../views/Managing/entities/Schools";
+import Establishments from "../views/Managing/entities/Establishments";
 import Laboratories from "../views/Managing/entities/Laboratories";
 import Teams from "../views/Managing/entities/Teams";
 
@@ -40,9 +40,9 @@ const entitiesPathsCategory = {
       inMenu: true,
     },
     {
-      title: "Écoles",
-      path: "/schools",
-      component: Schools,
+      title: "Établissements",
+      path: "/establishments",
+      component: Establishments,
       roles: ["ADMIN", "CED_HEAD"],
       inMenu: true,
     },
@@ -134,7 +134,7 @@ const communPathsCategory = {
   routes: [
     {
       title: "Accueil",
-      path: "/home",
+      path: "/",
       component: HomePage,
       icon: HomeIcon,
       inMenu: true,
