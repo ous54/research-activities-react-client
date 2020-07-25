@@ -161,9 +161,9 @@ const ConfirmationIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className="icon icon-xl icon-thin mb-4 text-green"
   >
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -178,11 +178,11 @@ const StatisticsIcon = () => (
     width="24"
     height="24"
     viewBox="0 0 24 24"
-    stroke-width="2"
+    strokeWidth="2"
     stroke="currentColor"
     fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path stroke="none" d="M0 0h24v24H0z" />
     <polyline points="4 19 8 13 12 15 16 10 20 14 20 19 4 19" />
@@ -197,11 +197,11 @@ const UserCheckIcon = () => (
     width="24"
     height="24"
     viewBox="0 0 24 24"
-    stroke-width="2"
+    strokeWidth="2"
     stroke="currentColor"
     fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path stroke="none" d="M0 0h24v24H0z" />
     <circle cx="8.5" cy="7" r="4" />
@@ -213,15 +213,15 @@ const UserCheckIcon = () => (
 const BookIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="icon mr-2 text-muted"
+    className="icon mr-2 text-muted"
     width="24"
     height="24"
     viewBox="0 0 24 24"
-    stroke-width="2"
+    strokeWidth="2"
     stroke="currentColor"
     fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path stroke="none" d="M0 0h24v24H0z"></path>
     <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
@@ -235,15 +235,15 @@ const BookIcon = () => (
 const LocationIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="icon mr-2 text-muted"
+    className="icon mr-2 text-muted"
     width="24"
     height="24"
     viewBox="0 0 24 24"
-    stroke-width="2"
+    strokeWidth="2"
     stroke="currentColor"
     fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path stroke="none" d="M0 0h24v24H0z"></path>
     <circle cx="12" cy="11" r="3"></circle>
@@ -254,15 +254,15 @@ const LocationIcon = () => (
 const EditingIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="icon ml-1"
+    className="icon ml-1"
     width="24"
     height="24"
     viewBox="0 0 24 24"
-    stroke-width="2"
+    strokeWidth="2"
     stroke="currentColor"
     fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path stroke="none" d="M0 0h24v24H0z"></path>
     <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path>
