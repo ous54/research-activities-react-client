@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import PageHeader from "../../_common/_components/PageHeader";
 
 import { AppContext } from "../../../context/AppContext";
@@ -10,12 +10,8 @@ const ResearchersAssociation = () => {
 
   const [researchers, setResearchers] = useState([]);
   const [teams, setTeams] = useState([]);
-
-  useEffect(() => {
-    updateData();
-  }, []);
-
-  const updateData = () => {
+  
+  const updateData = useCallback(() => {
     userService.getResearchers().then((response) => {
       setResearchers(response.data);
     });
@@ -28,7 +24,12 @@ const ResearchersAssociation = () => {
       );
       setTeams(filteredTeams);
     });
-  };
+  },[teamService, user.laboratoriesHeaded, userService]);
+
+  useEffect(() => {
+    updateData();
+  }, [updateData]);
+
 
   const addToTeam = (team_id) => (user_id) => {
     teamService.addUserToTeam(team_id, user_id).then((response) => {
@@ -57,8 +58,8 @@ const ResearchersAssociation = () => {
         subTitle={`${teams.length} équipe(s)`}
       />
       <div className="row">
-        {teams.map((team) => (
-          <TeamBox
+        {teams.map((team,index) => (
+          <TeamBox key={index}
             addToTeam={addToTeam(team._id)}
             removeFromTeam={removeFromTeam(team._id)}
             makeAsTeamHead={makeAsTeamHead(team._id)}
@@ -101,8 +102,8 @@ const TeamBox = ({
         {team.members.length > 0 && (
           <div className="card-body">
             <div className="row mb-n3">
-              {team.members.map((user) => (
-                <div className="col-6 row row-sm mb-3 align-items-center">
+              {team.members.map((user,index) => (
+                <div key={index} className="col-6 row row-sm mb-3 align-items-center">
                   <UserPicture user={user} />
                   <div className="col text-truncate">
                     <Link
@@ -113,26 +114,28 @@ const TeamBox = ({
                     </Link>
 
                     <small className="d-block text-muted text-truncate mt-n1">
-                      <Link
+                      <button
                         onClick={() => {
                           removeFromTeam(user._id);
                         }}
-                        className="text-body d-block text-truncate"
+                        className="btn-sm p-0 btn text-small d-block text-truncate"
                       >
                         Retirer
-                      </Link>
+                      </button>
                       {team.head_id === user._id && (
                         <span className="badge bg-primary">chef d'équipe</span>
                       )}
                       {team.head_id !== user._id && (
-                        <Link
-                          onClick={() => {
+                        <button
+                        
+                          onClick={(e) => {
+                            e.preventDefault()
                             makeAsTeamHead(user._id);
                           }}
-                          className="text-body d-block text-truncate"
+                          className="btn-sm p-0 btn text-small d-block text-truncate"
                         >
                           Mettre comme chef d'équipe
-                        </Link>
+                        </button>
                       )}
                     </small>
                   </div>

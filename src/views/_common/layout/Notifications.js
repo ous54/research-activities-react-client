@@ -4,7 +4,7 @@ import { AppContext } from "../../../context/AppContext";
 import { Link } from "react-router-dom";
 
 const Notifications = () => {
-  const { user, ApiServices } = useContext(AppContext);
+  const { ApiServices } = useContext(AppContext);
   const { userService, scraperService } = ApiServices;
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
@@ -15,7 +15,7 @@ const Notifications = () => {
       setFollowedUsers(response.data);
       if (response.data.length === 0) setLoading(false);
     });
-  }, []);
+  }, [userService]);
 
   useEffect(() => {
     if (!followedUsers || followedUsers.length === 0) return;
@@ -37,7 +37,7 @@ const Notifications = () => {
         });
       }, 1000 * index);
     });
-  }, [followedUsers]);
+  }, [followedUsers, scraperService]);
 
   const clear = (index) => () => {
     console.log("the index was : ", index);
@@ -50,7 +50,7 @@ const Notifications = () => {
   return (
     <Fragment>
       <a
-        href="#"
+        href="/#"
         className="nav-link"
         data-toggle={notifications.length > 0 ? "dropdown" : ""}
       >
@@ -59,7 +59,7 @@ const Notifications = () => {
           <span style={{ height: "10px", width: "10px" }} className="loader" />
         )}
         {!loading && (
-          <span href="#" className="badge bg-red">
+          <span href="/#" className="badge bg-red">
             {notifications.length}
           </span>
         )}

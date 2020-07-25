@@ -22,7 +22,7 @@ function LaboratoryBox({ laboratory, laboratoryHeads, requestUpdate }) {
         setCurrentHead(response.data);
       })
       .catch((error) => {});
-  }, []);
+  }, [laboratory.head_id, userService]);
 
   const handelButtonClick = (event) => {
     event.preventDefault();
@@ -46,7 +46,7 @@ function LaboratoryBox({ laboratory, laboratoryHeads, requestUpdate }) {
           <div className="mr-3 lh-sm">
             <div className="strong">{laboratory.abbreviation}</div>
             <div className="text-muted">
-              Ecole : {laboratory.school.abbreviation}
+              Ecole : {laboratory.establishment.abbreviation}
             </div>
           </div>
         </div>

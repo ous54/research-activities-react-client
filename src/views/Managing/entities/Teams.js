@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, { Fragment, useEffect, useState, useContext, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 import CRUDTable from "../../_common/_components/CRUDTable";
 import CRUDForm from "../../_common/_components/CRUDForm";
@@ -29,19 +29,14 @@ const Teams = (props) => {
 
   const clearInputs = () => {
     setInputs((inputs) => ({
-      name: " ",
-      abbreviation: " ",
+      name: "",
+      abbreviation: "",
       laboratory_id: "",
     }));
   };
 
-  useEffect(() => {
-    updateTeamData();
-    updateLaboratoriesData();
-    clearInputs();
-  }, []);
 
-  const updateTeamData = () => {
+  const updateTeamData = useCallback(() => {
     teamService.findAllTeams().then((response) => {
       const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
         ({ _id }) => _id
@@ -56,11 +51,11 @@ const Teams = (props) => {
         }));
       setTeams(filteredTeams);
     });
-  };
+  },[teamService, user.laboratoriesHeaded]);
 
-  const updateLaboratoriesData = () => {
+  const updateLaboratoriesData = useCallback(() => {
     setLaboratories(user.laboratoriesHeaded);
-  };
+  },[user.laboratoriesHeaded]);
 
   const editTeam = (team) => {
     setAction("EDITING");
@@ -110,6 +105,12 @@ const Teams = (props) => {
     clearInputs();
     setAction("ADDING");
   };
+
+  useEffect(() => {
+    updateTeamData();
+    updateLaboratoriesData();
+    clearInputs();
+  }, [updateLaboratoriesData, updateTeamData]);
 
   return (
     <Fragment>

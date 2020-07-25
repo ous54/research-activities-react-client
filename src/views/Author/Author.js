@@ -1,7 +1,6 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 
-import { useParams, Link } from "react-router-dom";
-import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
+import { useParams } from "react-router-dom";
 
 import AuthorHeader from "./_components/AuthorHeader";
 import Coauthors from "./_components/Coauthors";
@@ -11,28 +10,19 @@ import Publications from "./_components/Publications";
 import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 
 import { AppContext } from "../../context/AppContext";
-import {
-  LoopIcon,
-  CrossIcon,
-  ConfigurationIcon,
-} from "../_common/_components/icons";
+import { LoopIcon } from "../_common/_components/icons";
 import SettingsAlert from "../Settings/_components/SettingsAlert";
-import AuthorReport from "./AuthorReport";
 
 const Author = () => {
   let { scholarId } = useParams();
 
   const [author, setAuthor] = useState(null);
-  const [followedUser, setFollowedUser] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [noResult, setNoResult] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSendingFollow, setsSendingFollow] = useState(false);
-  const [
-    isAuthorUpdatesModelVisible,
-    setIsAuthorUpdatesModelVisible,
-  ] = useState(false);
+  const [isAuthorUpdatesModelVisible] = useState(false);
 
   const [users, setUsers] = useState([]);
   const { user, ApiServices } = useContext(AppContext);
@@ -80,7 +70,7 @@ const Author = () => {
         }
       })
       .catch((error) => {});
-  }, [author]);
+  }, []);
 
   useEffect(() => {
     userService
@@ -89,9 +79,9 @@ const Author = () => {
         setUsers(response.data);
       })
       .catch((error) => {});
-  }, []);
+  }, [userService]);
 
-  const toggleFollow = (user_id) => {
+  const toggleFollow = useCallback((user_id) => {
     setsSendingFollow(true);
     const service = isFollowed
       ? userService.unfollowUser(scholarId)
@@ -104,7 +94,7 @@ const Author = () => {
       .catch((error) => {});
 
     setsSendingFollow(false);
-  };
+  },[author, isFollowed, scholarId, userService]);
 
   if (noResult) return <NoResult searchTerm={scholarId} />;
 
@@ -149,7 +139,7 @@ const NoResult = ({ searchTerm }) => (
       que vous recherchez.
     </p>
     <div className="empty-action">
-      <a href="/home" className="btn btn-primary">
+      <a href="/" className="btn btn-primary">
         <LoopIcon />
         Search again
       </a>

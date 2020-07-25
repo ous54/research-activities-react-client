@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 
 import ResearcherCard from "../_components/ResearcherCard";
@@ -18,18 +18,30 @@ const FollowedResearchers = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { user,ApiServices } = useContext(AppContext);
+  const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
+
+  const updateFilteringOptionsData = useCallback(() => {
+    userService.getFilteringOptions(user._id).then((response) => {
+      setFilteringOptions(response.data);
+    });
+  }, [user._id, userService]);
+
+  const updateFollowedUsersData = useCallback(() => {
+    userService.getFollowedUsers(filter).then((response) => {
+      setFollowedResearchers(response.data);
+    });
+  }, [filter, userService]);
 
   useEffect(() => {
     updateFilteringOptionsData();
-  }, []);
+  }, [updateFilteringOptionsData]);
 
   useEffect(() => {
     if (!filter) return;
     if (!isSearchActive) setIsSearchActive(true);
     updateFollowedUsersData();
-  }, [filter]);
+  }, [filter, isSearchActive, updateFollowedUsersData]);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -44,18 +56,6 @@ const FollowedResearchers = () => {
       )
     );
   }, [searchTerm, followedResearchers]);
-
-  const updateFilteringOptionsData = () => {
-    userService.getFilteringOptions(user._id).then((response) => {
-      setFilteringOptions(response.data);
-    });
-  };
-
-  const updateFollowedUsersData = () => {
-    userService.getFollowedUsers(filter).then((response) => {
-      setFollowedResearchers(response.data);
-    });
-  };
 
   return (
     <div className="container">
@@ -79,8 +79,8 @@ const FollowedResearchers = () => {
         </div>
         <div className="col-md-9">
           <div className="row">
-            {filteredFollowedResearchers.map((researcher) => (
-              <ResearcherCard researcher={researcher} />
+            {filteredFollowedResearchers.map((researcher, index) => (
+              <ResearcherCard key={index} researcher={researcher} />
             ))}
 
             {filteredFollowedResearchers.length === 0 && (

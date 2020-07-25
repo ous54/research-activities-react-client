@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import GeneratedUser from "../_components/GeneratedUser";
 
 import { AppContext } from "../../../context/AppContext";
@@ -11,19 +11,22 @@ const LaboratoryHeads = (props) => {
   const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
-  useEffect(() => {
+  const updateData = useCallback(() => {
     userService
       .getLaboratoryHeads()
       .then((response) => {
         setLaboratoryHeads(response.data);
       })
       .catch((error) => {});
-  }, []);
-
+  }, [userService]);
   const handleEmailChange = (event) => {
     event.persist();
     setNewEmail(event.target.value);
   };
+
+  useEffect(() => {
+    updateData();
+  }, [updateData]);
 
   const handleSubmit = (e) => {
     const password = Math.random().toString(36).slice(-8);
@@ -36,7 +39,7 @@ const LaboratoryHeads = (props) => {
         creatorId: user._id,
       })
       .then((response) => {
-        setLaboratoryHeads([...laboratoryHeads, response.data]);
+        updateData();
       })
       .catch((error) => {});
   };
@@ -87,14 +90,14 @@ const LaboratoryHeads = (props) => {
           <PageHeader
             title="Utilisateurs confirmés"
             subTitle={`${
-              laboratoryHeads.filter((user) => user.hasConfirmed).length
+              laboratoryHeads.filter((user) => user && user.hasConfirmed).length
             } utilisateur(s)`}
           />
           <div className="row">
             {laboratoryHeads
-              .filter((user) => user.hasConfirmed)
-              .map((laboratoryHead) => (
-                <GeneratedUser user={laboratoryHead} />
+              .filter((user) => user && user.hasConfirmed)
+              .map((laboratoryHead, index) => (
+                <GeneratedUser key={index} user={laboratoryHead} />
               ))}
           </div>
         </div>
@@ -108,8 +111,8 @@ const LaboratoryHeads = (props) => {
           <div className="row">
             {laboratoryHeads
               .filter((user) => !user.hasConfirmed)
-              .map((laboratoryHead) => (
-                <GeneratedUser user={laboratoryHead} />
+              .map((laboratoryHead, index) => (
+                <GeneratedUser key={index} user={laboratoryHead} />
               ))}
           </div>
         </div>

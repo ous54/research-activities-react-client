@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { AppContext } from "../../context/AppContext";
 import PageHeader from "../_common/_components/PageHeader";
@@ -8,16 +8,14 @@ import AuthorCard from "./_components/AuthorCard";
 
 import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 
-import { LoopIcon } from "../_common/_components/icons";
-
 const AuthorSearch = () => {
   let { authorName } = useParams();
 
   const [authors, setAuthors] = useState([]);
   const [noResult, setNoResult] = useState(false);
 
-  const { user, ApiServices } = useContext(AppContext);
-  const { scraperService, userService } = ApiServices;
+  const { ApiServices } = useContext(AppContext);
+  const { scraperService } = ApiServices;
   useEffect(() => {
     if (noResult) setNoResult(false);
 
@@ -29,7 +27,7 @@ const AuthorSearch = () => {
       if (result.data.error) setNoResult(true);
       else setAuthors(result.data);
     });
-  }, [authorName]);
+  }, [authorName, scraperService]);
 
   return (
     <div className="container">
@@ -38,8 +36,8 @@ const AuthorSearch = () => {
         subTitle={authors.length ? authors.length + " chercheurs" : ""}
       />
       <div className="row">
-        {authors.map((author) => (
-          <AuthorCard author={author} />
+        {authors.map((author, index) => (
+          <AuthorCard key={index} author={author} />
         ))}
 
         {authors.length === 0 && !noResult && (

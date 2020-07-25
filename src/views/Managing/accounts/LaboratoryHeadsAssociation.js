@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 
 import LaboratoryBox from "../_components/LaboratoryBox";
 import PageHeader from "../../_common/_components/PageHeader";
@@ -11,29 +11,30 @@ const LaboratoryHeadsAssociation = (props) => {
   const { ApiServices } = useContext(AppContext);
   const { laboratoryService, userService } = ApiServices;
 
-  const requestUpdate = () => {
-    getLaboratoriesData();
-    getLaboratoryHeadsData();
-  };
-
-  const getLaboratoriesData = () => {
+  const getLaboratoriesData = useCallback(() => {
     laboratoryService.findAllLaboratories().then((response) => {
       setLaboratories([]);
       setLaboratories(response.data);
     });
-  };
+  }, [laboratoryService]);
 
-  const getLaboratoryHeadsData = () => {
+  const getLaboratoryHeadsData = useCallback(() => {
     userService.getLaboratoryHeads().then((response) => {
       setLaboratoryHeads([]);
       setLaboratoryHeads(response.data);
     });
-  };
+  }, [userService]);
+
+  const requestUpdate = useCallback(() => {
+    getLaboratoriesData();
+    getLaboratoryHeadsData();
+  }, [getLaboratoriesData, getLaboratoryHeadsData]);
 
   useEffect(() => {
     requestUpdate();
-  }, []);
+  }, [requestUpdate]);
 
+  
   return (
     <div className="container">
       <div className="row">
@@ -47,8 +48,9 @@ const LaboratoryHeadsAssociation = (props) => {
           <div className="row">
             {laboratories
               .filter((laboratory) => !laboratory.head_id)
-              .map((laboratory) => (
+              .map((laboratory, index) => (
                 <LaboratoryBox
+                  key={index}
                   laboratory={laboratory}
                   laboratoryHeads={laboratoryHeads}
                   requestUpdate={requestUpdate}
@@ -66,8 +68,9 @@ const LaboratoryHeadsAssociation = (props) => {
           <div className="row">
             {laboratories
               .filter((laboratory) => laboratory.head_id)
-              .map((laboratory) => (
+              .map((laboratory, index) => (
                 <LaboratoryBox
+                  key={index}
                   laboratory={laboratory}
                   laboratoryHeads={laboratoryHeads}
                   requestUpdate={requestUpdate}

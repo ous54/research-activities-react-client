@@ -1,17 +1,18 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import GeneratedUser from "../_components/GeneratedUser";
 import PageHeader from "../../_common/_components/PageHeader";
 
 import { AppContext } from "../../../context/AppContext";
 
-const Researchers = ({}) => {
+const Researchers = () => {
   const [researchers, setResearchers] = useState([]);
   const [newEmail, setNewEmail] = useState("");
 
   const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
-  useEffect(() => {
+  
+  const updateData = useCallback(() => {
     userService.getResearchers().then((response) => {
       const filteredResearchers = response.data.filter(
         (researcher) => researcher.creatorId === user._id
@@ -19,7 +20,11 @@ const Researchers = ({}) => {
 
       setResearchers(filteredResearchers);
     });
-  }, []);
+  }, [user._id, userService]);
+
+  useEffect(() => {
+    updateData();
+  }, [updateData, user._id]);
 
   const handleEmailChange = (event) => {
     event.persist();
@@ -37,7 +42,7 @@ const Researchers = ({}) => {
         creatorId: user._id,
       })
       .then((response) => {
-        setResearchers([...researchers, response.data]);
+       updateData()
       })
       .catch((error) => {});
   };
@@ -90,8 +95,8 @@ const Researchers = ({}) => {
           <div className="row">
             {researchers
               .filter((user) => user.hasConfirmed)
-              .map((laboratoryHead) => (
-                <GeneratedUser user={laboratoryHead} />
+              .map((laboratoryHead, index) => (
+                <GeneratedUser key={index} user={laboratoryHead} />
               ))}
           </div>
         </div>
@@ -105,8 +110,8 @@ const Researchers = ({}) => {
           <div className="row">
             {researchers
               .filter((user) => !user.hasConfirmed)
-              .map((laboratoryHead) => (
-                <GeneratedUser user={laboratoryHead} />
+              .map((laboratoryHead, index) => (
+                <GeneratedUser key={index} user={laboratoryHead} />
               ))}
           </div>
         </div>

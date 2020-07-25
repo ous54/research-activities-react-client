@@ -1,6 +1,5 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, { Fragment, useEffect, useState, useContext, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
-import CRUDTable from "../../_common/_components/CRUDTable";
 import CRUDForm from "../../_common/_components/CRUDForm";
 import PageHeader from "../../_common/_components/PageHeader";
 import {
@@ -25,24 +24,25 @@ const Universities = (props) => {
   ];
 
   const clearInputs = () => {
-    setInputs((inputs) => ({
-      name: " ",
-      abbreviation: " ",
-      city: " ",
-      country: " ",
+      setInputs((inputs) => ({
+      name: "",
+      abbreviation: "",
+      city: "",
+      country: "",
     }));
   };
 
-  useEffect(() => {
-    updateData();
-    clearInputs();
-  }, []);
-
-  const updateData = () => {
+  const updateData = useCallback(() => {
     universityService.findAllUniversities().then((response) => {
       setUniversities(response.data);
     });
-  };
+  } ,[universityService]);
+
+  
+  useEffect(() => {
+    updateData();
+    clearInputs();
+  }, [updateData]);
 
   const editUniversity = (university) => {
     setAction("EDITING");
@@ -69,12 +69,6 @@ const Universities = (props) => {
         updateData();
         clearInputs();
       });
-  };
-
-  const deleteUniversity = (university) => {
-    universityService.deleteUniversity(university._id).then((response) => {
-      updateData();
-    });
   };
 
   const handleSubmit = (event) => {
@@ -106,22 +100,22 @@ const Universities = (props) => {
             </div>
           )}
           {universities.length !== 0 && (
-            <div class="card">
-              <div class="card-body">
-                <div class="card-title">Informations de votre université </div>
-                <div class="mb-2">
+            <div className="card">
+              <div className="card-body">
+                <div className="card-title">Informations de votre université </div>
+                <div className="mb-2">
                   <BookIcon /> {universities[0].abbreviation} :{" "}
                   <strong>{universities[0].name}</strong>
                 </div>
-                <div class="mb-2">
+                <div className="mb-2">
                   <LocationIcon /> situé à :{" "}
                   <strong>
                     {" "}
                     {universities[0].city}, {universities[0].country}
                   </strong>
                 </div>
-                <div class="card-actions">
-                  <a href="#" onClick={() => editUniversity(universities[0])}>
+                <div className="card-actions">
+                  <a href="/#" onClick={(e) => {e.preventDefault();editUniversity(universities[0]);}}>
                     <EditingIcon /> Modifier les informations de l'université
                   </a>
                 </div>

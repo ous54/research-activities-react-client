@@ -18,7 +18,7 @@ function InformationUpdate({
       lastName: user.lastName,
       email: user.email,
     });
-  }, []);
+  }, [setAccountInformations, user.email, user.firstName, user.lastName]);
 
   const handleAccountInformationsChange = (event) => {
     event.persist();

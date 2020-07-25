@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import UserBox from "./UserBox";
+import { Link } from "react-router-dom";
 
 const GeneratedUser = ({ user }) => (
   <div className=" col-xl-6">
-    <a className="card card-link">
+    <Link  to={`/profile/${user._id}`} className="card card-link">
       <div className="card-body">
         {user.hasConfirmed && <UserBox user={user} />}
         {!user.hasConfirmed && <UnconfirmedUserBox2 user={user} />}
       </div>
-    </a>
+    </Link>
   </div>
 );
 
@@ -35,7 +36,7 @@ const UnconfirmedUserBox2 = ({ user }) => {
           <span className="input-group-text">
             <a
               onClick={togglePasswordClair}
-              href=""
+              href="/#"
               className="input-group-link"
             >
               {passwordIsClear ? "Hide password" : "Show password"}

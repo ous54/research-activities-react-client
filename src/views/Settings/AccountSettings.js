@@ -64,14 +64,13 @@ function AccountSettings() {
           showInformationUpdated();
         }
       })
-      .catch((error) => {
+      .catch(() => {
         showError();
       });
   };
 
   const updatePassword = () => {
     const {
-      courantPassword,
       newPassword,
       confirmedNewPassword,
     } = passwordUpdate;
@@ -90,7 +89,7 @@ function AccountSettings() {
           }, 1000);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         showError();
       });
   };
@@ -105,7 +104,7 @@ function AccountSettings() {
           profilePicture: response.data.profilePicture,
         });
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   return (

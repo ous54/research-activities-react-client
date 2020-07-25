@@ -20,7 +20,7 @@ const Profile = () => {
       setProfileUser(response.data);
       setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
     });
-  }, []);
+  }, [id, userService]);
 
   return (
     <div className="container">
