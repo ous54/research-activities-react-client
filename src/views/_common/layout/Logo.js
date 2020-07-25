@@ -4,7 +4,7 @@ import image from "../../../assets/images/tabler.png";
 
 const Logo = () => (
   <Link
-    to="/home"
+    to="/"
     className="navbar-brand navbar-brand-autodark d-none-navbar-vertical"
   >
     <img

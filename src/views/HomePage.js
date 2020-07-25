@@ -16,7 +16,7 @@ const HomePage = () => {
         recherchez.
       </p>
       <div className="empty-action">
-        <Link to="/home" className="btn btn-primary">
+        <Link to="/" className="btn btn-primary">
           <LoopIcon />
           Rechercher un auteur
         </Link>

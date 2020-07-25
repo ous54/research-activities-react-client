@@ -21,13 +21,13 @@ const UserMenu = ({ user, UserHelper }) => (
       </div>
     </Link>
     <div className="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-      <Link className="dropdown-item" to={"/profile/" + user._id} href="#">
+      <Link className="dropdown-item" to={"/profile/" + user._id} href="/#">
         Profile
       </Link>
-      <Link className="dropdown-item" to="/account" href="#">
+      <Link className="dropdown-item" to="/account" href="/#">
         Paramètres du compte
       </Link>
-      <Link className="dropdown-item" to="/login" href="#">
+      <Link className="dropdown-item" to="/login" href="/#">
         Se déconnecter
       </Link>
     </div>

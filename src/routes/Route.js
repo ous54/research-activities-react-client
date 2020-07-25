@@ -15,7 +15,7 @@ const Route = ({ component: Component, role, ...rest }) => {
 
         if (!user) return redirectTo("/login");
 
-        if (role && role.indexOf(user.role) === -1) return redirectTo("/home");
+        if (role && role.indexOf(user.role) === -1) return redirectTo("/");
 
         return <Component {...props} />;
       }}

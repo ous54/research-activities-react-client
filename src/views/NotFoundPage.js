@@ -16,7 +16,7 @@ function NotFoundPage() {
               We are sorry but the page you are looking for was not found
             </p>
             <div className="empty-action">
-              <Link to="/home" className="btn btn-primary">
+              <Link to="/" className="btn btn-primary">
                 <LeftArrowIcon />
                 Take me home
               </Link>
