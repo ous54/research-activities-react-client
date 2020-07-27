@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
-import InformationUpdate from "./_components/InformationUpdate";
-import PasswordUpdate from "./_components/PasswordUpdate";
-import SettingsAlert from "./_components/SettingsAlert";
+import InformationUpdate from "./components/InformationUpdate";
+import PasswordUpdate from "./components/PasswordUpdate";
+import SettingsAlert from "./components/SettingsAlert";
 import { AppContext } from "../../context/AppContext";
 
 import { useHistory } from "react-router-dom";
@@ -64,14 +64,13 @@ function AccountSettings() {
           showInformationUpdated();
         }
       })
-      .catch((error) => {
+      .catch(() => {
         showError();
       });
   };
 
   const updatePassword = () => {
     const {
-      courantPassword,
       newPassword,
       confirmedNewPassword,
     } = passwordUpdate;
@@ -90,7 +89,7 @@ function AccountSettings() {
           }, 1000);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         showError();
       });
   };
@@ -105,7 +104,7 @@ function AccountSettings() {
           profilePicture: response.data.profilePicture,
         });
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   return (

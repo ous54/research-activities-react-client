@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import image from "../../assets/images/tabler.png";
+import image from "../../assets/images/logo.png";
 import { AppContext } from "../../context/AppContext";
 
 function LoginPage() {
@@ -13,7 +13,7 @@ function LoginPage() {
 
   useEffect(() => {
     setUser();
-  }, []);
+  }, [setUser]);
 
   const handleInputsChange = (event) => {
     event.persist();
@@ -40,7 +40,7 @@ function LoginPage() {
           setIsLoggedIn(true);
 
           setTimeout(() => {
-            if (result.data.hasConfirmed) history.push("/home");
+            if (result.data.hasConfirmed) history.push("/");
             else history.push("/settings/account");
           }, 1000);
         } else {
@@ -61,7 +61,7 @@ function LoginPage() {
               <div className="text-center mb-6 mt-6">
                 <img src={image} className="h-6" alt="" />
               </div>
-              <form className="card" form action onSubmit={handleSubmit}>
+              <form className="card" onSubmit={handleSubmit}>
                 <div className="card-body ">
                   <div className="card-title">
                     Connectez-vous à votre compte

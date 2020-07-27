@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   makeUserService,
   makeUniversityService,
-  makeSchoolService,
+  makeEstablishmentService,
   makeLaboratoryService,
   makeTeamService,
   makeScraperService,
@@ -65,7 +65,7 @@ const makeApiServices = (token) => {
     scraperService: makeScraperService(scraperApi),
     userService: makeUserService(backendApi),
     universityService: makeUniversityService(backendApi),
-    schoolService: makeSchoolService(backendApi),
+    establishmentService: makeEstablishmentService(backendApi),
     laboratoryService: makeLaboratoryService(backendApi),
     teamService: makeTeamService(backendApi),
     statisticsService: makeStatisticsService(backendApi),  

@@ -8,11 +8,10 @@ import { AppProvider } from "./context/AppContext";
 import Route from "./routes/Route";
 
 import LoginPage from "./views/Auth/LoginPage";
-import RegisterPage from "./views/Auth/RegisterPage";
 
-import MenuBar from "./views/_common/layout/MenuBar";
-import NavBar from "./views/_common/layout/NavBar";
-import Footer from "./views/_common/layout/Footer";
+import MenuBar from "./views/layout/MenuBar";
+import NavBar from "./views/layout/NavBar";
+import Footer from "./views/layout/Footer";
 
 import { routes } from "./routes/routes";
 
@@ -28,8 +27,7 @@ const App = () => (
   <AppProvider>
     <Router history={history}>
       <Switch>
-        <PublicRoute path="/login" component={LoginPage} />
-        <PublicRoute path="/register" component={RegisterPage} />
+        <PublicRoute path="/login" component={LoginPage} />    
         <Route path="/*" component={MainLayout} />
       </Switch>
     </Router>
@@ -46,7 +44,7 @@ const MainLayout = () => (
           <Router history={history}>
             <Switch>
               {routes.map((route, index) => (
-                <Route {...route} key={index} />
+                <Route exact {...route} key={index} />
               ))}
             </Switch>
           </Router>

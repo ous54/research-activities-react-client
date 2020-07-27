@@ -15,7 +15,7 @@
 | RESEARCHER et rechercher des publications par année, SJR, titre   |  ✔️ |
 | Afficher SJR des publications                                     |  ❌ |
 | Afficher IF des publications                                      |  ❌ |
-| Gestion sur les universités, les écoles, les laboratoires         |  ✔️ |
+| Gestion sur les universités, les établissements, les laboratoires         |  ✔️ |
 | Gestion des rôles                                                 |  ❌ |
 | Gestion des utilisateurs                                          |  ❌ |
 | Récupérer les informations des auteurs                            |  ❌ |
@@ -51,7 +51,7 @@ Statistiques (tableau : nombre de publication par année par chercheur suivi) --
 | Role            |                                                    |
 | --------------- | -------------------------------------------------- |
 | CED_HEAD        | Gestion des universités                            |
-|                 | Gestion des écoles                                 |
+|                 | Gestion des établissements                                 |
 |                 | Gestion des laboratoires                           |
 |                 | Creation des comptes LABORATORY_HEAD               |
 | LABORATORY_HEAD | Gestion des équipes                                |
@@ -129,7 +129,7 @@ _Password : email.split("@")[0] example : example.example@gmail.com | example.ex
 | ---------------- | ------- | -------- |
 | Chouaib Doukkali | Maroc   | ElJadida |
 
-### Ecoles | Schools
+### Ecoles | Establishments
 
 | name  | address         | university       |
 | ----- | --------------- | ---------------- |
@@ -137,7 +137,7 @@ _Password : email.split("@")[0] example : example.example@gmail.com | example.ex
 
 ### laboratoires | laboratories
 
-| name                                                           | school | head                |
+| name                                                           | establishment | head                |
 | -------------------------------------------------------------- | ------ | ------------------- |
 | LTI Laboratoire de Technologies de l'Information               | ENSAJ  | Hassan OUAHMANE     |
 | LABSIPE Laboratoire des Sciences de l’Ingénieur Pour l’Energie | ENSAJ  | Abdelowahed HAJJAJI |

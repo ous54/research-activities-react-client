@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import ResearchersFilter from "../Managing/_components/ResearchersFilter";
-import PageHeader from "../_common/_components/PageHeader";
-import StatisticsTable from "./_components/StatisticsTable";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import ResearchersFilter from "../components/ResearchersFilter";
+import PageHeader from "../components/PageHeader";
+import StatisticsTable from "./components/StatisticsTable";
 import { AppContext } from "../../context/AppContext";
-import StatisticsFilter from "./_components/StatisticsFilter";
+import StatisticsFilter from "./components/StatisticsFilter";
 
 import C3Chart from "react-c3js";
 import "c3/c3.css";
@@ -26,7 +26,7 @@ const ResearchersStatistics = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const {user, ApiServices } = useContext(AppContext);
+  const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
   const [chart, setChart] = useState({
@@ -37,33 +37,8 @@ const ResearchersStatistics = () => {
     },
   });
 
-  useEffect(() => {
-    updateChart();
-  }, [filteredResearchersStatistics, dateRange]);
-
-  useEffect(() => {
-    updateFilteringOptionsData();
-  }, []);
-
-  useEffect(() => {
-    if (!filter) return;
-    if (!isSearchActive) setIsSearchActive(true);
-    updateFollowedUsersData();
-  }, [filter]);
-
-  useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredResearchersStatistics(researchersStatistics);
-      return;
-    }
-
-    const a = researchersStatistics.filter(
-      (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-    );
-    setFilteredResearchersStatistics(a);
-  }, [searchTerm, researchersStatistics]);
-
-  const updateChart = () => {
+  const updateChart = useCallback(() => {
+    console.log("updateChart");
     let yearsRange = [];
     for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
 
@@ -81,21 +56,56 @@ const ResearchersStatistics = () => {
         columns,
       },
     }));
-  };
+  }, [
+    chart.data,
+    dateRange.end,
+    dateRange.start,
+    filteredResearchersStatistics,
+  ]);
 
-  const updateFilteringOptionsData = () => {
+  const updateFilteringOptionsData = useCallback(() => {
+    console.log("updateFilteringOptionsData");
     userService.getFilteringOptions(user._id).then((response) => {
       setFilteringOptions(response.data);
     });
-  };
+  }, [user._id, userService]);
 
-  const updateFollowedUsersData = () => {
+  const updateFollowedUsersData = useCallback(() => {
+    console.log("updateFollowedUsersData");
+
     statisticsService.getStatistics(filter).then((response) => {
       setResearchersStatistics(response.data);
     });
-  };
+  }, [filter, statisticsService]);
 
   const updateStatistics = () => {};
+
+  useEffect(() => {
+    updateChart();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredResearchersStatistics, dateRange]);
+
+  useEffect(() => {
+    updateFilteringOptionsData();
+  }, [updateFilteringOptionsData]);
+
+  useEffect(() => {
+    if (!filter) return;
+    if (!isSearchActive) setIsSearchActive(true);
+    updateFollowedUsersData();
+  }, [filter, isSearchActive, updateFollowedUsersData]);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredResearchersStatistics(researchersStatistics);
+      return;
+    }
+
+    const a = researchersStatistics.filter(
+      (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    );
+    setFilteredResearchersStatistics(a);
+  }, [searchTerm, researchersStatistics]);
 
   return (
     <div className="container">

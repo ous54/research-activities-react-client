@@ -39,16 +39,16 @@ const makeUniversityService = (api) => ({
   findUniversity: (_id) => api.get(`/universities/${_id}`),
   findAllUniversities: () => api.get(`/universities`),
   deleteUniversity: (_id) => api.delete(`/universities/${_id}`),
-  getUniversitySchools: (_id) => api.get(`/universities/${_id}/schools`),
+  getUniversityEstablishments: (_id) => api.get(`/universities/${_id}/establishments`),
 });
 
-const makeSchoolService = (api) => ({
-  createSchool: (school) => api.post(`/schools`, school),
-  updateSchool: (school) => api.put(`/schools`, school),
-  findSchool: (_id) => api.get(`/schools/${_id}`),
-  findAllSchools: () => api.get(`/schools`),
-  deleteSchool: (_id) => api.delete(`/schools/${_id}`),
-  getSchoolLaboratories: (_id) => api.get(`/schools/${_id}/laboratories`),
+const makeEstablishmentService = (api) => ({
+  createEstablishment: (establishment) => api.post(`/establishments`, establishment),
+  updateEstablishment: (establishment) => api.put(`/establishments`, establishment),
+  findEstablishment: (_id) => api.get(`/establishments/${_id}`),
+  findAllEstablishments: () => api.get(`/establishments`),
+  deleteEstablishment: (_id) => api.delete(`/establishments/${_id}`),
+  getEstablishmentLaboratories: (_id) => api.get(`/establishments/${_id}/laboratories`),
 });
 
 const makeLaboratoryService = (api) => ({
@@ -85,7 +85,7 @@ const makeStatisticsService = (api) => ({
 export {
   makeUserService,
   makeUniversityService,
-  makeSchoolService,
+  makeEstablishmentService,
   makeLaboratoryService,
   makeTeamService,
   makeScraperService,
