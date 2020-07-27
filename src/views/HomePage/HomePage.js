@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 
-import image from "../../assets/images/illustrations/undraw_people_search_wctu.svg";
+import image1 from "../../assets/images/illustrations/undraw_people_search_wctu.svg";
+import image2 from "../../assets/images/illustrations/undraw_hire_te5y.svg";
 import { Link } from "react-router-dom";
 import { LoopIcon, SettingsIcon } from "../components/icons";
 import { AppContext } from "../../context/AppContext";
@@ -11,12 +12,12 @@ const HomePage = () => {
   return (
     <div className="row">
       <div
-        className={`empty container text-center${
-          user.role === "TEAM_HEAD" ? "col-md-6" : "12"
+        className={`empty  text-center ${
+          user.role === "TEAM_HEAD" ? "col-md-6" : "col-md-12"
         }`}
       >
         <div className="empty-icon">
-          <img src={image} className="h-8 mb-4" alt="" />
+          <img src={image1} className="h-8 mb-4" alt="" />
         </div>
         <p className="empty-title h3">Bienvenue sur la page d'accueil </p>
         <p className="empty-subtitle text-muted">
@@ -34,10 +35,10 @@ const HomePage = () => {
       {user.role === "TEAM_HEAD" && (
         <div className="empty col-md-6">
           <div className="empty-icon">
-            <img src={image} className="h-8 mb-4" alt="" />
+            <img src={image2} className="h-8 mb-4" alt="" />
           </div>
           <p className="empty-title h3">
-            Etant {UserHelper.userShortBio(user)}{" "}
+            Etant {UserHelper.userShortBio(user)}
           </p>
           <p className="empty-subtitle text-muted">
             vous pouvez gerer cette equipe
