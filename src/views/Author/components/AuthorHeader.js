@@ -75,7 +75,7 @@ const AuthorHeader = ({
               </h4>
 
               <AuthorDetails author={author} />
-              {users.length > 0 && (
+              {users && users.length > 0 && (
                 <ConfirmationModel
                   users={users}
                   toggleFollow={toggleFollow}
