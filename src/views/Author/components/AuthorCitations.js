@@ -25,12 +25,12 @@ const AuthorCitations = (props) => {
   };
 
   chart.data.columns[0] = ["data1"].concat(
-    props.author.citationsPerYear.slice(-5).map((a) => a.year)
+    props.author.citationsPerYear.slice(-5).map((a) => a.citations)
   );
 
-  chart.axis.x.categories = props.author.citationsPerYear.slice(-5).map(
-    (a) => a.citations
-  );
+  chart.axis.x.categories = props.author.citationsPerYear
+    .slice(-5)
+    .map((a) => a.year);
 
   return (
     <div className="card">
@@ -49,13 +49,15 @@ const AuthorCitations = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.author.indexes.map(({ name, total, lastFiveYears },index) => (
-              <tr key={index}>
-                <td>{name}</td>
-                <td className="text-center">{total}</td>
-                <td className="text-center">{lastFiveYears}</td>
-              </tr>
-            ))}
+            {props.author.indexes.map(
+              ({ name, total, lastFiveYears }, index) => (
+                <tr key={index}>
+                  <td>{name}</td>
+                  <td className="text-center">{total}</td>
+                  <td className="text-center">{lastFiveYears}</td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
         <div className="card-body">
