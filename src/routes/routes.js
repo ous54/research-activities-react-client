@@ -1,20 +1,20 @@
 import Author from "../views/Author/Author";
 import AuthorSearch from "../views/Author/AuthorSearch";
-import HomePage from "../views/HomePage";
-import NotFoundPage from "../views/NotFoundPage";
+import HomePage from "../views/HomePage/HomePage";
+import PageNotFound from "../views/components/PageNotFound";
 
-import University from "../views/Managing/entities/University";
-import Establishments from "../views/Managing/entities/Establishments";
-import Laboratories from "../views/Managing/entities/Laboratories";
-import Teams from "../views/Managing/entities/Teams";
-
+import University from "../views/ManagingEntities/University";
+import Establishments from "../views/ManagingEntities/Establishments";
+import Laboratories from "../views/ManagingEntities/Laboratories";
+import Teams from "../views/ManagingEntities/Teams";
 import AccountSettings from "../views/Settings/AccountSettings";
-import LaboratoryHeads from "../views/Managing/accounts/LaboratoryHeads";
-import Researchers from "../views/Managing/accounts/Researchers";
-import { default as LHAssociation } from "../views/Managing/accounts/LaboratoryHeadsAssociation";
-import { default as RAssociation } from "../views/Managing/accounts/ResearchersAssociation";
-import FollowedResearchers from "../views/Managing/accounts/FollowedResearchers";
+import LaboratoryHeads from "../views/ManagingAccounts/LaboratoryHeads";
+import Researchers from "../views/ManagingAccounts/Researchers";
+import FollowedResearchers from "../views/ManagingAccounts/FollowedResearchers";
 import Statistics from "../views/Statistics/Statistics";
+import Profile from "../views/Profile/Profile";
+import Team from "../views/ManagingEntities/Team";
+import Laboratory from "../views/ManagingEntities/Laboratory";
 
 import {
   HomeIcon,
@@ -22,10 +22,9 @@ import {
   UserCheckIcon,
   TeamIcon,
   SettingsIcon,
-} from "../views/_common/_components/icons";
-import Profile from "../views/Profile";
+} from "../views/components/icons";
 
-const allRoles = ["ADMIN", "CED_HEAD", "LABORATORY_HEAD", "RESEARCHER"];
+const allRoles = ["CED_HEAD", "CED_HEAD","TEAM_HEAD", "LABORATORY_HEAD", "RESEARCHER"];
 
 const entitiesPathsCategory = {
   title: "Entités",
@@ -36,29 +35,43 @@ const entitiesPathsCategory = {
       title: "Université",
       path: "/university",
       component: University,
-      roles: ["ADMIN", "CED_HEAD"],
+      roles: ["CED_HEAD", "CED_HEAD"],
       inMenu: true,
     },
     {
       title: "Établissements",
       path: "/establishments",
       component: Establishments,
-      roles: ["ADMIN", "CED_HEAD"],
+      roles: ["CED_HEAD", "CED_HEAD"],
       inMenu: true,
     },
     {
       title: "Laboratoires",
       path: "/laboratories",
       component: Laboratories,
-      roles: ["ADMIN", "CED_HEAD"],
+      roles: ["CED_HEAD", "CED_HEAD"],
       inMenu: true,
     },
     {
       title: "Équipes",
       path: "/teams",
       component: Teams,
-      roles: ["ADMIN", "LABORATORY_HEAD"],
+      roles: ["LABORATORY_HEAD"],
       inMenu: true,
+    },
+    {
+      title: "Équipe",
+      path: "/team/:teamId",
+      component: Team,
+      roles: ["CED_HEAD", "LABORATORY_HEAD", "TEAM_HEAD"],
+      inMenu: false,
+    },
+    {
+      title: "Laboratoire",
+      path: "/Laboratory/:laboratoryId",
+      component: Laboratory,
+      roles: ["CED_HEAD", "CED_HEAD"],
+      inMenu: false,
     },
   ],
 };
@@ -72,28 +85,14 @@ const accountsManagementPathsCategory = {
       title: "Chefs de Laboratoires",
       path: "/laboratory-heads",
       component: LaboratoryHeads,
-      roles: ["ADMIN", "CED_HEAD"],
+      roles: ["CED_HEAD", "CED_HEAD"],
       inMenu: true,
     },
     {
       title: "Chercheurs",
       path: "/researchers",
       component: Researchers,
-      roles: ["ADMIN", "LABORATORY_HEAD"],
-      inMenu: true,
-    },
-    {
-      title: "Association entre Chefs et Laboratoires",
-      path: "/laboratory-heads-association",
-      component: LHAssociation,
-      roles: ["ADMIN", "CED_HEAD"],
-      inMenu: true,
-    },
-    {
-      title: "researchers-association",
-      path: "/researchers-association",
-      component: RAssociation,
-      roles: ["ADMIN", "LABORATORY_HEAD"],
+      roles: ["CED_HEAD", "LABORATORY_HEAD"],
       inMenu: true,
     },
   ],
@@ -185,7 +184,7 @@ const errorPathsCategory = {
     {
       title: "Errors",
       path: "/*",
-      component: NotFoundPage,
+      component: PageNotFound,
       inMenu: false,
       roles: allRoles,
     },

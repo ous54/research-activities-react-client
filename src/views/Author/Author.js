@@ -2,32 +2,30 @@ import React, { useEffect, useContext, useState, useCallback } from "react";
 
 import { useParams } from "react-router-dom";
 
-import AuthorHeader from "./_components/AuthorHeader";
-import Coauthors from "./_components/Coauthors";
-import AuthorCitations from "./_components/AuthorCitations";
-import Publications from "./_components/Publications";
+import AuthorHeader from "./components/AuthorHeader";
+import Coauthors from "./components/Coauthors";
+import AuthorCitations from "./components/AuthorCitations";
+import Publications from "./components/Publications";
 
 import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 
 import { AppContext } from "../../context/AppContext";
-import { LoopIcon } from "../_common/_components/icons";
-import SettingsAlert from "../Settings/_components/SettingsAlert";
+import { LoopIcon } from "../components/icons";
 
 const Author = () => {
-  let { scholarId } = useParams();
-
+  const { scholarId } = useParams();
   const [author, setAuthor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [noResult, setNoResult] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSendingFollow, setsSendingFollow] = useState(false);
-  const [isAuthorUpdatesModelVisible] = useState(false);
-
   const [users, setUsers] = useState([]);
   const { user, ApiServices } = useContext(AppContext);
   const { scraperService, userService } = ApiServices;
-  useEffect(() => {
+
+  const getAuthorData = useCallback(() => {
+    console.log("getAuthorData");
     setAuthor();
     if (isError) setIsError(false);
     if (noResult) setNoResult(false);
@@ -47,9 +45,10 @@ const Author = () => {
       .catch((e) => {
         setNoResult(true);
       });
-  }, [scholarId]);
+  }, [isError, noResult, scholarId, scraperService]);
 
-  useEffect(() => {
+  const getIfIsFollowing = useCallback(() => {
+    console.log("getIfIsFollowing");
     if (author == null) return;
 
     userService
@@ -70,9 +69,10 @@ const Author = () => {
         }
       })
       .catch((error) => {});
-  }, []);
+  }, [author, scholarId, userService]);
 
-  useEffect(() => {
+  const findAllUsers = useCallback(() => {
+    console.log("findAllUsers");
     userService
       .findAllUsers()
       .then((response) => {
@@ -81,20 +81,39 @@ const Author = () => {
       .catch((error) => {});
   }, [userService]);
 
-  const toggleFollow = useCallback((user_id) => {
-    setsSendingFollow(true);
-    const service = isFollowed
-      ? userService.unfollowUser(scholarId)
-      : userService.followUser({ ...author, user_id });
+  const toggleFollow = useCallback(
+    (user_id) => {
+      console.log("toggleFollow");
+      setsSendingFollow(true);
+      const service = isFollowed
+        ? userService.unfollowUser(scholarId)
+        : userService.followUser({ ...author, user_id });
 
-    service
-      .then((response) => {
-        setIsFollowed(!isFollowed);
-      })
-      .catch((error) => {});
+      service
+        .then((response) => {
+          setIsFollowed(!isFollowed);
+        })
+        .catch((error) => {});
 
-    setsSendingFollow(false);
-  },[author, isFollowed, scholarId, userService]);
+      setsSendingFollow(false);
+    },
+    [author, isFollowed, scholarId, userService]
+  );
+
+  useEffect(() => {
+    getAuthorData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getIfIsFollowing();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    findAllUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (noResult) return <NoResult searchTerm={scholarId} />;
 
@@ -103,9 +122,6 @@ const Author = () => {
   if (author)
     return (
       <div className="row">
-        {isAuthorUpdatesModelVisible && (
-          <SettingsAlert message="AUTHOR_HAS_UPDATES" badge="info" />
-        )}
         <div className="col-lg-8">
           <AuthorHeader
             isUpdating={isUpdating}

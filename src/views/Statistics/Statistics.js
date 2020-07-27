@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import ResearchersFilter from "../Managing/_components/ResearchersFilter";
-import PageHeader from "../_common/_components/PageHeader";
-import StatisticsTable from "./_components/StatisticsTable";
+import ResearchersFilter from "../components/ResearchersFilter";
+import PageHeader from "../components/PageHeader";
+import StatisticsTable from "./components/StatisticsTable";
 import { AppContext } from "../../context/AppContext";
-import StatisticsFilter from "./_components/StatisticsFilter";
+import StatisticsFilter from "./components/StatisticsFilter";
 
 import C3Chart from "react-c3js";
 import "c3/c3.css";
@@ -82,6 +82,7 @@ const ResearchersStatistics = () => {
 
   useEffect(() => {
     updateChart();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {

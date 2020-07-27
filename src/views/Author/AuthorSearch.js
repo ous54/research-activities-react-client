@@ -3,8 +3,8 @@ import React, { useEffect, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { AppContext } from "../../context/AppContext";
-import PageHeader from "../_common/_components/PageHeader";
-import AuthorCard from "./_components/AuthorCard";
+import PageHeader from "../components/PageHeader";
+import AuthorCard from "./components/AuthorCard";
 
 import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
 
@@ -27,7 +27,7 @@ const AuthorSearch = () => {
       if (result.data.error) setNoResult(true);
       else setAuthors(result.data);
     });
-  }, [authorName, scraperService]);
+  }, [authorName, noResult, scraperService]);
 
   return (
     <div className="container">
