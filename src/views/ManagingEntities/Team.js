@@ -83,17 +83,6 @@ const Team = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-12   p-2 d-flex align-items-center">
-                    <span className="bg-blue text-white stamp mr-1 p-1">
-                      {team.establishment.abbreviation}
-                    </span>
-                    <div className=" lh-sm">
-                      <div className="strong">{team.establishment.name}</div>
-                      <div className="text-muted">
-                        {team.establishment.address}
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
