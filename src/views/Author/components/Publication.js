@@ -75,11 +75,11 @@ const Publication = ({ author, publication, updatePublication, index }) => {
       <td className="text-center">{publication.citation.replace("*", "")}</td>
       <td className="text-center">
         {publication.IF ?? " "}
-        {isLoading && Loader}
+        {isLoading && <Loader size="25" />}
       </td>
       <td className="text-center">
         {publication.SJR ?? " "}
-        {isLoading && Loader}
+        {isLoading && <Loader size="25" />}
       </td>
       <td className="text-center">
         {noResult && PageNotFound}
