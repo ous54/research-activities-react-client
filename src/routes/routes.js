@@ -24,7 +24,13 @@ import {
   SettingsIcon,
 } from "../views/components/icons";
 
-const allRoles = ["CED_HEAD", "CED_HEAD","TEAM_HEAD", "LABORATORY_HEAD", "RESEARCHER"];
+const allRoles = [
+  "CED_HEAD",
+  "CED_HEAD",
+  "TEAM_HEAD",
+  "LABORATORY_HEAD",
+  "RESEARCHER",
+];
 
 const entitiesPathsCategory = {
   title: "Entités",
@@ -92,7 +98,7 @@ const accountsManagementPathsCategory = {
       title: "Chercheurs",
       path: "/researchers",
       component: Researchers,
-      roles: ["CED_HEAD", "LABORATORY_HEAD"],
+      roles: ["LABORATORY_HEAD"],
       inMenu: true,
     },
   ],
