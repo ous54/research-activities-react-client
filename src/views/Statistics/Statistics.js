@@ -29,8 +29,10 @@ const ResearchersStatistics = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
-  const [chartData, setChartData] = useState({
+  const [chartVersion, setChartVersion] = useState(0);
+  const [chart, setChart] = useState({
     data: {
+      unload: true,
       x: "x",
       type: "bar",
       columns: [],
@@ -38,7 +40,6 @@ const ResearchersStatistics = () => {
   });
 
   const updateChart = useCallback(() => {
-    console.log("updateChart");
     let yearsRange = [];
     for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
 
@@ -50,51 +51,32 @@ const ResearchersStatistics = () => {
       )
       .concat([["x"].concat(yearsRange)]);
 
-    setChartData(() => ({
+    setChart(() => ({
       data: {
         x: "x",
         type: "bar",
         columns,
       },
-    }));
-  }, [dateRange.end, dateRange.start, filteredResearchersStatistics]);
+    })); 
+           
+    setChartVersion(chartVersion + 1);
+  }, [chartVersion, dateRange.end, dateRange.start, filteredResearchersStatistics]);
 
   const updateFilteringOptionsData = useCallback(() => {
-    console.log("updateFilteringOptionsData");
     userService.getFilteringOptions(user._id).then((response) => {
       setFilteringOptions(response.data);
     });
   }, [user._id, userService]);
 
   const updateFollowedUsersData = useCallback(() => {
-    console.log("updateFollowedUsersData");
-
     statisticsService.getStatistics(filter).then((response) => {
       setResearchersStatistics(response.data);
     });
   }, [filter, statisticsService]);
 
   const updateStatistics = () => {};
-
   useEffect(() => {
-    console.log("updateChart");
-    let yearsRange = [];
-    for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
-
-    const columns = filteredResearchersStatistics
-      .map((usersStatistic) =>
-        [usersStatistic.name].concat(
-          yearsRange.map((year) => usersStatistic.yearlyPublications[year] ?? 0)
-        )
-      )
-      .concat([["x"].concat(yearsRange)]);
-
-    setChartData({
-      x: "x",
-      type: "bar",
-      columns,
-    });
-
+    updateChart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredResearchersStatistics, dateRange]);
 
@@ -154,11 +136,12 @@ const ResearchersStatistics = () => {
               >
                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
+                    key={chartVersion}
+                    data={chart.data}
                     unloadBeforeLoad="true"
                     title={{
                       text: "Nombre des publications par année",
                     }}
-                    data={chartData}
                     legend={{
                       show: true,
                     }}
