@@ -29,11 +29,11 @@ const ResearchersStatistics = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
-  const [chart, setChart] = useState({
+  const [chartData, setChartData] = useState({
     data: {
       x: "x",
-      columns: [],
       type: "bar",
+      columns: [],
     },
   });
 
@@ -50,18 +50,14 @@ const ResearchersStatistics = () => {
       )
       .concat([["x"].concat(yearsRange)]);
 
-    setChart(() => ({
+    setChartData(() => ({
       data: {
-        ...chart.data,
+        x: "x",
+        type: "bar",
         columns,
       },
     }));
-  }, [
-    chart.data,
-    dateRange.end,
-    dateRange.start,
-    filteredResearchersStatistics,
-  ]);
+  }, [dateRange.end, dateRange.start, filteredResearchersStatistics]);
 
   const updateFilteringOptionsData = useCallback(() => {
     console.log("updateFilteringOptionsData");
@@ -81,8 +77,25 @@ const ResearchersStatistics = () => {
   const updateStatistics = () => {};
 
   useEffect(() => {
-    updateChart();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("updateChart");
+    let yearsRange = [];
+    for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
+
+    const columns = filteredResearchersStatistics
+      .map((usersStatistic) =>
+        [usersStatistic.name].concat(
+          yearsRange.map((year) => usersStatistic.yearlyPublications[year] ?? 0)
+        )
+      )
+      .concat([["x"].concat(yearsRange)]);
+
+    setChartData({
+      x: "x",
+      type: "bar",
+      columns,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {
@@ -134,17 +147,18 @@ const ResearchersStatistics = () => {
         </div>
         <div className="col-md-8">
           <div className="card">
-            <div id="chart-development-activity" className="mt-4">
+            <div id="chartData-development-activity" className="mt-4">
               <div
-                id="apexcharts28b504"
-                className="apexcharts-canvas apexcharts28b504 apexcharts-theme-light"
+                id="apexchartDatas28b504"
+                className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
+                    unloadBeforeLoad="true"
                     title={{
                       text: "Nombre des publications par année",
                     }}
-                    data={chart.data}
+                    data={chartData}
                     legend={{
                       show: true,
                     }}
