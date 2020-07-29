@@ -54,10 +54,9 @@ const Team = () => {
         title={team ? `laboratoire ${team.abbreviation}` : ""}
         subTitle={team ? team.name : ""}
       />
+      {team == null && <Loader size="60" />}
       <div className="row">
         <div className="col-md-8">
-          {team == null && <Loader size="60" />}
-
           {team != null && (
             <div className="card">
               <div className="card-body">
