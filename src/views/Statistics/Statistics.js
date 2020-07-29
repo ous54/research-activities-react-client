@@ -40,7 +40,6 @@ const ResearchersStatistics = () => {
   });
 
   const updateChart = useCallback(() => {
-    console.log("updateChart");
     let yearsRange = [];
     for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
 
@@ -51,7 +50,6 @@ const ResearchersStatistics = () => {
         )
       )
       .concat([["x"].concat(yearsRange)]);
-      console.log("columns",columns);
 
     setChart(() => ({
       data: {
@@ -69,23 +67,18 @@ const ResearchersStatistics = () => {
   ]);
 
   const updateFilteringOptionsData = useCallback(() => {
-    console.log("updateFilteringOptionsData");
     userService.getFilteringOptions(user._id).then((response) => {
       setFilteringOptions(response.data);
     });
   }, [user._id, userService]);
 
   const updateFollowedUsersData = useCallback(() => {
-    console.log("updateFollowedUsersData");
-
     statisticsService.getStatistics(filter).then((response) => {
-      console.log('stat',response);
       setResearchersStatistics(response.data);
     });
   }, [filter, statisticsService]);
 
   const updateStatistics = () => {};
-  console.log("chart data",chart.data);
   useEffect(() => {
     updateChart();
   // eslint-disable-next-line react-hooks/exhaustive-deps
