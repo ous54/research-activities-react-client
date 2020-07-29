@@ -49,7 +49,7 @@ const Researchers = () => {
 
   return (
     <div className="container">
-      <PageHeader title="Géstion des comptes chef de laboratoire" />
+      <PageHeader title="Géstion des comptes des chercheurs" />
       <div className="row">
         <div className="col-md-4">
           <div className="card">
@@ -93,7 +93,7 @@ const Researchers = () => {
         <div className="col-md-4">
           <div className="card ">
             <div className="card-header">
-              <h3 className="card-title">Utilisateurs invites</h3>
+              <h3 className="card-title">Comptes invités</h3>
             </div>
             <div className="card-body p-0">
               <div
@@ -122,7 +122,7 @@ const Researchers = () => {
         <div className="col-md-4">
           <div className="card ">
             <div className="card-header">
-              <h3 className="card-title">Utilisateurs confirmés</h3>
+              <h3 className="card-title">Comptes confermés</h3>
             </div>
             <div className="card-body p-0">
               <div

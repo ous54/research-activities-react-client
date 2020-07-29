@@ -64,13 +64,13 @@ const Laboratory = () => {
   return (
     <div className="container">
       <PageHeader
-        title={laboratory ? `laboratoire ${laboratory.abbreviation}` : ""}
+        title={laboratory ? `Laboratoire ${laboratory.abbreviation}` : ""}
         subTitle={laboratory ? laboratory.name : ""}
       />
+      {laboratory == null && <Loader size="60" />}
+
       <div className="row">
         <div className="col-md-8">
-          {laboratory == null && <Loader size="60" />}
-
           {laboratory != null && (
             <div className="card">
               <div className="card-body">

@@ -34,8 +34,8 @@ const ResearchersStatistics = () => {
     data: {
       unload: true,
       x: "x",
-      columns: [],
       type: "bar",
+      columns: [],
     },
   });
 
@@ -53,18 +53,14 @@ const ResearchersStatistics = () => {
 
     setChart(() => ({
       data: {
-        ...chart.data,
+        x: "x",
+        type: "bar",
         columns,
       },
-    }));
+    })); 
+           
     setChartVersion(chartVersion + 1);
-  }, [
-    chart.data,
-    chartVersion,
-    dateRange.end,
-    dateRange.start,
-    filteredResearchersStatistics,
-  ]);
+  }, [chartVersion, dateRange.end, dateRange.start, filteredResearchersStatistics]);
 
   const updateFilteringOptionsData = useCallback(() => {
     userService.getFilteringOptions(user._id).then((response) => {
@@ -133,15 +129,19 @@ const ResearchersStatistics = () => {
         </div>
         <div className="col-md-8">
           <div className="card">
-            <div id="chart-development-activity" className="mt-4">
+            <div id="chartData-development-activity" className="mt-4">
               <div
-                id="apexcharts28b504"
-                className="apexcharts-canvas apexcharts28b504 apexcharts-theme-light"
+                id="apexchartDatas28b504"
+                className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
                     key={chartVersion}
                     data={chart.data}
+                    unloadBeforeLoad="true"
+                    title={{
+                      text: "Nombre des publications par année",
+                    }}
                     legend={{
                       show: true,
                     }}

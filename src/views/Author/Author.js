@@ -49,27 +49,11 @@ const Author = () => {
 
   const getIfIsFollowing = useCallback(() => {
     console.log("getIfIsFollowing");
-    if (author == null) return;
 
-    userService
-      .isFollowing(scholarId)
-      .then((response) => {
-        if (response.data.isFollowing) setIsFollowed(true);
-        if (
-          response.data.oldNumberOfPublications < author.publications.length
-        ) {
-          setIsUpdating(true);
-          userService
-            .updateFollowUser(author)
-            .then((response) => {
-              console.log("done");
-              setIsUpdating(false);
-            })
-            .catch(() => {});
-        }
-      })
-      .catch((error) => {});
-  }, [author, scholarId, userService]);
+    userService.isFollowing(scholarId).then((response) => {
+      if (response.data.isFollowing) setIsFollowed(true);
+    });
+  }, [scholarId, userService]);
 
   const findAllUsers = useCallback(() => {
     console.log("findAllUsers");
@@ -102,17 +86,17 @@ const Author = () => {
 
   useEffect(() => {
     getAuthorData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getIfIsFollowing();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     findAllUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (noResult) return <NoResult searchTerm={scholarId} />;
