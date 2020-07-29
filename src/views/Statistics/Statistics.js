@@ -141,6 +141,9 @@ const ResearchersStatistics = () => {
               >
                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
+                    title={{
+                      text: "Nombre des publications par année",
+                    }}
                     data={chart.data}
                     legend={{
                       show: true,
