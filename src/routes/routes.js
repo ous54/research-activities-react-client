@@ -84,21 +84,22 @@ const entitiesPathsCategory = {
 
 const accountsManagementPathsCategory = {
   title: "Gestion des comptes",
-  isDropdown: true,
-  icon: TeamIcon,
+  isDropdown: false,
   routes: [
     {
-      title: "Chefs de Laboratoires",
+      title: "Comptes chefs des Laboratoires",
       path: "/laboratory-heads",
       component: LaboratoryHeads,
-      roles: ["CED_HEAD", "CED_HEAD"],
+      roles: ["CED_HEAD"],
+      icon: TeamIcon,
       inMenu: true,
     },
     {
-      title: "Chercheurs",
+      title: "Comptes chercheurs",
       path: "/researchers",
       component: Researchers,
       roles: ["LABORATORY_HEAD"],
+      icon: TeamIcon,
       inMenu: true,
     },
   ],
@@ -114,8 +115,8 @@ const StatisticsPaths = {
       path: "/statistics",
       component: Statistics,
       icon: StatisticsIcon,
-      inMenu: true,
       roles: ["LABORATORY_HEAD"],
+      inMenu: true,
     },
   ],
 };
