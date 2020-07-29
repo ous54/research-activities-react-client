@@ -32,7 +32,7 @@ const ResearchersStatistics = () => {
   const [chartVersion, setChartVersion] = useState(0);
   const [chart, setChart] = useState({
     data: {
-      unload:true,
+      unload: true,
       x: "x",
       columns: [],
       type: "bar",
@@ -81,7 +81,7 @@ const ResearchersStatistics = () => {
   const updateStatistics = () => {};
   useEffect(() => {
     updateChart();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {
