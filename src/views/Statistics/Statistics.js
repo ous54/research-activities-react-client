@@ -31,6 +31,7 @@ const ResearchersStatistics = () => {
 
   const [chart, setChart] = useState({
     data: {
+      unload:true,
       x: "x",
       columns: [],
       type: "bar",
@@ -49,6 +50,7 @@ const ResearchersStatistics = () => {
         )
       )
       .concat([["x"].concat(yearsRange)]);
+      console.log("columns",columns);
 
     setChart(() => ({
       data: {
@@ -74,12 +76,13 @@ const ResearchersStatistics = () => {
     console.log("updateFollowedUsersData");
 
     statisticsService.getStatistics(filter).then((response) => {
+      console.log('stat',response);
       setResearchersStatistics(response.data);
     });
   }, [filter, statisticsService]);
 
   const updateStatistics = () => {};
-
+  console.log("chart data",chart.data);
   useEffect(() => {
     updateChart();
   // eslint-disable-next-line react-hooks/exhaustive-deps
