@@ -37,6 +37,10 @@ const AuthorHeader = ({
                 )}
                 {user.role === "LABORATORY_HEAD" && (
                   <FollowingButton
+                    disabled={
+                      author.publications.filter((p) => p.searchedFor)
+                        .length !== author.publications.length
+                    }
                     isFollowed={isFollowed}
                     isSendingFollow={isSendingFollow}
                   />
@@ -92,8 +96,9 @@ const AuthorHeader = ({
 
 export default AuthorHeader;
 
-const FollowingButton = ({ isFollowed, isSendingFollow }) => (
-  <a
+const FollowingButton = ({ isFollowed, isSendingFollow, disabled }) => (
+  <button
+    disabled={disabled}
     href="/#"
     data-toggle="modal"
     data-target="#modal-info"
@@ -102,14 +107,18 @@ const FollowingButton = ({ isFollowed, isSendingFollow }) => (
       "btn  btn-sm m-3 mr-1 btn-outline-" + (isFollowed ? "success" : "primary")
     }
   >
-    {isFollowed ? "Ne plus suivre" : "Suivre"}
+    {isFollowed
+      ? "Ne plus suivre"
+      : disabled
+      ? "Pour suivre attendez le traitement..."
+      : "Suivre"}
     {isSendingFollow && (
       <div
         style={{ height: "10px", width: "10px" }}
         className="loader ml-2 "
       ></div>
     )}
-  </a>
+  </button>
 );
 
 const AuthorDetails = ({ author }) => (
