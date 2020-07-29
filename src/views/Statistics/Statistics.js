@@ -29,6 +29,7 @@ const ResearchersStatistics = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
+  const [chartVersion, setChartVersion] = useState(0);
   const [chart, setChart] = useState({
     data: {
       unload:true,
@@ -58,8 +59,10 @@ const ResearchersStatistics = () => {
         columns,
       },
     }));
+    setChartVersion(chartVersion + 1);
   }, [
     chart.data,
+    chartVersion,
     dateRange.end,
     dateRange.start,
     filteredResearchersStatistics,
@@ -144,6 +147,7 @@ const ResearchersStatistics = () => {
               >
                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
+                    key={chartVersion}
                     data={chart.data}
                     legend={{
                       show: true,
