@@ -24,10 +24,11 @@ const AuthorSearch = () => {
     setAuthors([]);
 
     scraperService.authorSearch(authorNamePath).then((result) => {
-      if (result.data.error) setNoResult(true);
+      if (result.data && result.data.error) setNoResult(true);
       else setAuthors(result.data);
     });
-  }, [authorName, noResult, scraperService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authorName]);
 
   return (
     <div className="container">
