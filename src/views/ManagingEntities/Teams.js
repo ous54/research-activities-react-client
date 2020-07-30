@@ -1,15 +1,10 @@
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-} from "react";
+import React, { Fragment, useEffect, useState, useContext, useCallback } from "react";
 import { AppContext } from "../../context/AppContext";
 import CRUDTable from "../components/CRUDTable";
 import CRUDForm from "../components/CRUDForm";
 import PageHeader from "../components/PageHeader";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Teams = () => {
   const history = useHistory();
@@ -45,14 +40,10 @@ const Teams = () => {
 
   const updateTeamData = useCallback(() => {
     teamService.findAllTeams().then((response) => {
-      const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
-        ({ _id }) => _id
-      );
+      const filteredLaboratoiresIds = user.laboratoriesHeaded.map(({ _id }) => _id);
 
       const filteredTeams = response.data
-        .filter(
-          (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
-        )
+        .filter((team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1)
         .map((team) => ({
           ...team,
           laboratory: team.laboratory.name,
@@ -105,11 +96,7 @@ const Teams = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    return action === "ADDING"
-      ? addTeam()
-      : action === "EDITING"
-      ? updateTeam()
-      : updateTeamData();
+    return action === "ADDING" ? addTeam() : action === "EDITING" ? updateTeam() : updateTeamData();
   };
 
   const cancelEdit = () => {
@@ -122,17 +109,17 @@ const Teams = () => {
     updateLaboratoriesData();
     clearInputs();
   }, [updateLaboratoriesData, updateTeamData]);
-
+  console.log("teams",teams)
   return (
     <Fragment>
       <div className="page-header">
-        <PageHeader
-          title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(
-            user
-          )}`}
-          subTitle={`${teams.length} équipe(s)`}
-        />
+        <PageHeader title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(user)}`} subTitle={`${teams.length} équipe(s)`} />
       </div>
+      <Link to="/labTree">
+          <button className="btn btn-secondary" type="button">
+            arborescence de laboratoire
+          </button>
+        </Link><br/><br/>
       <div className="row row-cards row-deck">
         <div className="col-md-8">
           <CRUDTable

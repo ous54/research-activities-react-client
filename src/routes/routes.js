@@ -15,6 +15,8 @@ import Statistics from "../views/Statistics/Statistics";
 import Profile from "../views/Profile/Profile";
 import Team from "../views/ManagingEntities/Team";
 import Laboratory from "../views/ManagingEntities/Laboratory";
+import LabTree from "../views/ManagingEntities/LabTree";
+
 
 import {
   HomeIcon,
@@ -23,6 +25,7 @@ import {
   TeamIcon,
   SettingsIcon,
 } from "../views/components/icons";
+
 
 const allRoles = [
   "CED_HEAD",
@@ -64,6 +67,13 @@ const entitiesPathsCategory = {
       component: Teams,
       roles: ["LABORATORY_HEAD"],
       inMenu: true,
+    },
+    {
+      title: "arborescence",
+      path: "/labTree",
+      component: LabTree,
+      inMenu: false,
+      roles: ["LABORATORY_HEAD"],
     },
     {
       title: "Équipe",
