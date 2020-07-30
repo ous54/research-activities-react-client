@@ -62,16 +62,14 @@ const ResearchersStatistics = () => {
     setChartVersion(chartVersion + 1);
   }, [chartVersion, dateRange.end, dateRange.start, filteredResearchersStatistics]);
 
-  const updateFilteringOptionsData = useCallback(() => {
-    userService.getFilteringOptions(user._id).then((response) => {
-      setFilteringOptions(response.data);
-    });
+  const updateFilteringOptionsData = useCallback(async () => {
+    let response = await userService.getFilteringOptions(user._id);
+    setFilteringOptions(response.data);
   }, [user._id, userService]);
 
-  const updateFollowedUsersData = useCallback(() => {
-    statisticsService.getStatistics(filter).then((response) => {
-      setResearchersStatistics(response.data);
-    });
+  const updateFollowedUsersData = useCallback(async () => {
+    let response = await statisticsService.getStatistics(filter);
+    setResearchersStatistics(response.data);
   }, [filter, statisticsService]);
 
   const updateStatistics = () => {};

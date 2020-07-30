@@ -21,16 +21,14 @@ const FollowedResearchers = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
-  const updateFilteringOptionsData = useCallback(() => {
-    userService.getFilteringOptions(user._id).then((response) => {
-      setFilteringOptions(response.data);
-    });
+  const updateFilteringOptionsData = useCallback(async () => {
+    let response = await userService.getFilteringOptions(user._id);
+    setFilteringOptions(response.data);
   }, [user._id, userService]);
 
-  const updateFollowedUsersData = useCallback(() => {
-    userService.getFollowedUsers(filter).then((response) => {
-      setFollowedResearchers(response.data);
-    });
+  const updateFollowedUsersData = useCallback(async () => {
+    let response = await userService.getFollowedUsers(filter);
+    setFollowedResearchers(response.data);
   }, [filter, userService]);
 
   useEffect(() => {

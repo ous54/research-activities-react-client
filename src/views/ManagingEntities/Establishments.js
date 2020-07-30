@@ -38,21 +38,19 @@ const Establishments = (props) => {
   };
 
   
-  const updateEstablishmentData = useCallback(() => {
-    establishmentService.findAllEstablishments().then((response) => {
-      setEstablishments(
+  const updateEstablishmentData = useCallback(async () => {
+    let response = await establishmentService.findAllEstablishments();
+    setEstablishments(
         response.data.map((establishment) => ({
           ...establishment,
           university: establishment.university.name,
         }))
-      );
-    });
+    );
   },[establishmentService]);
 
-  const updateUniversitiesData = useCallback(() => {
-    universityService.findAllUniversities().then((response) => {
-      setUniversities(response.data);
-    });
+  const updateUniversitiesData = useCallback(async () => {
+    let response = await universityService.findAllUniversities();
+    setUniversities(response.data);
   },[universityService]);
 
   useEffect(() => {
@@ -70,30 +68,26 @@ const Establishments = (props) => {
     }));
   };
 
-  const addEstablishment = () => {
-    establishmentService.createEstablishment(inputs).then((response) => {
-      updateEstablishmentData();
-      clearInputs();
-    });
+  const addEstablishment = async () => {
+    await establishmentService.createEstablishment(inputs);
+    updateEstablishmentData();
+    clearInputs();
   };
 
-  const updateEstablishment = (establishment) => {
-    establishmentService
-      .updateEstablishment({
-        ...establishment,
-        ...inputs,
-      })
-      .then((response) => {
-        setAction("ADDING");
-        updateEstablishmentData();
-        clearInputs();
-      });
+  const updateEstablishment = async (establishment) => {
+    await establishmentService
+        .updateEstablishment({
+          ...establishment,
+          ...inputs,
+        });
+    setAction("ADDING");
+    updateEstablishmentData();
+    clearInputs();
   };
 
-  const deleteEstablishment = (establishment) => {
-    establishmentService.deleteEstablishment(establishment._id).then((response) => {
-      updateEstablishmentData();
-    });
+  const deleteEstablishment = async (establishment) => {
+    await establishmentService.deleteEstablishment(establishment._id);
+    updateEstablishmentData();
   };
 
   const handleSubmit = (event) => {

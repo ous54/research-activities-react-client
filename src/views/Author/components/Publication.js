@@ -11,36 +11,35 @@ const Publication = ({ author, publication, updatePublication, index }) => {
   const [isFetched, setIsFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getPublicationData = useCallback(() => {
-    setIsLoading(true);
-    scraperService
-      .getPublicationData(author.scholarId, publication.title)
-      .then((result) => {
-        setIsFetched(true);
-        if (result.data.error) {
+  const getPublicationData = useCallback(async () => {
+      setIsLoading(true);
+      try {
+          let result = await scraperService
+              .getPublicationData(author.scholarId, publication.title);
+          setIsFetched(true);
+          if (result.data.error) {
+              setNoResult(true);
+              updatePublication(index, {
+                  ...publication,
+                  searchedFor: true,
+              });
+          } else {
+              updatePublication(index, {
+                  ...publication,
+                  IF: result.data["Impact Factor"],
+                  SJR: result.data["SJR"],
+                  searchedFor: true,
+              });
+          }
+          setIsLoading(false);
+      } catch (e) {
+          updatePublication(index, {
+              ...publication,
+              searchedFor: true,
+          });
+          setIsLoading(false);
           setNoResult(true);
-          updatePublication(index, {
-            ...publication,
-            searchedFor: true,
-          });
-        } else {
-          updatePublication(index, {
-            ...publication,
-            IF: result.data["Impact Factor"],
-            SJR: result.data["SJR"],
-            searchedFor: true,
-          });
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        updatePublication(index, {
-          ...publication,
-          searchedFor: true,
-        });
-        setIsLoading(false);
-        setNoResult(true);
-      });
+      }
   }, [author.scholarId, index, publication, scraperService, updatePublication]);
 
   const lunchGetPublicationData = useCallback(() => {
