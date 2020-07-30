@@ -44,21 +44,19 @@ const Laboratories = () => {
     }));
   };
 
-  const updateLaboratoryData = useCallback(() => {
-    laboratoryService.findAllLaboratories().then((response) => {
-      setLaboratories(
+  const updateLaboratoryData = useCallback(async () => {
+    let response = await laboratoryService.findAllLaboratories();
+    setLaboratories(
         response.data.map((laboratory) => ({
           ...laboratory,
           establishment: laboratory.establishment.name,
         }))
-      );
-    });
+    );
   }, [laboratoryService]);
 
-  const updateEstablishmentsData = useCallback(() => {
-    establishmentService.findAllEstablishments().then((response) => {
-      setEstablishments(response.data);
-    });
+  const updateEstablishmentsData = useCallback(async () => {
+    let response = await establishmentService.findAllEstablishments();
+    setEstablishments(response.data);
   }, [establishmentService]);
 
   useEffect(() => {
@@ -79,30 +77,26 @@ const Laboratories = () => {
     history.push(`/laboratory/${_id}`);
   };
 
-  const addLaboratory = () => {
-    laboratoryService.createLaboratory(inputs).then((response) => {
-      updateLaboratoryData();
-      clearInputs();
-    });
+  const addLaboratory = async () => {
+    await laboratoryService.createLaboratory(inputs);
+    updateLaboratoryData();
+    clearInputs();
   };
 
-  const updateLaboratory = (laboratory) => {
-    laboratoryService
-      .updateLaboratory({
-        ...laboratory,
-        ...inputs,
-      })
-      .then((response) => {
-        setAction("ADDING");
-        updateLaboratoryData();
-        clearInputs();
-      });
+  const updateLaboratory = async (laboratory) => {
+    await laboratoryService
+        .updateLaboratory({
+          ...laboratory,
+          ...inputs,
+        });
+    setAction("ADDING");
+    updateLaboratoryData();
+    clearInputs();
   };
 
-  const deleteLaboratory = (laboratory) => {
-    laboratoryService.deleteLaboratory(laboratory._id).then((response) => {
-      updateLaboratoryData();
-    });
+  const deleteLaboratory = async (laboratory) => {
+    await laboratoryService.deleteLaboratory(laboratory._id);
+    updateLaboratoryData();
   };
 
   const handleSubmit = (event) => {

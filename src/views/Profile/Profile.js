@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, useState, Fragment } from "react";
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  Fragment,
+  useCallback,
+} from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import Publications from "../Author/components/Publications";
@@ -16,10 +22,14 @@ const Profile = () => {
   const { userService } = ApiServices;
 
   useEffect(() => {
-    userService.findUser(id).then((response) => {
-      setProfileUser(response.data);
-      setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
-    });
+    getProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, userService]);
+
+  const getProfile = useCallback(async () => {
+    let response = await userService.findUser(id);
+    setProfileUser(response.data);
+    setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
   }, [id, userService]);
 
   return (
