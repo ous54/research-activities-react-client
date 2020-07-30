@@ -12,8 +12,8 @@ import {
 } from "./services";
 
 const printer = (header, color) => (prenable) => {
-  // console.log("%c" + header + " : ", "color:" + color);
-  // console.log(prenable);
+  console.log("%c" + header + " : ", "color:" + color);
+  console.log(prenable);
   return prenable;
 };
 
