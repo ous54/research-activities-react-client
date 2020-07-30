@@ -51,25 +51,24 @@ function AccountSettings() {
     }, 1000);
   };
 
-  const updateAccountInformations = () => {
-    userService
-      .updateUser({ ...accountInformations, _id: user._id })
-      .then((response) => {
-        if (response.data.ok) {
-          setUser({
-            ...user,
-            ...accountInformations,
-            hasConfirmed: true,
-          });
-          showInformationUpdated();
-        }
-      })
-      .catch(() => {
-        showError();
-      });
+  const updateAccountInformations = async () => {
+    try {
+      let response = await userService
+          .updateUser({...accountInformations, _id: user._id});
+      if (response.data.ok) {
+        setUser({
+          ...user,
+          ...accountInformations,
+          hasConfirmed: true,
+        });
+        showInformationUpdated();
+      }
+    } catch (e) {
+      showError();
+    }
   };
 
-  const updatePassword = () => {
+  const updatePassword = async () => {
     const {
       newPassword,
       confirmedNewPassword,
@@ -79,32 +78,31 @@ function AccountSettings() {
       showPasswordNotConfirmed();
       return;
     }
-    userService
-      .updatePassword(user._id, { password: newPassword })
-      .then((response) => {
-        if (response.data.ok) {
-          showInformationUpdated();
-          setTimeout(() => {
-            history.push("/login");
-          }, 1000);
-        }
-      })
-      .catch(() => {
-        showError();
-      });
+    try {
+      let response = await userService
+          .updatePassword(user._id, {password: newPassword});
+      if (response.data.ok) {
+        showInformationUpdated();
+        setTimeout(() => {
+          history.push("/login");
+        }, 1000);
+      }
+    } catch (e) {
+      showError();
+    }
   };
-  const updateProfilePicture = () => {
+  const updateProfilePicture = async () => {
     const formData = new FormData();
     formData.append("file", profilePicture);
-    userService
-      .updateProfilePicture(formData)
-      .then((response) => {
-        setUser({
-          ...user,
-          profilePicture: response.data.profilePicture,
-        });
-      })
-      .catch(() => {});
+    try {
+      let response = await userService
+          .updateProfilePicture(formData);
+      setUser({
+        ...user,
+        profilePicture: response.data.profilePicture,
+      });
+    } catch (e) {
+    }
   };
 
   return (

@@ -12,13 +12,11 @@ const LaboratoryHeads = (props) => {
   const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
-  const updateData = useCallback(() => {
-    userService
-      .getLaboratoryHeads()
-      .then((response) => {
-        setLaboratoryHeads(response.data);
-      })
-      .catch((error) => {});
+  const updateData = useCallback(async () => {
+    try {
+      let response = await userService.getLaboratoryHeads();
+      setLaboratoryHeads(response.data);
+    } catch (error) {}
   }, [userService]);
   const handleEmailChange = (event) => {
     event.persist();
@@ -29,20 +27,18 @@ const LaboratoryHeads = (props) => {
     updateData();
   }, [updateData]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     const password = Math.random().toString(36).slice(-8);
 
-    userService
-      .createUser({
+    try {
+      await userService.createUser({
         email: newEmail,
         password,
         role: "LABORATORY_HEAD",
         creatorId: user._id,
-      })
-      .then((response) => {
-        updateData();
-      })
-      .catch((error) => {});
+      });
+      updateData();
+    } catch (error) {}
   };
 
   return (
@@ -102,7 +98,7 @@ const LaboratoryHeads = (props) => {
                       laboratoryHead && !laboratoryHead.hasConfirmed
                   )
                   .map((laboratoryHead, index) => (
-                    <div className="list-item ">
+                    <div className="list-item" key={index}>
                       <Link
                         to={"/profile/" + laboratoryHead._id}
                         className="text-body d-block"
@@ -128,7 +124,7 @@ const LaboratoryHeads = (props) => {
                 {laboratoryHeads
                   .filter((user) => user && user.hasConfirmed)
                   .map(({ email, ...laboratoryHead }, index) => (
-                    <UserListItem user={laboratoryHead} subTitle={email} />
+                    <UserListItem key={index} user={laboratoryHead} subTitle={email} />
                   ))}
               </div>
             </div>

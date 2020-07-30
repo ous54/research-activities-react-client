@@ -1,4 +1,10 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, {
+  Fragment,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import { NotificationIcon } from "../components/icons";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
@@ -11,38 +17,37 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
 
-  useEffect(() => {
-    userService.getFollowedUsers().then((response) => {
-      setFollowedUsers(response.data);
-      if (response.data.length === 0) setLoading(false);
-    });
+  const getFollowedUsers = useCallback(async () => {
+    let response = await userService.getFollowedUsers();
+    setFollowedUsers(response.data);
+    if (response.data.length === 0) setLoading(false);
   }, [userService]);
+
+  useEffect(() => {
+    getFollowedUsers();
+  }, [getFollowedUsers]);
 
   useEffect(() => {
     if (!followedUsers || followedUsers.length === 0) return;
     followedUsers.forEach((followedUser, index) => {
-      setTimeout(() => {
-        scraperService.getAuthorData(followedUser.scholarId).then((result) => {
-          const currentAuthor = result.data;
-          if (
-            currentAuthor.publications.length > followedUser.publications.length
-          )
-            setNotifications((notifications) => [
-              ...notifications,
-              {
-                ...followedUser,
-              },
-            ]);
-
-          if (followedUsers.length === index + 1) setLoading(false);
-        });
+      setTimeout(async () => {
+        let result = await scraperService.getAuthorData(followedUser.scholarId);
+        const currentAuthor = result.data;
+        if (
+          currentAuthor.publications.length > followedUser.publications.length
+        )
+          setNotifications((notifications) => [
+            ...notifications,
+            {
+              ...followedUser,
+            },
+          ]);
+        if (followedUsers.length === index + 1) setLoading(false);
       }, 1000 * index);
     });
   }, [followedUsers, scraperService]);
 
   const clear = (index) => () => {
-    console.log("the index was : ", index);
-
     let tmp = notifications;
     tmp.splice(index, 1);
     setNotifications(() => tmp);
