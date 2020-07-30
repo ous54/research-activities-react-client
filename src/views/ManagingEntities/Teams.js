@@ -1,10 +1,15 @@
-import React, { Fragment, useEffect, useState, useContext, useCallback } from "react";
+import React, {
+  Fragment,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import { AppContext } from "../../context/AppContext";
 import CRUDTable from "../components/CRUDTable";
 import CRUDForm from "../components/CRUDForm";
 import PageHeader from "../components/PageHeader";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 const Teams = () => {
   const history = useHistory();
@@ -38,18 +43,20 @@ const Teams = () => {
     }));
   };
 
-  const updateTeamData = useCallback(() => {
-    teamService.findAllTeams().then((response) => {
-      const filteredLaboratoiresIds = user.laboratoriesHeaded.map(({ _id }) => _id);
-
-      const filteredTeams = response.data
-        .filter((team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1)
-        .map((team) => ({
-          ...team,
-          laboratory: team.laboratory.name,
-        }));
-      setTeams(filteredTeams);
-    });
+  const updateTeamData = useCallback(async () => {
+    let response = await teamService.findAllTeams();
+    const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
+      ({ _id }) => _id
+    );
+    const filteredTeams = response.data
+      .filter(
+        (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
+      )
+      .map((team) => ({
+        ...team,
+        laboratory: team.laboratory.name,
+      }));
+    setTeams(filteredTeams);
   }, [teamService, user.laboratoriesHeaded]);
 
   const updateLaboratoriesData = useCallback(() => {
@@ -64,31 +71,26 @@ const Teams = () => {
     }));
   };
 
-  const addTeam = () => {
+  const addTeam = async () => {
     console.log(inputs);
-    teamService.createTeam(inputs).then((response) => {
-      updateTeamData();
-      clearInputs();
-    });
+    await teamService.createTeam(inputs);
+    updateTeamData();
+    clearInputs();
   };
 
-  const updateTeam = (team) => {
-    teamService
-      .updateTeam({
-        ...team,
-        ...inputs,
-      })
-      .then((response) => {
-        setAction("ADDING");
-        updateTeamData();
-        clearInputs();
-      });
+  const updateTeam = async (team) => {
+    await teamService.updateTeam({
+      ...team,
+      ...inputs,
+    });
+    setAction("ADDING");
+    updateTeamData();
+    clearInputs();
   };
 
-  const deleteTeam = (team) => {
-    teamService.deleteTeam(team._id).then((response) => {
-      updateTeamData();
-    });
+  const deleteTeam = async (team) => {
+    await teamService.deleteTeam(team._id);
+    updateTeamData();
   };
   const manageTeam = ({ _id }) => {
     history.push(`/team/${_id}`);
@@ -96,7 +98,11 @@ const Teams = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    return action === "ADDING" ? addTeam() : action === "EDITING" ? updateTeam() : updateTeamData();
+    return action === "ADDING"
+      ? addTeam()
+      : action === "EDITING"
+      ? updateTeam()
+      : updateTeamData();
   };
 
   const cancelEdit = () => {
@@ -109,17 +115,20 @@ const Teams = () => {
     updateLaboratoriesData();
     clearInputs();
   }, [updateLaboratoriesData, updateTeamData]);
-  console.log("teams",teams)
+
   return (
     <Fragment>
       <div className="page-header">
-        <PageHeader title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(user)}`} subTitle={`${teams.length} équipe(s)`} />
+        <PageHeader
+          title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(
+            user
+          )}`}
+          subTitle={`${teams.length} équipe(s)`}
+        />
       </div>
-      <Link to="/labTree">
-          <button className="btn btn-secondary" type="button">
-            arborescence de laboratoire
-          </button>
-        </Link><br/><br/>
+      <Link to="/labTree" className=" btn btn-secondary mb-4">
+        arborescence de laboratoire
+      </Link>
       <div className="row row-cards row-deck">
         <div className="col-md-8">
           <CRUDTable
