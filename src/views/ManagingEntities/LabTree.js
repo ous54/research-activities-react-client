@@ -1,7 +1,5 @@
 import React, { useEffect, Fragment, useContext, useState, useCallback } from "react";
 import PageHeader from "../components/PageHeader";
-import { UserHelper } from "../../context/contextHelper";
-import { useHistory } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import LabReport from "./LabReport";
@@ -44,11 +42,8 @@ const LabTree = () => {
         for (const team of teams) {
           let name;
           if (typeof team.head_id !== "undefined" || team.head_id === null) {
-            console.log("HEAD", typeof team.head_id);
             let res = await userService.findUser(team.head_id);
-            console.log("RES", res);
             name = [res.data.firstName, res.data.lastName].join(" ");
-            console.log("tHNAMES BEFORE", { team_id: team._id, labName: team.name, headName: name, headId: team.head_id });
             names.push({ team_id: team._id, teamName: team.name, headName: name, headId: team.head_id });
           } else {
             name = null;
@@ -64,10 +59,8 @@ const LabTree = () => {
         for (const team of teams) {
           for (const member of team.teamMemberShip) {
             let res = await userService.findUser(member.user_id);
-            console.log("RES", res);
-            console.log("Team", team);
+
             let name = [res.data.firstName, res.data.lastName].join(" ");
-            console.log("tHNAMES BEFORE", { team_id: team._id, labName: team.name, headName: name, memberId: member.user_id });
             if (member.user_id !== team.head_id) {
               names.push({ team_id: team._id, teamName: team.name, memberName: name, memberId: member.user_id });
             }
@@ -78,7 +71,6 @@ const LabTree = () => {
         setIsLoading(false);
       })().catch((err) => console.log("ERROR", err));
     }
-    console.log("TEAMS", teams);
   }, [teams]);
 
   useEffect(() => {
@@ -93,7 +85,7 @@ const LabTree = () => {
       </div>
 
       {teams.length > 0 ? (
-        <PDFDownloadLink className="btn  btn-sm m-1  btn-outline-primary" document={<LabReport user={user} teams={Teams} tHNames={tHNames} membersNames={membersNames} />} fileName={`${[user.firstName, user.lastName].join(" ")}` + `.pdf`}>
+        <PDFDownloadLink className="btn  btn-sm m-1  btn-outline-primary" document={<LabReport user={user} teams={Teams} tHNames={tHNames} membersNames={membersNames} />} fileName={`${[user.firstName, user.lastName].join(" ")}.pdf`}>
           {({ blob, url, loading, error }) => (loading ? "Chargement du document..." : "Imprimer le rapport")}
         </PDFDownloadLink>
       ) : (

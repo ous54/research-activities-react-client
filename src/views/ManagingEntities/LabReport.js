@@ -76,10 +76,10 @@ const LabReport = ({ user, teams, tHNames, membersNames }) => {
               <View style={styles.table}>
                 {/* TableHeader */}
                 <View style={styles.tableRow}>
-                  <View style={{ ...styles.tableCol, width: "80%" }}>
+                  <View style={{ ...styles.tableCol, width: "60%" }}>
                     <Text style={styles.tableCell}>Nom</Text>
                   </View>
-                  <View style={{ ...styles.tableCol, width: "10%" }}>
+                  <View style={{ ...styles.tableCol, width: "30%" }}>
                     <Text style={styles.tableCell}>Rôle</Text>
                   </View>
                 </View>
