@@ -1,10 +1,16 @@
-import React, { useEffect, useContext, useState, Fragment } from "react";
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  Fragment,
+  useCallback,
+} from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
-import UserPicture from "../components/UserPicture";
 import Publications from "../Author/components/Publications";
 import AuthorCitations from "../Author/components/AuthorCitations";
 import Coauthors from "../Author/components/Coauthors";
+import ProfileHeader from "./components/ProfileHeader";
 
 const Profile = () => {
   const { id } = useParams();
@@ -12,50 +18,35 @@ const Profile = () => {
   const [correspondingFollowedUser, setCorrespondingFollowedUser] = useState(
     null
   );
-  const { ApiServices, UserHelper } = useContext(AppContext);
+  const { ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
   useEffect(() => {
-    userService.findUser(id).then((response) => {
-      setProfileUser(response.data);
-      setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
-    });
+    getProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, userService]);
+
+  const getProfile = useCallback(async () => {
+    let response = await userService.findUser(id);
+    setProfileUser(response.data);
+    setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
   }, [id, userService]);
 
   return (
     <div className="container">
       {profileUser !== null && (
         <Fragment>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="card">
-                <div className="card-body text-center">
-                  <h2 className="mb-3">
-                    {profileUser.firstName ? profileUser.firstName : ""}{" "}
-                    {profileUser.lastName ? profileUser.lastName : ""}
-                  </h2>
-                  <p className="mb-4">
-                    <div className="media">
-                      <UserPicture user={profileUser} size="xl" />
-                      <div className="media-body m-4">
-                        <p className="text-muted mb-0">
-                          {UserHelper.userShortBio(profileUser)}
-                        </p>
-                      </div>
-                    </div>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-8">
-              {correspondingFollowedUser != null && ""}
-            </div>
-          </div>
           {correspondingFollowedUser != null && (
             <div className="row">
               <div className="col-md-8">
                 {correspondingFollowedUser != null && (
                   <Fragment>
+                    <ProfileHeader
+                      profile={{
+                        ...correspondingFollowedUser,
+                        ...profileUser,
+                      }}
+                    />
                     <Publications
                       author={correspondingFollowedUser}
                       setAuthor={setCorrespondingFollowedUser}

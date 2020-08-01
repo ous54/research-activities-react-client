@@ -34,10 +34,9 @@ const Universities = () => {
     }));
   };
 
-  const updateData = useCallback(() => {
-    universityService.findAllUniversities().then((response) => {
-      setUniversities(response.data);
-    });
+  const updateData = useCallback(async () => {
+    let response = await universityService.findAllUniversities();
+    setUniversities(response.data);
   }, [universityService]);
 
   useEffect(() => {
@@ -53,23 +52,20 @@ const Universities = () => {
     }));
   };
 
-  const addUniversity = () => {
-    universityService.createUniversity(inputs).then((response) => {
-      updateData();
-    });
+  const addUniversity = async () => {
+    await universityService.createUniversity(inputs);
+    updateData();
   };
 
-  const updateUniversity = (university) => {
-    universityService
-      .updateUniversity({
-        ...university,
-        ...inputs,
-      })
-      .then((response) => {
-        setAction("ADDING");
-        updateData();
-        clearInputs();
-      });
+  const updateUniversity = async (university) => {
+    await universityService
+        .updateUniversity({
+          ...university,
+          ...inputs,
+        });
+    setAction("ADDING");
+    updateData();
+    clearInputs();
   };
 
   const handleSubmit = (event) => {

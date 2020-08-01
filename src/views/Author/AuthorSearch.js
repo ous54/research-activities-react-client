@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 
 import { useParams } from "react-router-dom";
 
@@ -17,17 +17,22 @@ const AuthorSearch = () => {
   const { ApiServices } = useContext(AppContext);
   const { scraperService } = ApiServices;
   useEffect(() => {
+    authorSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authorName]);
+
+  const authorSearch = useCallback(async () => {
     if (noResult) setNoResult(false);
 
     const authorNamePath = authorName.replace(" ", "%20");
 
     setAuthors([]);
 
-    scraperService.authorSearch(authorNamePath).then((result) => {
-      if (result.data.error) setNoResult(true);
-      else setAuthors(result.data);
-    });
+    let result = await scraperService.authorSearch(authorNamePath);
+    if (result.data && result.data.error) setNoResult(true);
+    else setAuthors(result.data);
   }, [authorName, noResult, scraperService]);
+
 
   return (
     <div className="container">

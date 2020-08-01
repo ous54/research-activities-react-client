@@ -24,95 +24,77 @@ const Author = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { scraperService, userService } = ApiServices;
 
-  const getAuthorData = useCallback(() => {
-    console.log("getAuthorData");
-    setAuthor();
-    if (isError) setIsError(false);
-    if (noResult) setNoResult(false);
+  const getAuthorData = useCallback(async () => {
+      console.log("getAuthorData");
+      setAuthor();
+      if (isError) setIsError(false);
+      if (noResult) setNoResult(false);
 
-    scraperService
-      .getAuthorData(scholarId)
-      .then((result) => {
-        if (result.status === 200) {
-          if (isError) setIsError(false);
-          setAuthor(result.data);
-        } else if (result.status === 404) {
+      try {
+          let result = await scraperService
+              .getAuthorData(scholarId);
+          if (result.status === 200) {
+              if (isError) setIsError(false);
+              setAuthor(result.data);
+          } else if (result.status === 404) {
+              setNoResult(true);
+          } else {
+              setIsError(true);
+          }
+      } catch (e) {
           setNoResult(true);
-        } else {
-          setIsError(true);
-        }
-      })
-      .catch((e) => {
-        setNoResult(true);
-      });
+      }
   }, [isError, noResult, scholarId, scraperService]);
 
-  const getIfIsFollowing = useCallback(() => {
-    console.log("getIfIsFollowing");
-    if (author == null) return;
+  const getIfIsFollowing = useCallback(async () => {
+      console.log("getIfIsFollowing");
 
-    userService
-      .isFollowing(scholarId)
-      .then((response) => {
-        if (response.data.isFollowing) setIsFollowed(true);
-        if (
-          response.data.oldNumberOfPublications < author.publications.length
-        ) {
-          setIsUpdating(true);
-          userService
-            .updateFollowUser(author)
-            .then((response) => {
-              console.log("done");
-              setIsUpdating(false);
-            })
-            .catch(() => {});
-        }
-      })
-      .catch((error) => {});
-  }, [author, scholarId, userService]);
+      let response = await userService.isFollowing(scholarId);
+      if (response.data.isFollowing) setIsFollowed(true);
+  }, [scholarId, userService]);
 
-  const findAllUsers = useCallback(() => {
-    console.log("findAllUsers");
-    userService
-      .findAllUsers()
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {});
+  const findAllUsers = useCallback(async () => {
+      console.log("findAllUsers");
+      try {
+          let response = await userService
+              .findAllUsers();
+          setUsers(response.data);
+      } catch (error) {
+      }
   }, [userService]);
 
   const toggleFollow = useCallback(
-    (user_id) => {
-      console.log("toggleFollow");
-      setsSendingFollow(true);
-      const service = isFollowed
-        ? userService.unfollowUser(scholarId)
-        : userService.followUser({ ...author, user_id });
+      async (user_id) => {
+          console.log("toggleFollow");
+          setsSendingFollow(true);
+          const service = isFollowed
+              ? userService.unfollowUser(scholarId)
+              : userService.followUser({...author, user_id});
 
-      service
-        .then((response) => {
-          setIsFollowed(!isFollowed);
-        })
-        .catch((error) => {});
+          try {
+              await service;
+              setIsFollowed(!isFollowed);
+          } catch (error) {
+          }
 
-      setsSendingFollow(false);
-    },
+          setsSendingFollow(false);
+      },
     [author, isFollowed, scholarId, userService]
   );
 
   useEffect(() => {
     getAuthorData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getIfIsFollowing();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     findAllUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (noResult) return <NoResult searchTerm={scholarId} />;

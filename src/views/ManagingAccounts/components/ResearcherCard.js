@@ -22,15 +22,17 @@ const ResearcherCard = ({ researcher }) => {
               )}
               {!researcher.id && (
                 <span className="avatar  bg-blue-lt avatar-md ">
-                  {researcher.name.split(" ")[0][0]}
-                  {researcher.name.split(" ")[1][0]}
+                  {researcher.firstName ? researcher.firstName[0] : ""}
+                  {researcher.lastName ? researcher.lastName[0] : ""}
                 </span>
               )}
             </div>
-            <div className="col" style={{minWidth: "auto"}}>
+            <div className="col" style={{ minWidth: "auto" }}>
               <h3 className="mb-0">
                 <Link to={"/profile/" + researcher.user_id}>
-                  {researcher.name ? researcher.name : ""}{" "}
+                  {`${researcher ? researcher.firstName : ""} ${
+                    researcher ? researcher.lastName : ""
+                  }`}
                 </Link>
               </h3>
               <div className="text-muted text-h5">

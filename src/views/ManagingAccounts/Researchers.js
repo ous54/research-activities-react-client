@@ -12,14 +12,12 @@ const Researchers = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { userService } = ApiServices;
 
-  const updateData = useCallback(() => {
-    userService.getResearchers().then((response) => {
-      const filteredResearchers = response.data.filter(
+  const updateData = useCallback(async () => {
+    let response = await userService.getResearchers();
+    const filteredResearchers = response.data.filter(
         (researcher) => researcher.creatorId === user._id
-      );
-
-      setResearchers(filteredResearchers);
-    });
+    );
+    setResearchers(filteredResearchers);
   }, [user._id, userService]);
 
   useEffect(() => {
@@ -31,25 +29,25 @@ const Researchers = () => {
     setNewEmail(event.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     const password = Math.random().toString(36).slice(-8);
 
-    userService
-      .createUser({
-        email: newEmail,
-        password,
-        role: "RESEARCHER",
-        creatorId: user._id,
-      })
-      .then((response) => {
-        updateData();
-      })
-      .catch((error) => {});
+    try {
+      await userService
+          .createUser({
+            email: newEmail,
+            password,
+            role: "RESEARCHER",
+            creatorId: user._id,
+          });
+      updateData();
+    } catch (error) {
+    }
   };
 
   return (
     <div className="container">
-      <PageHeader title="Géstion des comptes chef de laboratoire" />
+      <PageHeader title="Géstion des comptes des chercheurs" />
       <div className="row">
         <div className="col-md-4">
           <div className="card">
@@ -93,7 +91,7 @@ const Researchers = () => {
         <div className="col-md-4">
           <div className="card ">
             <div className="card-header">
-              <h3 className="card-title">Utilisateurs invites</h3>
+              <h3 className="card-title">Comptes invités</h3>
             </div>
             <div className="card-body p-0">
               <div
@@ -122,7 +120,7 @@ const Researchers = () => {
         <div className="col-md-4">
           <div className="card ">
             <div className="card-header">
-              <h3 className="card-title">Utilisateurs confirmés</h3>
+              <h3 className="card-title">Comptes confermés</h3>
             </div>
             <div className="card-body p-0">
               <div

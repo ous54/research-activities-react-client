@@ -152,28 +152,28 @@ const Laboratory = () => {
     setNewHeadId((newHeadId) => event.target.value);
   };
 
-  const handelButtonClick = (event) => {
+  const handelButtonClick = async (event) => {
     event.preventDefault();
     if (!newHeadId) return;
-    laboratoryService
-      .associateHeadToLaboratory(newHeadId, laboratory._id)
-      .then((response) => {
-        requestUpdate();
-      })
-      .catch((error) => {});
+    try {
+      await laboratoryService
+          .associateHeadToLaboratory(newHeadId, laboratory._id);
+      requestUpdate();
+    } catch (error) {
+    }
   };
   
 
   return (
     <div className="container">
       <PageHeader
-        title={laboratory ? `laboratoire ${laboratory.abbreviation}` : ""}
+        title={laboratory ? `Laboratoire ${laboratory.abbreviation}` : ""}
         subTitle={laboratory ? laboratory.name : ""}
       />
+      {laboratory == null && <Loader size="60" />}
+
       <div className="row">
         <div className="col-md-8">
-          {laboratory == null && <Loader size="60" />}
-
           {laboratory != null && (
             <div className="card">
               <div className="card-body">

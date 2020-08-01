@@ -29,16 +29,17 @@ const ResearchersStatistics = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
+  const [chartVersion, setChartVersion] = useState(0);
   const [chart, setChart] = useState({
     data: {
+      unload: true,
       x: "x",
-      columns: [],
       type: "bar",
+      columns: [],
     },
   });
 
   const updateChart = useCallback(() => {
-    console.log("updateChart");
     let yearsRange = [];
     for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
 
@@ -52,37 +53,29 @@ const ResearchersStatistics = () => {
 
     setChart(() => ({
       data: {
-        ...chart.data,
+        x: "x",
+        type: "bar",
         columns,
       },
-    }));
-  }, [
-    chart.data,
-    dateRange.end,
-    dateRange.start,
-    filteredResearchersStatistics,
-  ]);
+    })); 
+           
+    setChartVersion(chartVersion + 1);
+  }, [chartVersion, dateRange.end, dateRange.start, filteredResearchersStatistics]);
 
-  const updateFilteringOptionsData = useCallback(() => {
-    console.log("updateFilteringOptionsData");
-    userService.getFilteringOptions(user._id).then((response) => {
-      setFilteringOptions(response.data);
-    });
+  const updateFilteringOptionsData = useCallback(async () => {
+    let response = await userService.getFilteringOptions(user._id);
+    setFilteringOptions(response.data);
   }, [user._id, userService]);
 
-  const updateFollowedUsersData = useCallback(() => {
-    console.log("updateFollowedUsersData");
-
-    statisticsService.getStatistics(filter).then((response) => {
-      setResearchersStatistics(response.data);
-    });
+  const updateFollowedUsersData = useCallback(async () => {
+    let response = await statisticsService.getStatistics(filter);
+    setResearchersStatistics(response.data);
   }, [filter, statisticsService]);
 
   const updateStatistics = () => {};
-
   useEffect(() => {
     updateChart();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {
@@ -134,14 +127,19 @@ const ResearchersStatistics = () => {
         </div>
         <div className="col-md-8">
           <div className="card">
-            <div id="chart-development-activity" className="mt-4">
+            <div id="chartData-development-activity" className="mt-4">
               <div
-                id="apexcharts28b504"
-                className="apexcharts-canvas apexcharts28b504 apexcharts-theme-light"
+                id="apexchartDatas28b504"
+                className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
+                    key={chartVersion}
                     data={chart.data}
+                    unloadBeforeLoad="true"
+                    title={{
+                      text: "Nombre des publications par année",
+                    }}
                     legend={{
                       show: true,
                     }}
