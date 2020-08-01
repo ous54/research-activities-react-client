@@ -24,32 +24,28 @@ function LoginPage() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsError(false);
 
-    if (isError) setIsError(false);
-
-    authentificationService
-      .login(inputs)
-      .then((result) => {
-        if (result.status === 200) {
-          if (isError) setIsError(false);
-
-          setUser(result.data);
-
-          setIsLoggedIn(true);
-
-          setTimeout(() => {
-            if (result.data.hasConfirmed) history.push("/");
-            else history.push("/settings/account");
-          }, 1000);
-        } else {
-          setIsError(true);
-        }
-      })
-      .catch((e) => {
+    try {
+      let result = await authentificationService.login(inputs);
+      if (result.status !== 200) {
         setIsError(true);
-      });
+        return;
+      }
+
+      setUser(result.data);
+
+      setIsLoggedIn(true);
+
+      setTimeout(() => {
+        if (result.data.hasConfirmed) history.push("/");
+        else history.push("/settings/account");
+      }, 1000);
+    } catch (e) {
+      setIsError(true);
+    }
   };
 
   return (

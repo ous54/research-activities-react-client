@@ -21,17 +21,15 @@ const Laboratory = () => {
   const { ApiServices } = useContext(AppContext);
   const { laboratoryService, userService } = ApiServices;
 
-  const getLaboratoryData = useCallback(() => {
-    laboratoryService.findLaboratory(laboratoryId).then((response) => {
-      setLaboratory(response.data);
-    });
+  const getLaboratoryData = useCallback(async () => {
+    let response = await laboratoryService.findLaboratory(laboratoryId);
+    setLaboratory(response.data);
   }, [laboratoryId, laboratoryService]);
 
-  const getLaboratoryHeadsData = useCallback(() => {
-    userService.getLaboratoryHeads().then((response) => {
-      setLaboratoryHeads([]);
-      setLaboratoryHeads(response.data);
-    });
+  const getLaboratoryHeadsData = useCallback(async () => {
+    let response = await userService.getLaboratoryHeads();
+    setLaboratoryHeads([]);
+    setLaboratoryHeads(response.data);
   }, [userService]);
 
   const requestUpdate = useCallback(() => {
@@ -50,15 +48,15 @@ const Laboratory = () => {
     setNewHeadId((newHeadId) => event.target.value);
   };
 
-  const handelButtonClick = (event) => {
+  const handelButtonClick = async (event) => {
     event.preventDefault();
     if (!newHeadId) return;
-    laboratoryService
-      .associateHeadToLaboratory(newHeadId, laboratory._id)
-      .then((response) => {
-        requestUpdate();
-      })
-      .catch((error) => {});
+    try {
+      await laboratoryService
+          .associateHeadToLaboratory(newHeadId, laboratory._id);
+      requestUpdate();
+    } catch (error) {
+    }
   };
 
   return (
