@@ -69,10 +69,10 @@ const entitiesPathsCategory = {
       inMenu: true,
     },
     {
-      title: "arborescence",
+      title: "Organigramme",
       path: "/labTree",
       component: LabTree,
-      inMenu: false,
+      inMenu: true,
       roles: ["LABORATORY_HEAD"],
     },
     {

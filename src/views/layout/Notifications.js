@@ -26,8 +26,13 @@ const Notifications = () => {
         : {};
 
     let response = await userService.getFollowedUsers(filter);
+    if(response.status === 200){
     setFollowedResearchers(response.data);
-    if (response.data.length === 0) setLoading(false);
+    if (response.data.length === 0) setLoading(false);}
+    else{
+      setFollowedResearchers([]);
+      setLoading(false);
+    }
   }, [user, userService]);
 
   const checkFollowedResearcher = useCallback(
