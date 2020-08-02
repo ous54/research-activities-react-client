@@ -16,10 +16,8 @@ html, body {
 
 
 [node-id] rect {
-    fill: #016e25;
+    fill: #949996;
 }
 
-[node-id='1'] rect {
-    fill: #750000;
-}
+
 
