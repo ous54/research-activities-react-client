@@ -89,7 +89,9 @@ const LabTree = () => {
   return (
     
     <Fragment>
-       
+    <div className="page-header">
+        <PageHeader title={`Organigramme de laboratoire ${UserHelper.userHeadedLaboratories(user)}`} />
+      </div>
     <div style={{ height: "100%" }}>
 
 {!isLoading ?  <OrgChart
