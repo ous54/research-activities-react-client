@@ -125,7 +125,7 @@ const StatisticsPaths = {
       path: "/statistics",
       component: Statistics,
       icon: StatisticsIcon,
-      roles: ["LABORATORY_HEAD"],
+      roles: ["LABORATORY_HEAD", "TEAM_HEAD"],
       inMenu: true,
     },
   ],
