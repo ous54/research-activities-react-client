@@ -4,6 +4,7 @@ import { AppContext } from "../../context/AppContext";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import LabReport from "./LabReport";
 import Teams from "./Teams";
+import OrgChart from "./mychart";
 
 const LabTree = () => {
   const { user, ApiServices, UserHelper } = useContext(AppContext);
@@ -15,6 +16,7 @@ const LabTree = () => {
   const [membersNames, setMembersNames] = useState([]);
 
   const [laboratories, setLaboratories] = useState([]);
+  const [nodes, setNodes] = useState([]);
 
   const updateTeamData = useCallback(() => {
     teamService.findAllTeams().then((response) => {
@@ -35,6 +37,7 @@ const LabTree = () => {
   }, [user.laboratoriesHeaded]);
 
   useEffect(() => {
+    let nodes = [{id:0,name:[user.firstName, user.lastName].join(" "),title:`Chef de laboratoire ${UserHelper.userHeadedLaboratories(user)}`,img : "https://cdn.balkan.app/shared/empty-img-white.svg"}];
     if (teams.length > 0) {
       setIsLoading(true);
       (async function getHeadNames() {
@@ -45,17 +48,19 @@ const LabTree = () => {
             let res = await userService.findUser(team.head_id);
             name = [res.data.firstName, res.data.lastName].join(" ");
             names.push({ team_id: team._id, teamName: team.name, headName: name, headId: team.head_id });
+            nodes.push({ id: team._id, name: team.name, pid: 0, tags: ["members-group","group"]},{id:team.head_id,stpid:team._id,pid:0,name:name,title:"chef d'équipe",img : "https://cdn.balkan.app/shared/empty-img-white.svg"})
           } else {
             name = null;
             names.push({ team_id: team._id, teamName: team.name, headName: name, headId: null });
           }
         }
         setTHNames(names);
-
-        setIsLoading(false);
+        setNodes(nodes);
+        
       })().catch((err) => console.log(err));
       (async function getNames() {
         let names = [];
+        
         for (const team of teams) {
           for (const member of team.teamMemberShip) {
             let res = await userService.findUser(member.user_id);
@@ -63,6 +68,7 @@ const LabTree = () => {
             let name = [res.data.firstName, res.data.lastName].join(" ");
             if (member.user_id !== team.head_id) {
               names.push({ team_id: team._id, teamName: team.name, memberName: name, memberId: member.user_id });
+              nodes.push({id: member.user_id,stpid: team._id,pid:team.head_id,name:name,img : "https://cdn.balkan.app/shared/empty-img-white.svg"})
             }
           }
         }
@@ -70,6 +76,8 @@ const LabTree = () => {
 
         setIsLoading(false);
       })().catch((err) => console.log("ERROR", err));
+      console.log('NODES',nodes)
+      setNodes(nodes);
     }
   }, [teams]);
 
@@ -79,52 +87,15 @@ const LabTree = () => {
   }, [updateLaboratoriesData, updateTeamData]);
 
   return (
+    
     <Fragment>
-      <div className="page-header">
-        <PageHeader title={`${[user.firstName, user.lastName].join(" ")} : Chef de laboratoire ${UserHelper.userHeadedLaboratories(user)}`} />
-      </div>
+       
+    <div style={{ height: "100%" }}>
 
-      {teams.length > 0 ? (
-        <PDFDownloadLink className="btn  btn-sm m-1  btn-outline-primary" document={<LabReport user={user} teams={Teams} tHNames={tHNames} membersNames={membersNames} />} fileName={`${[user.firstName, user.lastName].join(" ")}.pdf`}>
-          {({ blob, url, loading, error }) => (loading ? "Chargement du document..." : "Imprimer le rapport")}
-        </PDFDownloadLink>
-      ) : (
-        "Vous possédez aucune équipe"
-      )}
-      {console.log("TEAAAMS", tHNames)}
-      {!isLoading &&
-        tHNames.map((item, index) => (
-          <div className="card" key={index}>
-            <div className="card-header">
-              <h3 className="card-title">{`EQUIPE ${index + 1} : ${item.teamName}`}</h3>
-            </div>
-            <div className="card-header">{item.headName === null ? "Votre équipe n'a pas de chef d'équipe" : <h2 className="card-title">{`Chef d'équipe : ${item.headName}`}</h2>}</div>
-            {membersNames.length > 0 ? (
-              <div className="table-responsive">
-                <table className="table card-table table-vcenter text-nowrap datatable">
-                  <thead>
-                    <tr>
-                      <th className="text-center">Nom</th>
-                      <th className="text-center">Rôle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {membersNames
-                      .filter((mem) => mem.team_id === item.team_id)
-                      .map((member, index) => (
-                        <tr style={{ whiteSpace: "break-spaces " }} key={index}>
-                          <td>{member.memberName}</td>
-                          <td className="text-center">CHERCHEUR</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              "Vous n'avez aucun membre dans cette équipe"
-            )}
-          </div>
-        ))}
+{!isLoading ?  <OrgChart
+   nodes={nodes}
+ /> : "L'organigramme se charge ..."}
+</div>
     </Fragment>
   );
 };

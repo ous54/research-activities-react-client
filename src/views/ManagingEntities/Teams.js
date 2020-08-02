@@ -126,9 +126,6 @@ const Teams = () => {
           subTitle={`${teams.length} équipe(s)`}
         />
       </div>
-      <Link to="/labTree" className=" btn btn-secondary mb-4">
-        arborescence de laboratoire
-      </Link>
       <div className="row row-cards row-deck">
         <div className="col-md-8">
           <CRUDTable
