@@ -71,30 +71,35 @@ const LabReport = ({ user, teams, tHNames, membersNames }) => {
         {tHNames.map((item, index) => (
           <View style={styles.body} key={index}>
             <Text style={styles.subtitle}>{`EQUIPE ${index + 1} : ${item.teamName}`}</Text>
-            <Text style={styles.subtitle}>{`Chef d'équipe : ${item.headName}`}</Text>
-            <View style={styles.table}>
-              {/* TableHeader */}
-              <View style={styles.tableRow}>
-                <View style={{ ...styles.tableCol, width: "80%" }}>
-                  <Text style={styles.tableCell}>Nom</Text>
-                </View>
-                <View style={{ ...styles.tableCol, width: "10%" }}>
-                  <Text style={styles.tableCell}>Rôle</Text>
+            {item.headName === null ? <Text>Votre équipe n'a pas de chef d'équipe.</Text> : <Text style={styles.subtitle}>{`Chef d'équipe : ${item.headName}`}</Text>}
+            {membersNames.length > 0 ? (
+              <View style={styles.table}>
+                {/* TableHeader */}
+                <View style={styles.tableRow}>
+                  <View style={{ ...styles.tableCol, width: "60%" }}>
+                    <Text style={styles.tableCell}>Nom</Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "30%" }}>
+                    <Text style={styles.tableCell}>Rôle</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-            {membersNames
-              .filter((mem) => mem.team_id === item.team_id && mem.memberId !== item.headId)
-              .map((member, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <View style={{ ...styles.tableCol, width: "80%" }}>
-                    <Text style={styles.tableCell}>{member.memberName}</Text>
+            ) : (
+              <Text>Vous n'avez aucun membre dans cette équipe.</Text>
+            )}
+            {membersNames.length > 0 &&
+              membersNames
+                .filter((mem) => mem.team_id === item.team_id && mem.memberId !== item.headId)
+                .map((member, index) => (
+                  <View key={index} style={styles.tableRow}>
+                    <View style={{ ...styles.tableCol, width: "60%" }}>
+                      <Text style={styles.tableCell}>{member.memberName}</Text>
+                    </View>
+                    <View style={{ ...styles.tableCol, width: "30%" }}>
+                      <Text style={styles.tableCell}>CHERCHEUR </Text>
+                    </View>
                   </View>
-                  <View style={{ ...styles.tableCol, width: "10%" }}>
-                    <Text style={styles.tableCell}>CHERCHEUR </Text>
-                  </View>
-                </View>
-              ))}
+                ))}
           </View>
         ))}
       </Page>
