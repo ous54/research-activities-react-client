@@ -10,7 +10,7 @@ import { AppContext } from "../../context/AppContext";
 import CRUDTable from "../components/CRUDTable";
 import CRUDForm from "../components/CRUDForm";
 import PageHeader from "../components/PageHeader";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const Teams = () => {
   const history = useHistory();
@@ -158,9 +158,6 @@ const Teams = () => {
           subTitle={`${teams.length} équipe(s)`}
         />
       </div>
-      <Link to="/labTree" className=" btn btn-secondary mb-4">
-        arborescence de laboratoire
-      </Link>
       <div className="row row-cards row-deck">
         <div className="col-md-8">
           <CRUDTable
