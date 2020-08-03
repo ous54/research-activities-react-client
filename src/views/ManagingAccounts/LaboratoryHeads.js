@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext, useEffect, useCallback } from "react";
 
 import { AppContext } from "../../context/AppContext";
@@ -9,15 +10,22 @@ const LaboratoryHeads = (props) => {
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [newEmail, setNewEmail] = useState("");
 
-  const { user, ApiServices } = useContext(AppContext);
+  const { user, ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { userService } = ApiServices;
 
   const updateData = useCallback(async () => {
     try {
-      let response = await userService.getLaboratoryHeads();
-      setLaboratoryHeads(response.data);
-    } catch (error) {}
-  }, [userService]);
+      const response = await userService.getLaboratoryHeads();
+      if (response.data) setLaboratoryHeads(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable d'obtenir les donnees des chefs de laboratoire",
+      });
+    }
+  }, []);
+
   const handleEmailChange = (event) => {
     event.persist();
     setNewEmail(event.target.value);
@@ -25,20 +33,24 @@ const LaboratoryHeads = (props) => {
 
   useEffect(() => {
     updateData();
-  }, [updateData]);
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     const password = Math.random().toString(36).slice(-8);
 
     try {
-      await userService.createUser({
+      const response = await userService.createUser({
         email: newEmail,
         password,
         role: "LABORATORY_HEAD",
         creatorId: user._id,
       });
-      updateData();
-    } catch (error) {}
+      if (response.data) updateData();
+      else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable de créer l'utilisateur" });
+    }
   };
 
   return (
@@ -57,25 +69,24 @@ const LaboratoryHeads = (props) => {
                     <label className="form-label">
                       Email de chef de laboratoire
                     </label>
-                    <div className="input-group mb-2">
-                      <input
-                        type="email"
-                        className="form-control"
-                        placeholder="example@domaine.com"
-                        onChange={handleEmailChange}
-                        value={newEmail.email}
-                        name="email"
-                      />
-                      <span className="input-group-append">
-                        <button
-                          onClick={handleSubmit}
-                          className="btn btn-secondary"
-                          type="button"
-                        >
-                          Créer
-                        </button>
-                      </span>
-                    </div>
+                    <form onSubmit={handleSubmit}>
+                      <div className="input-group mb-2">
+                        <input
+                          required
+                          type="email"
+                          className="form-control"
+                          placeholder="example@domaine.com"
+                          onChange={handleEmailChange}
+                          value={newEmail.email}
+                          name="email"
+                        />
+                        <span className="input-group-append">
+                          <button className="btn btn-secondary" type="submit">
+                            Créer
+                          </button>
+                        </span>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -124,7 +135,11 @@ const LaboratoryHeads = (props) => {
                 {laboratoryHeads
                   .filter((user) => user && user.hasConfirmed)
                   .map(({ email, ...laboratoryHead }, index) => (
-                    <UserListItem key={index} user={laboratoryHead} subTitle={email} />
+                    <UserListItem
+                      key={index}
+                      user={laboratoryHead}
+                      subTitle={email}
+                    />
                   ))}
               </div>
             </div>

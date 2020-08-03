@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   Fragment,
   useEffect,
@@ -11,38 +12,50 @@ import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
 
 const Notifications = () => {
-  const { user, ApiServices } = useContext(AppContext);
+  const { user, ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { userService, scraperService } = ApiServices;
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [followedUsers, setFollowedResearchers] = useState([]);
 
   const getFollowedResearchers = useCallback(async () => {
-    const filter =
-      user.role === "LABORATORY_HEAD"
-        ? { laboratory_abbreviation: user.laboratoriesHeaded[0].abbreviation }
-        : user.role === "TEAM_HEAD"
-        ? { team_abbreviation: user.teamsHeaded[0].abbreviation }
-        : {};
-
-    let response = await userService.getFollowedUsers(filter);
-    setFollowedResearchers(response.data);
-    if (response.data.length === 0) setLoading(false);
-  }, [user, userService]);
+    try {
+      const filter =
+        user.role === "LABORATORY_HEAD"
+          ? { laboratory_abbreviation: user.laboratoriesHeaded[0].abbreviation }
+          : user.role === "TEAM_HEAD"
+          ? { team_abbreviation: user.teamsHeaded[0].abbreviation }
+          : {};
+      const response = await userService.getFollowedUsers(filter);
+      if (response.status === 200 && response.data)
+        setFollowedResearchers(response.data);
+      else throw Error();
+    } catch (error) {
+      setIsLoading(false);
+      pushAlert({
+        message:
+          "Incapable  to get the followed researchers for notifications services",
+      });
+    }
+  }, []);
 
   const checkFollowedResearcher = useCallback(
     async (user, index) => {
       try {
-        let result = await scraperService.getAuthorData(user.scholarId);
-        const currentPublications = result.data.publications;
+        const response = await scraperService.getAuthorData(user.scholarId);
+        const currentPublications = response.data.publications;
         if (currentPublications.length > user.publications.length)
           setNotifications((notifications) => [...notifications, { ...user }]);
-        if (followedUsers.length === index + 1) setLoading(false);
+        if (followedUsers.length === index + 1) setIsLoading(false);
       } catch (error) {
-        console.error(error);
+        pushAlert({
+          message:
+            "Incapable  to check if a followed researcher have new publication",
+        });
       }
     },
-    [followedUsers.length, scraperService]
+    [followedUsers.length]
   );
 
   const checkAllFollowedResearcher = useCallback(() => {
@@ -55,13 +68,11 @@ const Notifications = () => {
 
   useEffect(() => {
     getFollowedResearchers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!followedUsers || followedUsers.length === 0) return;
     checkAllFollowedResearcher();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [followedUsers]);
 
   const clear = (index) => () => {
@@ -77,9 +88,9 @@ const Notifications = () => {
         className="nav-link"
         data-toggle={notifications.length > 0 ? "dropdown" : ""}
       >
-        {!loading && <NotificationIcon />}
-        {loading && <Loader size={25} />}
-        {!loading && (
+        {!isLoading && <NotificationIcon />}
+        {isLoading && <Loader size={25} />}
+        {!isLoading && (
           <span href="/#" className="badge bg-red">
             {notifications.length}
           </span>

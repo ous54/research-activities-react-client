@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   useState,
   useContext,
@@ -18,19 +19,31 @@ const Laboratory = () => {
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [laboratory, setLaboratory] = useState(null);
 
-  const { ApiServices } = useContext(AppContext);
+  const { ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { laboratoryService, userService } = ApiServices;
 
   const getLaboratoryData = useCallback(async () => {
-    let response = await laboratoryService.findLaboratory(laboratoryId);
-    setLaboratory(response.data);
-  }, [laboratoryId, laboratoryService]);
+    try {
+      const response = await laboratoryService.findLaboratory(laboratoryId);
+      if (response.data) setLaboratory(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable d'obtenir les données de laboratoire" });
+    }
+  }, [laboratoryId]);
 
   const getLaboratoryHeadsData = useCallback(async () => {
-    let response = await userService.getLaboratoryHeads();
-    setLaboratoryHeads([]);
-    setLaboratoryHeads(response.data);
-  }, [userService]);
+    try {
+      const response = await userService.getLaboratoryHeads();
+      if (response.data) setLaboratoryHeads(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable d'obtenir les données des chefs des laboratoires",
+      });
+    }
+  }, []);
 
   const requestUpdate = useCallback(() => {
     getLaboratoryData();
@@ -52,10 +65,20 @@ const Laboratory = () => {
     event.preventDefault();
     if (!newHeadId) return;
     try {
-      await laboratoryService
-          .associateHeadToLaboratory(newHeadId, laboratory._id);
-      requestUpdate();
+      const response = await laboratoryService.associateHeadToLaboratory(
+        newHeadId,
+        laboratory._id
+      );
+      if (response.data)
+        pushAlert({
+          message: "Chef est associé au laboratoire",
+          type: "success",
+        });
+      else throw Error();
     } catch (error) {
+      pushAlert({ message: "Incapable d'associer le chef au laboratoire" });
+    } finally {
+      requestUpdate();
     }
   };
 

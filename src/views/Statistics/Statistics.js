@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import ResearchersFilter from "../components/ResearchersFilter";
 import PageHeader from "../components/PageHeader";
@@ -26,7 +27,8 @@ const ResearchersStatistics = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { user, ApiServices } = useContext(AppContext);
+  const { user, ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { statisticsService, userService } = ApiServices;
 
   const [chartVersion, setChartVersion] = useState(0);
@@ -57,25 +59,43 @@ const ResearchersStatistics = () => {
         type: "bar",
         columns,
       },
-    })); 
-           
+    }));
+
     setChartVersion(chartVersion + 1);
-  }, [chartVersion, dateRange.end, dateRange.start, filteredResearchersStatistics]);
+  }, [
+    chartVersion,
+    dateRange.end,
+    dateRange.start,
+    filteredResearchersStatistics,
+  ]);
 
   const updateFilteringOptionsData = useCallback(async () => {
-    let response = await userService.getFilteringOptions(user._id);
-    setFilteringOptions(response.data);
-  }, [user._id, userService]);
+    try {
+      const response = await userService.getFilteringOptions(user._id);
+      if (response.data) setFilteringOptions(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les options de filtrage",
+      });
+    }
+  }, [user._id]);
 
   const updateFollowedUsersData = useCallback(async () => {
-    let response = await statisticsService.getStatistics(filter);
-    setResearchersStatistics(response.data);
-  }, [filter, statisticsService]);
+    try {
+      const response = await statisticsService.getStatistics(filter);
+      if (response.data) setResearchersStatistics(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour obtenir les statistiques",
+      });
+    }
+  }, [filter]);
 
   const updateStatistics = () => {};
   useEffect(() => {
     updateChart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {
@@ -93,7 +113,6 @@ const ResearchersStatistics = () => {
       setFilteredResearchersStatistics(researchersStatistics);
       return;
     }
-
     const a = researchersStatistics.filter(
       (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
     );

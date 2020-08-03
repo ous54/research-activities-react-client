@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import PageHeader from "../components/PageHeader";
 
@@ -9,16 +10,23 @@ const Researchers = () => {
   const [researchers, setResearchers] = useState([]);
   const [newEmail, setNewEmail] = useState("");
 
-  const { user, ApiServices } = useContext(AppContext);
+  const { user, ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { userService } = ApiServices;
 
   const updateData = useCallback(async () => {
-    let response = await userService.getResearchers();
-    const filteredResearchers = response.data.filter(
-        (researcher) => researcher.creatorId === user._id
-    );
-    setResearchers(filteredResearchers);
-  }, [user._id, userService]);
+    try {
+      const response = await userService.getResearchers();
+      if (response.data) {
+        const filteredResearchers = response.data.filter(
+          (researcher) => researcher.creatorId === user._id
+        );
+        setResearchers(filteredResearchers);
+      } else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable d'obtenir les données des chercheurs" });
+    }
+  }, [user._id]);
 
   useEffect(() => {
     updateData();
@@ -33,15 +41,16 @@ const Researchers = () => {
     const password = Math.random().toString(36).slice(-8);
 
     try {
-      await userService
-          .createUser({
-            email: newEmail,
-            password,
-            role: "RESEARCHER",
-            creatorId: user._id,
-          });
-      updateData();
+      const response = await userService.createUser({
+        email: newEmail,
+        password,
+        role: "RESEARCHER",
+        creatorId: user._id,
+      });
+      if (response.data) updateData();
+      else throw Error();
     } catch (error) {
+      pushAlert({ message: "Incapable de créer l'utilisateur" });
     }
   };
 

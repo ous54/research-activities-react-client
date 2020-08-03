@@ -1,57 +1,61 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 import Loader from "../../components/Loader";
 import PageNotFound from "../../components/PageNotFound";
 
 const Publication = ({ author, publication, updatePublication, index }) => {
-  const { ApiServices } = useContext(AppContext);
+  const { ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { scraperService } = ApiServices;
 
-  const [noResult, setNoResult] = useState(false);
+  const [noResultFound, setNoResultFound] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const getPublicationData = useCallback(async () => {
+    try {
       setIsLoading(true);
-      try {
-          let result = await scraperService
-              .getPublicationData(author.scholarId, publication.title);
-          setIsFetched(true);
-          if (result.data.error) {
-              setNoResult(true);
-              updatePublication(index, {
-                  ...publication,
-                  searchedFor: true,
-              });
-          } else {
-              updatePublication(index, {
-                  ...publication,
-                  IF: result.data["Impact Factor"],
-                  SJR: result.data["SJR"],
-                  searchedFor: true,
-              });
-          }
-          setIsLoading(false);
-      } catch (e) {
-          updatePublication(index, {
-              ...publication,
-              searchedFor: true,
-          });
-          setIsLoading(false);
-          setNoResult(true);
+      const response = await scraperService.getPublicationData(
+        author.scholarId,
+        publication.title
+      );
+      if (response.data.error) {
+        setNoResultFound(true);
+        updatePublication(index, {
+          ...publication,
+          searchedFor: true,
+        });
+      } else {
+        setIsFetched(true);
+        updatePublication(index, {
+          ...publication,
+          IF: response.data["Impact Factor"],
+          SJR: response.data["SJR"],
+          searchedFor: true,
+        });
       }
-  }, [author.scholarId, index, publication, scraperService, updatePublication]);
-
-  const lunchGetPublicationData = useCallback(() => {
-    if (!publication.IF && !publication.SJR && !publication.searchedFor)
-      setTimeout(() => {
-        getPublicationData();
-      }, index * 2000);
-  }, [getPublicationData, index, publication]);
+    } catch (e) {
+      pushAlert({
+        message:
+          "Incapable d'obtenir les données de la publication" +
+          publication.title,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    lunchGetPublicationData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let isMounted = true;
+    if (!publication.IF && !publication.SJR && !publication.searchedFor)
+      setTimeout(() => {
+        if (isMounted) getPublicationData();
+      }, index * 2000);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const fetchedButton = (
@@ -81,7 +85,7 @@ const Publication = ({ author, publication, updatePublication, index }) => {
         {isLoading && <Loader size="25" />}
       </td>
       <td className="text-center">
-        {noResult && PageNotFound}
+        {noResultFound && PageNotFound}
         {!isFetched && !publication.searchedFor && !isLoading && fetchedButton}
       </td>
     </tr>

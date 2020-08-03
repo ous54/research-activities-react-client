@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   Fragment,
   useEffect,
@@ -13,7 +14,10 @@ import { useHistory, Link } from "react-router-dom";
 
 const Teams = () => {
   const history = useHistory();
-  const { user, ApiServices, UserHelper } = useContext(AppContext);
+  const { user, ApiServices, UserHelper, alertService } = useContext(
+    AppContext
+  );
+  const { pushAlert } = alertService;
   const { teamService } = ApiServices;
 
   const [teams, setTeams] = useState([]);
@@ -44,20 +48,28 @@ const Teams = () => {
   };
 
   const updateTeamData = useCallback(async () => {
-    let response = await teamService.findAllTeams();
-    const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
-      ({ _id }) => _id
-    );
-    const filteredTeams = response.data
-      .filter(
-        (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
-      )
-      .map((team) => ({
-        ...team,
-        laboratory: team.laboratory.name,
-      }));
-    setTeams(filteredTeams);
-  }, [teamService, user.laboratoriesHeaded]);
+    try {
+      const response = await teamService.findAllTeams();
+      if (response.data) {
+        const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
+          ({ _id }) => _id
+        );
+        const filteredTeams = response.data
+          .filter(
+            (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
+          )
+          .map((team) => ({
+            ...team,
+            laboratory: team.laboratory.name,
+          }));
+        setTeams(filteredTeams);
+      } else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les données de l'équipe",
+      });
+    }
+  }, [user.laboratoriesHeaded]);
 
   const updateLaboratoriesData = useCallback(() => {
     setLaboratories(user.laboratoriesHeaded);
@@ -72,29 +84,49 @@ const Teams = () => {
   };
 
   const addTeam = async () => {
-    console.log(inputs);
-    await teamService.createTeam(inputs);
-    updateTeamData();
-    clearInputs();
+    try {
+      const response = await teamService.createTeam(inputs);
+      if (response.data) {
+        updateTeamData();
+        clearInputs();
+      } else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable de créer l'équipe" });
+    }
   };
 
   const updateTeam = async (team) => {
-    await teamService.updateTeam({
-      ...team,
-      ...inputs,
-    });
-    setAction("ADDING");
-    updateTeamData();
-    clearInputs();
+    try {
+      const response = await teamService.updateTeam({
+        ...team,
+        ...inputs,
+      });
+      if (response.data) {
+        setAction("ADDING");
+        updateTeamData();
+        clearInputs();
+      } else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les données de l'équipe",
+      });
+    }
   };
 
   const deleteTeam = async (team) => {
-    await teamService.deleteTeam(team._id);
-    updateTeamData();
+    try {
+      const response = await teamService.deleteTeam(team._id);
+      if (response.data) updateTeamData();
+      else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable de supprimer l'équipe" });
+    }
   };
+
   const manageTeam = ({ _id }) => {
     history.push(`/team/${_id}`);
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -114,7 +146,7 @@ const Teams = () => {
     updateTeamData();
     updateLaboratoriesData();
     clearInputs();
-  }, [updateLaboratoriesData, updateTeamData]);
+  }, []);
 
   return (
     <Fragment>

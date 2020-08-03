@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useContext } from "react";
 import { AppContext } from "../../../context/AppContext";
 import UserPicture from "../../components/UserPicture";
@@ -10,7 +11,8 @@ function InformationUpdate({
   setProfilePicture,
   updateProfilePicture,
 }) {
-  const { user, UserHelper } = useContext(AppContext);
+  const { user, UserHelper , alertService} = useContext(AppContext);
+  const { pushAlert } = alertService;
 
   useEffect(() => {
     setAccountInformations({
@@ -18,7 +20,7 @@ function InformationUpdate({
       lastName: user.lastName,
       email: user.email,
     });
-  }, [setAccountInformations, user.email, user.firstName, user.lastName]);
+  }, [user]);
 
   const handleAccountInformationsChange = (event) => {
     event.persist();
