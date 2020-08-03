@@ -8,34 +8,45 @@ import {
   makeTeamService,
   makeScraperService,
   makeAuthentificationService,
-  makeStatisticsService
+  makeStatisticsService,
 } from "./services";
 
-const printer = (header, color) => (prenable) => {
-  console.log("%c" + header + " : ", "color:" + color);
-  console.log(prenable);
-  return prenable;
-};
+const makeApiServices = ({ token, alertService }) => {
+  const { pushAlert } = alertService;
 
-const setUpInterceptors = (api) => {
-  api.interceptors.request.use(
-    printer("Request config", "Green"),
-    printer("Request config error", "Red")
-  );
-  api.interceptors.response.use(
-    printer("Response", "Green"),
-    printer("Response error", "Red")
-  );
-};
+  const setUpInterceptors = ({ api, serviceName }) => {
+    const printer = ({ status, type }) => (prenable) => {
+      const color = status === "fulfilled" ? "Green" : "Red";
+      console.log("%c" + type + " : ", "color:" + color);
+      console.log(prenable);
+      if (type === "response" && status === "rejected") {
+        const message = `Une erreur de type : ${prenable.message} depuis le service de ${serviceName} de l'application`;
+        pushAlert({
+          message,
+          type: "danger",
+          // , autoClose: false
+        });
+      }
+      return prenable;
+    };
 
-const makeApiServices = (token) => {
+    api.interceptors.request.use(
+      printer({ status: "fulfilled", type: "request" }),
+      printer({ status: "rejected", type: "request" })
+    );
+    api.interceptors.response.use(
+      printer({ status: "fulfilled", type: "response" }),
+      printer({ status: "rejected", type: "response" })
+    );
+  };
+
   const backendApiNoAuth = axios.create({
     baseURL: process.env.REACT_APP_BACKEND_URL + "/auth",
     timeout: 10000,
     headers: { "Content-Type": "application/json" },
   });
 
-  setUpInterceptors(backendApiNoAuth);
+  setUpInterceptors({ api: backendApiNoAuth, serviceName: "back-office" });
 
   if (!token)
     return {
@@ -57,8 +68,8 @@ const makeApiServices = (token) => {
     headers: { "Content-Type": "application/json" },
   });
 
-  setUpInterceptors(scraperApi);
-  setUpInterceptors(backendApi);
+  setUpInterceptors({ api: scraperApi, serviceName: "web scraping" });
+  setUpInterceptors({ api: backendApi, serviceName: "back-office" });
 
   return {
     authentificationService: makeAuthentificationService(backendApiNoAuth),
@@ -68,10 +79,8 @@ const makeApiServices = (token) => {
     establishmentService: makeEstablishmentService(backendApi),
     laboratoryService: makeLaboratoryService(backendApi),
     teamService: makeTeamService(backendApi),
-    statisticsService: makeStatisticsService(backendApi),  
+    statisticsService: makeStatisticsService(backendApi),
   };
 };
 
 export default makeApiServices;
-
-
