@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { render } from "react-dom";
 import { Router, Switch, Route as PublicRoute } from "react-router-dom";
 
@@ -11,6 +11,7 @@ import LoginPage from "./views/Auth/LoginPage";
 
 import MenuBar from "./views/layout/MenuBar";
 import NavBar from "./views/layout/NavBar";
+import ApplicationAlerts from "./views/components/ApplicationAlerts";
 import Footer from "./views/layout/Footer";
 
 import { routes } from "./routes/routes";
@@ -34,25 +35,27 @@ const App = () => (
   </AppProvider>
 );
 
-const MainLayout = () => (
-  <div className="page">
-    <div className="flex-fill">
-      <NavBar />
-      <MenuBar />
-      <div className="my-3 my-md-5">
-        <div className="container">
-          <Router history={history}>
-            <Switch>
-              {routes.map((route, index) => (
-                <Route exact {...route} key={index} />
-              ))}
-            </Switch>
-          </Router>
-        </div>
+const MainLayout = () => {
+
+  return <div className="page">
+  <div className="flex-fill">
+    <NavBar />
+    <MenuBar />
+    <ApplicationAlerts />
+    <div className="my-3 my-md-5">
+      <div className="container">
+        <Router history={history}>
+          <Switch>
+            {routes.map((route, index) => (
+              <Route exact {...route} key={index} />
+            ))}
+          </Switch>
+        </Router>
       </div>
     </div>
-    <Footer />
   </div>
-);
+  <Footer />
+</div>
+};
 
 render(<App />, document.getElementById("root"));

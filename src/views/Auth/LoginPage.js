@@ -1,19 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import image from "../../assets/images/logo.png";
 import { AppContext } from "../../context/AppContext";
+import ApplicationAlerts from "../components/ApplicationAlerts";
 
 function LoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [inputs, setInputs] = useState({ email: " ", password: "" });
-  const { ApiServices, setUser } = useContext(AppContext);
+  const { ApiServices, setUser, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { authentificationService } = ApiServices;
   const history = useHistory();
 
   useEffect(() => {
     setUser();
-  }, [setUser]);
+  }, []);
 
   const handleInputsChange = (event) => {
     event.persist();
@@ -29,22 +32,24 @@ function LoginPage() {
     setIsError(false);
 
     try {
-      let result = await authentificationService.login(inputs);
-      if (result.status !== 200) {
-        setIsError(true);
-        return;
-      }
+      const response = await authentificationService.login(inputs);
+      if (response.status === 200) {
+        setUser(response.data);
+        pushAlert({
+          type: "success",
+          message: "Vous êtes connecté avec succès",
+        });
 
-      setUser(result.data);
-
-      setIsLoggedIn(true);
-
-      setTimeout(() => {
-        if (result.data.hasConfirmed) history.push("/");
-        else history.push("/settings/account");
-      }, 1000);
+        setTimeout(() => {
+          if (response.data.hasConfirmed) history.push("/");
+          else history.push("/settings/account");
+        }, 1000);
+      } else throw Error();
     } catch (e) {
-      setIsError(true);
+      pushAlert({
+        message:
+          "Votre email ou mot de passe n'est pas correct! essayez encore s'il vous plait",
+      });
     }
   };
 
@@ -84,33 +89,14 @@ function LoginPage() {
                       placeholder="Mot de passe"
                     />
                   </div>
-
-                  {isError && (
-                    <div className="mb-3">
-                      <div className="alert alert-danger" role="alert">
-                        Votre email ou mot de passe n'est pas correct! essayez
-                        encore s'il vous plait
-                      </div>
-                    </div>
-                  )}
-
-                  {isLoggedIn && (
-                    <div className="alert alert-success" role="alert">
-                      Félicitations! Vous êtes connecté avec succès
-                    </div>
-                  )}
                 </div>
-
+                <ApplicationAlerts />
                 <div className="card-footer">
                   <button type="submit" className="btn btn-block  btn-primary ">
                     Se connecter
                   </button>
                 </div>
               </form>
-              {/*  <div className="text-center text-muted">
-                Vous n'avez pas encore de compte ?
-                <Link to="/register"> S'inscrire</Link>
-              </div> */}
             </div>
           </div>
         </div>
