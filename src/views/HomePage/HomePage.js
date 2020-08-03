@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import image1 from "../../assets/images/illustrations/undraw_people_search_wctu.svg";
+import image1 from "../../assets/images/illustrations/undraw_people_search.svg";
 import image2 from "../../assets/images/illustrations/undraw_hire_te5y.svg";
 import { Link } from "react-router-dom";
 import { LoopIcon, SettingsIcon } from "../components/icons";
