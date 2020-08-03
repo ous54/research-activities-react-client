@@ -66,10 +66,6 @@ Example:
 feature: add notification component
 ```
 
-## Acknowledgements
-
-- [namingconvention.org](https://github.com/naming-convention/naming-convention-guides)
-
 ### Commit Message
 
 Consist of two parts:
@@ -96,3 +92,8 @@ Implement access right management
 - Explain what, why, etc.
 - Max 72 chars
 - Each paragraph capitalized
+
+## Acknowledgements
+
+- [namingconvention.org](https://github.com/naming-convention/naming-convention-guides)
+
