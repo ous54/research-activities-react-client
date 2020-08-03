@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useContext, useState, useCallback } from "react";
 
 import { useParams } from "react-router-dom";
@@ -5,34 +6,48 @@ import { useParams } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import PageHeader from "../components/PageHeader";
 import AuthorCard from "./components/AuthorCard";
+import Loader from "../components/Loader";
 
-import image from "../../assets/images/illustrations/undraw_quitting_time_dm8t.svg";
+import NoResultFound from "../components/NoResultFound";
+import LoadingResult from "../components/LoadingResult";
+import ErrorFound from "../components/ErrorFound";
 
 const AuthorSearch = () => {
   let { authorName } = useParams();
 
   const [authors, setAuthors] = useState([]);
-  const [noResult, setNoResult] = useState(false);
-
-  const { ApiServices } = useContext(AppContext);
+  const [noResultFound, setNoResultFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const { ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { scraperService } = ApiServices;
-  useEffect(() => {
-    authorSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authorName]);
 
   const authorSearch = useCallback(async () => {
-    if (noResult) setNoResult(false);
+    if (authors.length) setAuthors([]);
+    if (noResultFound) setNoResultFound(false);
+    if (isError) setIsError(false);
 
     const authorNamePath = authorName.replace(" ", "%20");
 
-    setAuthors([]);
+    try {
+      setIsLoading(true);
+      const response = await scraperService.authorSearch(authorNamePath);
+      if (response.status !== 200) throw Error();
+      if (response.data.length > 0 && !response.data.error)
+        setAuthors(response.data);
+      else setNoResultFound(true);
+    } catch (error) {
+      pushAlert({ message: "Incapable de rechercher" });
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [authorName]);
 
-    let result = await scraperService.authorSearch(authorNamePath);
-    if (result.data && result.data.error) setNoResult(true);
-    else setAuthors(result.data);
-  }, [authorName, noResult, scraperService]);
-
+  useEffect(() => {
+    authorSearch();
+  }, [authorName]);
 
   return (
     <div className="container">
@@ -40,30 +55,15 @@ const AuthorSearch = () => {
         title={"Chercher l'auteur : " + authorName}
         subTitle={authors.length ? authors.length + " chercheurs" : ""}
       />
+      {isLoading && <LoadingResult />}
+      {noResultFound && <NoResultFound query={authorName} />}
+      {isError && <ErrorFound />}
+
       <div className="row">
         {authors.map((author, index) => (
           <AuthorCard key={index} author={author} />
         ))}
-
-        {authors.length === 0 && !noResult && (
-          <div className="mt-4 loader container "></div>
-        )}
       </div>
-
-      {noResult && (
-        <div className="empty">
-          <div className="empty-icon">
-            <img src={image} className="h-8 mb-4" alt="" />
-          </div>
-          <p className="empty-title h3">
-            Aucun résultat trouvé pour {authorName}
-          </p>
-          <p className="empty-subtitle text-muted">
-            Essayez d'ajuster votre recherche ou votre filtre pour trouver
-            l'auteur que vous recherchez.
-          </p>
-        </div>
-      )}
     </div>
   );
 };

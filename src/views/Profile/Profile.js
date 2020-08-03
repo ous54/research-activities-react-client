@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   useEffect,
   useContext,
@@ -18,19 +19,25 @@ const Profile = () => {
   const [correspondingFollowedUser, setCorrespondingFollowedUser] = useState(
     null
   );
-  const { ApiServices } = useContext(AppContext);
+  const { ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { userService } = ApiServices;
 
   useEffect(() => {
     getProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, userService]);
+  }, [id]);
 
   const getProfile = useCallback(async () => {
-    let response = await userService.findUser(id);
-    setProfileUser(response.data);
-    setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
-  }, [id, userService]);
+    try {
+      const response = await userService.findUser(id);
+      if (response.data) {
+        setProfileUser(response.data);
+        setCorrespondingFollowedUser(response.data.correspondingFollowedUser);
+      } else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable d'obtenir les données de profil" });
+    }
+  }, [id]);
 
   return (
     <div className="container">

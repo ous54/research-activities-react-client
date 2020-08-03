@@ -1,28 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { LeftArrowIcon } from "./icons";
+import image from "../../assets/images/illustrations/undraw_not_found.svg";
 
 const PageNotFound = () => (
-  <div>
-    <div className="flex-fill d-flex align-items-center justify-content-center">
-      <div className="container-tight py-6">
-        <div className="empty">
-          <div className="empty-icon">
-            <div className="display-4">404</div>
-          </div>
-          <p className="empty-title h3">Oops… You just found an error page</p>
-          <p className="empty-subtitle text-muted">
-            We are sorry but the page you are looking for was not found
-          </p>
-          <div className="empty-action">
-            <Link to="/" className="btn btn-primary">
-              <LeftArrowIcon />
-              Take me home
-            </Link>
-          </div>
-        </div>
-      </div>
+  <div className="empty">
+    <div className="empty-icon">
+      <img src={image} className="h-8 mb-4" alt="" />
     </div>
+    <p className="empty-title h3">404 Oops… You just found an error page</p>
+    <p className="empty-subtitle text-muted">
+      We are sorry but the page you are looking for was not found
+    </p>
   </div>
 );
 

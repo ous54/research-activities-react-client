@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   Fragment,
   useEffect,
@@ -11,7 +12,8 @@ import PageHeader from "../components/PageHeader";
 import { BookIcon, LocationIcon, EditingIcon } from "../components/icons";
 
 const Universities = () => {
-  const { ApiServices } = useContext(AppContext);
+  const { ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { universityService } = ApiServices;
   const [universities, setUniversities] = useState([]);
   const [inputs, setInputs] = useState({});
@@ -35,14 +37,19 @@ const Universities = () => {
   };
 
   const updateData = useCallback(async () => {
-    let response = await universityService.findAllUniversities();
-    setUniversities(response.data);
-  }, [universityService]);
+    try {
+      const response = await universityService.findAllUniversities();
+      if (response.data) setUniversities(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable d'obtenir les données de l'université" });
+    }
+  }, []);
 
   useEffect(() => {
     updateData();
     clearInputs();
-  }, [updateData]);
+  }, []);
 
   const editUniversity = (university) => {
     setAction("EDITING");
@@ -53,19 +60,33 @@ const Universities = () => {
   };
 
   const addUniversity = async () => {
-    await universityService.createUniversity(inputs);
-    updateData();
+    try {
+      const response = await universityService.createUniversity(inputs);
+      if (response.data) updateData();
+      else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable de créer l'université" });
+    }
   };
 
   const updateUniversity = async (university) => {
-    await universityService
-        .updateUniversity({
-          ...university,
-          ...inputs,
-        });
-    setAction("ADDING");
-    updateData();
-    clearInputs();
+    try {
+      const response = await universityService.updateUniversity({
+        ...university,
+        ...inputs,
+      });
+      if (response.data) {
+        setAction("ADDING");
+        updateData();
+        clearInputs();
+      } else {
+        throw Error();
+      }
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les données de l'université",
+      });
+    }
   };
 
   const handleSubmit = (event) => {

@@ -1,8 +1,8 @@
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext, useReducer, useEffect, useState } from "react";
 import makeApiServices from "../api/ApiServices";
 import { UserHelper } from "./contextHelper";
 
-let reducer = (user, newUser) => {
+let userReducer = (user, newUser) => {
   if (newUser === null || newUser === undefined) {
     localStorage.removeItem("user");
     return initialState;
@@ -12,22 +12,47 @@ let reducer = (user, newUser) => {
 
 const initialState = null;
 
-const localState = JSON.parse(localStorage.getItem("user"));
+const userlocalState = JSON.parse(localStorage.getItem("user"));
 
 const AppContext = createContext();
 
-function AppProvider(props) {
-  const [user, setUser] = useReducer(reducer, localState || initialState);
+function AppProvider({ children }) {
+  const [user, setUser] = useReducer(
+    userReducer,
+    userlocalState || initialState
+  );
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
-  const ApiServices = makeApiServices(user ? user.token : null);
+  const pushAlert = (alert) => {
+    setAlerts((alerts) => [
+      ...alerts,
+      {
+        id: alerts.length,
+        ...alert,
+      },
+    ]);
+  };
+
+  const clearAlert = (alert) =>
+    setAlerts(alerts.filter(({ id }) => alert.id !== id));
+
+  const clearAllAlerts = () => setAlerts([]);
+  const alertService = { alerts, pushAlert, clearAlert, clearAllAlerts };
+
+  const ApiServices = makeApiServices({
+    token: user ? user.token : null,
+    alertService,
+  });
 
   return (
-    <AppContext.Provider value={{ user, setUser, ApiServices, UserHelper }}>
-      {props.children}
+    <AppContext.Provider
+      value={{ user, setUser, ApiServices, UserHelper, alertService }}
+    >
+      {children}
     </AppContext.Provider>
   );
 }

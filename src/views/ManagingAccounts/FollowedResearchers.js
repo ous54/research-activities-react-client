@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { AppContext } from "../../context/AppContext";
 
@@ -18,18 +19,34 @@ const FollowedResearchers = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { user, ApiServices } = useContext(AppContext);
+  const { user, ApiServices, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   const { userService } = ApiServices;
 
   const updateFilteringOptionsData = useCallback(async () => {
-    let response = await userService.getFilteringOptions(user._id);
-    setFilteringOptions(response.data);
-  }, [user._id, userService]);
+    try {
+      const response = await userService.getFilteringOptions(user._id);
+      if (response.data) setFilteringOptions(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les options de filtrage",
+      });
+    }
+  }, []);
 
   const updateFollowedUsersData = useCallback(async () => {
-    let response = await userService.getFollowedUsers(filter);
-    setFollowedResearchers(response.data);
-  }, [filter, userService]);
+    try {
+      const response = await userService.getFollowedUsers(filter);
+      if (response.data) setFollowedResearchers(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message:
+          "Incapable de mettre à jour les données des utilisateurs suivis",
+      });
+    }
+  }, [filter]);
 
   useEffect(() => {
     updateFilteringOptionsData();
