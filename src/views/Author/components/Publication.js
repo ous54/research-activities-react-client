@@ -73,6 +73,18 @@ const Publication = ({ author, publication, updatePublication, index }) => {
         <small className="d-block text-muted text-truncate mt-n1">
           {publication.authors.join(", ")}
         </small>
+        {publication.extraInformation &&
+          publication.extraInformation["Conference"] && (
+            <small className="d-block text-muted text-truncate mt-n1">
+              Conference : {publication.extraInformation["Conference"]}
+            </small>
+          )}
+        {publication.extraInformation &&
+          publication.extraInformation["Journal"] && (
+            <small className="d-block text-muted text-truncate mt-n1">
+              Journal : {publication.extraInformation["Journal"]}
+            </small>
+          )}
       </td>
       <td className="text-center">{publication.year}</td>
       <td className="text-center">{publication.citation.replace("*", "")}</td>
