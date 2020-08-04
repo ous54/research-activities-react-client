@@ -11,19 +11,59 @@ import { AppContext } from "../../context/AppContext";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import UserListItem from "../Author/components/UserListItem";
+import "c3/c3.css";
+import C3Chart from "react-c3js";
 
 const Laboratory = () => {
   const { laboratoryId } = useParams();
-
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [laboratory, setLaboratory] = useState(null);
+  const [labMembers, setLabMembers] = useState(null);
+  const [totalLabCitations, settotalLabCitations] = useState([
+    { year: "2016", citations: 0},
+    { year: "2017", citations: 0},
+    { year: "2018", citations: 0},
+    { year: "2019", citations: 0},
+    { year: "2020", citations: 0},
+  ]);
 
-  const { ApiServices, alertService } = useContext(AppContext);
-  const { pushAlert } = alertService;
-  const { laboratoryService, userService } = ApiServices;
+  const [auth, setAuth] = useState( {
+    
+    indexes: [
+      {
+        "name": "Citations",
+        "total": "81",
+        "lastFiveYears": "80"
+      },
+      {
+        "name": "indice h",
+        "total": "5",
+        "lastFiveYears": "5"
+      },
+      {
+        "name": "indice i10",
+        "total": "3",
+        "lastFiveYears": "3"
+      }
+    ],
+   
+    citationsPerYear: [
+      {
+        "year": "2015",
+        "citations": "1"
+      },
+      {
+        "year": "2016",
+        "citations": "16"
+      },
+      {
+        "year": "2017",
+        "citations": "30"
+      },
       {
         "year": "2018",
         "citations": "14"
+      },
       {
         "year": "2019",
         "citations": "11"
