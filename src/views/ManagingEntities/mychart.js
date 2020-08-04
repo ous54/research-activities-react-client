@@ -13,7 +13,7 @@ export default class extends Component {
 
   componentDidMount() {
     OrgChart.templates.diva.field_1 = '<text  style="font-size: 14px;"  x="102" y="144" text-anchor="middle">{val}</text>';
-    OrgChart.templates.group.field_0 = '<text  style="font-size: 24px;"  x="110" y="35" >{val}</text>';
+    OrgChart.templates.group.field_0 = '<text  style="font-size: 24px;"  x="70" y="35" >{val}</text>';
     OrgChart.templates.group.link = '<path stroke-linejoin="round" stroke="#aeaeae" stroke-width="1px" fill="none" d="M{xa},{ya} {xb},{yb} {xc},{yc} L{xd},{yd}" />';
     OrgChart.templates.group.min = Object.assign({}, OrgChart.templates.group);
     OrgChart.templates.group.min.imgs = "{val}";
@@ -59,7 +59,7 @@ export default class extends Component {
         },
         "members-group": {
           subTreeConfig: {
-            columns: 2,
+            columns: 3,
           },
         },
       },
