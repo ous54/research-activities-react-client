@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
 import '../../assets/css/orgChart.css'
+
 export default class extends Component {
   constructor(props) {
     super(props);
@@ -22,9 +23,9 @@ export default class extends Component {
     OrgChart.templates.diva.minus = "";
     
     this.chart = new OrgChart(this.divRef.current, {
+layout: OrgChart.tree,
       nodes: this.props.nodes,
-      scaleInitial: 0.75,
-      nodeMouseClick: OrgChart.action.expandCollapse,
+      scaleInitial: OrgChart.match.boundary,      nodeMouseClick: OrgChart.action.expandCollapse,
       template: "diva",
       enableSearch: false,
       mouseScrool: OrgChart.action.none,
