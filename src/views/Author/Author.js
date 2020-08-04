@@ -54,6 +54,7 @@ const Author = () => {
   }, [scholarId]);
 
   const getIfIsFollowing = useCallback(async () => {
+    if (!author) return;
     try {
       const response = await userService.isFollowing(scholarId);
       if (response.data.isFollowing) setIsFollowed(true);
