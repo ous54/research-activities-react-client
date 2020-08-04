@@ -43,6 +43,7 @@ const Author = () => {
       const response = await scraperService.getAuthorData(scholarId);
       if (response.data.error) throw Error(response);
       if (response.status === 200) setAuthor(response.data);
+      if (!response.data.publications) throw Error(response);
     } catch (error) {
       setIsError(true);
       setNoResultFound(true);
@@ -53,6 +54,7 @@ const Author = () => {
   }, [scholarId]);
 
   const getIfIsFollowing = useCallback(async () => {
+    if (!author) return;
     try {
       const response = await userService.isFollowing(scholarId);
       if (response.data.isFollowing) setIsFollowed(true);

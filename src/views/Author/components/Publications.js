@@ -34,15 +34,16 @@ const Publications = ({ author, setAuthor }) => {
             </tr>
           </thead>
           <tbody>
-            {author.publications.map((publication, index) => (
-              <Publication
-                index={index}
-                key={publication.title}
-                publication={publication}
-                updatePublication={updatePublication}
-                author={author}
-              />
-            ))}
+            {author.publications &&
+              author.publications.map((publication, index) => (
+                <Publication
+                  index={index}
+                  key={publication.title}
+                  publication={publication}
+                  updatePublication={updatePublication}
+                  author={author}
+                />
+              ))}
           </tbody>
         </table>
       </div>
