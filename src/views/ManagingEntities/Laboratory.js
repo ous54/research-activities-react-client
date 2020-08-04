@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   useState,
   useContext,
@@ -22,37 +21,120 @@ const Laboratory = () => {
   const { ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { laboratoryService, userService } = ApiServices;
+      {
+        "year": "2018",
+        "citations": "14"
+      {
+        "year": "2019",
+        "citations": "11"
+      },
+      {
+        "year": "2020",
+        "citations": "8"
+      }
+    ]
+  });  
 
-  const getLaboratoryData = useCallback(async () => {
-    try {
-      const response = await laboratoryService.findLaboratory(laboratoryId);
-      if (response.data) setLaboratory(response.data);
-      else throw Error();
-    } catch (error) {
-      pushAlert({ message: "Incapable d'obtenir les données de laboratoire" });
+  const { ApiServices } = useContext(AppContext);
+  const { laboratoryService, userService, statisticsService, scraperService } = ApiServices;
+
+
+ 
+  const ListMembers =  useCallback((Laboratory) => {
+    let members= [];
+    let memberIds=[];
+    let labMember;
+    Laboratory.teams.map(({teamMemberShipCount}) =>{
+      console.log(teamMemberShipCount);
+      Array.prototype.push.apply(members,teamMemberShipCount); 
+  
+  ;
+     console.log(members);
+    })
+    console.log(members);
+    members.map((member)=>
+    {
+      memberIds.push(member.user_id);
     }
-  }, [laboratoryId]);
-
-  const getLaboratoryHeadsData = useCallback(async () => {
-    try {
-      const response = await userService.getLaboratoryHeads();
-      if (response.data) setLaboratoryHeads(response.data);
-      else throw Error();
-    } catch (error) {
-      pushAlert({
-        message: "Incapable d'obtenir les données des chefs des laboratoires",
+    )
+  
+    console.log(memberIds);
+    Promise.all(memberIds.map( async (id)=>{
+      let scholarId;
+      await userService.findUser(id).then((response)=>{
+        
+        labMember={
+          firstName : response.data.firstName,
+          lastName :response.data.lastName
+        };
       });
-    }
-  }, []);
+      await scraperService.authorSearch(labMember.firstName.concat(" ",labMember.lastName )).then((response)=>{
+        scholarId=response.data[0].scholarId;
+        console.log(id);
+      });
+      await scraperService.getAuthorData(scholarId).then((response)=>{
+        let citations=response.data.citationsPerYear.slice(-5);
+        console.log(citations);
+        citations.map((citations,index)=>{
+          totalLabCitations[index].citations=
+          totalLabCitations[index].citations+
+            parseInt(citations.citations);
+        }
+        
+        )
+        console.log(totalLabCitations);
+
+      });
+    }));
+    
+
+    
+
+    
+  },[userService, scraperService, totalLabCitations]
+  );
+    
+
+  const getLaboratoryData = useCallback(() => {
+    laboratoryService.findLaboratory(laboratoryId).then((response) => {
+      setLaboratory(response.data);
+      console.log(ListMembers(response.data));
+    });
+  }, [laboratoryId, laboratoryService, ListMembers]);
+
+  const getStatistics = useCallback(() => {
+    statisticsService.getStatistics().then((response) => {
+      
+      console.log((response.data));
+    });
+  }, [ statisticsService]);
+
+
+ 
+
+
+  const getLaboratoryHeadsData = useCallback(() => {
+    userService.getLaboratoryHeads().then((response) => {
+      setLaboratoryHeads([]);
+      setLaboratoryHeads(response.data);
+      console.log(response.data);
+      
+    });
+  }, [userService]);
 
   const requestUpdate = useCallback(() => {
     getLaboratoryData();
     getLaboratoryHeadsData();
-  }, [getLaboratoryData, getLaboratoryHeadsData]);
+    getStatistics();
+  }, [getLaboratoryData, getLaboratoryHeadsData,getStatistics]);
+
+ 
 
   useEffect(() => {
     requestUpdate();
-  }, [requestUpdate]);
+  }, [requestUpdate, auth]);
+
+ 
 
   const [newHeadId, setNewHeadId] = useState(null);
 
@@ -65,22 +147,13 @@ const Laboratory = () => {
     event.preventDefault();
     if (!newHeadId) return;
     try {
-      const response = await laboratoryService.associateHeadToLaboratory(
-        newHeadId,
-        laboratory._id
-      );
-      if (response.data)
-        pushAlert({
-          message: "Chef est associé au laboratoire",
-          type: "success",
-        });
-      else throw Error();
-    } catch (error) {
-      pushAlert({ message: "Incapable d'associer le chef au laboratoire" });
-    } finally {
+      await laboratoryService
+          .associateHeadToLaboratory(newHeadId, laboratory._id);
       requestUpdate();
+    } catch (error) {
     }
   };
+  
 
   return (
     <div className="container">
@@ -136,6 +209,7 @@ const Laboratory = () => {
               </div>
             </div>
           )}
+          <AuthorCitations totalLabCitations= {totalLabCitations}/>
         </div>
 
         <div className="col-md-4">
@@ -255,5 +329,85 @@ const TeamListItem = ({ team }) => {
     </Fragment>
   );
 };
+
+
+
+
+const AuthorCitations = ({totalLabCitations}) => {
+  let chart = {
+    title: "AuthorCitations",
+    data: {
+      columns: [],
+      type: "bar",
+      colors: {
+        data1: "#467fcf",
+      },
+      names: {
+        data1: "Citations",
+      },
+    },
+    axis: {
+      x: {
+        type: "category",
+        categories: [],
+      },
+    },
+  };
+
+  chart.data.columns[0] = ["data1"].concat(
+    totalLabCitations.map((a) => a.citations)
+  );
+
+  chart.axis.x.categories = totalLabCitations
+    .slice(-5)
+    .map((a) => a.year);
+
+  return (
+    <div className="card">
+      <div className="card-header">
+        <h4 className="card-title">Citée par</h4>
+      </div>
+      <div className="table-responsive ">
+        <table className="table table-hover table-outline   small text-muted card-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th className="text-center">Toutes</th>
+              <th className="text-center">
+                Depuis {new Date().getFullYear() - 5}
+              </th>
+            </tr>
+          </thead>
+         {/* <tbody>
+            {auth.indexes.map(
+              ({ name, total, lastFiveYears }, index) => (
+                <tr key={index}>
+                  <td>{name}</td>
+                  <td className="text-center">{total}</td>
+                  <td className="text-center">{lastFiveYears}</td>
+                </tr>
+              )
+            )}
+              </tbody>*/}
+        </table>
+        <div className="card-body">
+          <C3Chart
+            data={chart.data}
+            axis={chart.axis}
+            legend={{
+              show: false,
+            }}
+            padding={{
+              bottom: 0,
+              top: 0,
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 
 export default Laboratory;
