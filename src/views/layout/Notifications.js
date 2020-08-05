@@ -14,10 +14,27 @@ import Loader from "../components/Loader";
 const Notifications = () => {
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
-  const { userService, scraperService } = ApiServices;
-  const [isLoading, setIsLoading] = useState(true);
+  const { notificationsService, scraperService, userService } = ApiServices;
+  const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [followedUsers, setFollowedResearchers] = useState([]);
+
+  const findUserNotifications = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await notificationsService.findUserNotifications(
+        user._id
+      );
+      if (response.data) setNotifications(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable d'obtenir les notifications",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user._id]);
 
   const getFollowedResearchers = useCallback(async () => {
     try {
