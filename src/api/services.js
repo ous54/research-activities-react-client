@@ -82,6 +82,24 @@ const makeStatisticsService = (api) => ({
   getStatistics: (filter) => api.get(`/statistics`, { params: filter }),
 });
 
+const makeNotificationsService = (api) => ({
+  findUserNotifications: (user_id) => api.get(`/notifications/${user_id}`),
+  notifyFolloweers: ({
+    publication,
+    followedUserId,
+    scholarId,
+    currentPublications,
+  }) =>
+    api.post(`/notify-followers`, {
+      publication,
+      followed_user_id: followedUserId,
+      scholar_id: scholarId,
+      current_publications: currentPublications,
+    }),
+  markNotificationAsRead: (notificationId) =>
+    api.post(`/mark-notification-as-read/${notificationId}`),
+});
+
 export {
   makeUserService,
   makeUniversityService,
@@ -91,4 +109,5 @@ export {
   makeScraperService,
   makeAuthentificationService,
   makeStatisticsService,
+  makeNotificationsService,
 };

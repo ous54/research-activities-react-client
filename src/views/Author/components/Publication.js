@@ -97,7 +97,7 @@ const Publication = ({ author, publication, updatePublication, index }) => {
         {isLoading && <Loader size="25" />}
       </td>
       <td className="text-center">
-        {noResultFound && PageNotFound}
+        {noResultFound && " "}
         {!isFetched && !publication.searchedFor && !isLoading && fetchedButton}
       </td>
     </tr>

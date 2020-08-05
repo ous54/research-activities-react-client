@@ -9,6 +9,7 @@ import {
   makeScraperService,
   makeAuthentificationService,
   makeStatisticsService,
+  makeNotificationsService,
 } from "./services";
 
 const makeApiServices = ({ token, alertService }) => {
@@ -80,6 +81,7 @@ const makeApiServices = ({ token, alertService }) => {
     laboratoryService: makeLaboratoryService(backendApi),
     teamService: makeTeamService(backendApi),
     statisticsService: makeStatisticsService(backendApi),
+    notificationsService: makeNotificationsService(backendApi),
   };
 };
 
