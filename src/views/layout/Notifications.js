@@ -97,6 +97,10 @@ const Notifications = () => {
           message:
             "Incapable  to check if a followed researcher have new publication",
         });
+      } finally {
+        if (followedUsers.length === index + 1) {
+          findUserNotifications();
+        }
       }
     },
     [followedUsers.length]
@@ -111,6 +115,7 @@ const Notifications = () => {
   }, [checkFollowedResearcher, followedUsers]);
 
   useEffect(() => {
+    findUserNotifications();
     getFollowedResearchers();
   }, []);
 
