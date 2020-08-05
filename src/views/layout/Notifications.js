@@ -92,11 +92,30 @@ const Notifications = () => {
     checkAllFollowedResearcher();
   }, [followedUsers]);
 
-  const clear = (index) => () => {
-    let tmp = notifications;
-    tmp.splice(index, 1);
-    setNotifications(() => tmp);
-  };
+  const markAsRead = useCallback(
+    (notification) => async () => {
+      console.log("userService.markNotificationAsRead");
+
+      try {
+        const response = await notificationsService.markNotificationAsRead(
+          notification._id
+        );
+        console.log("response.data", response.data);
+        if (response.data) {
+          pushAlert({
+            type: "success",
+            message: "notification is read",
+          });
+          findUserNotifications();
+        } else throw Error();
+      } catch (error) {
+        pushAlert({
+          message: "Incapable  of setting notification as read",
+        });
+      }
+    },
+    []
+  );
 
   return (
     <Fragment>
