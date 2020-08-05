@@ -10,7 +10,6 @@ const AuthorHeader = ({
   author,
   user,
   users,
-  isUpdating,
 }) => {
   return (
     <div className="card">
@@ -23,18 +22,6 @@ const AuthorHeader = ({
             <div className="mb-2">
               <h4 className="m-0 ">
                 {author.name}
-                {isUpdating && (
-                  <a
-                    href="/#"
-                    className="btn  btn-sm m-3 mr-1 ml-1 btn-outline-primary"
-                  >
-                    En mise à jour
-                    <span
-                      style={{ height: "15px", width: "15px" }}
-                      className=" ml-2 loader"
-                    ></span>
-                  </a>
-                )}
                 {user.role === "LABORATORY_HEAD" && (
                   <FollowingButton
                     disabled={

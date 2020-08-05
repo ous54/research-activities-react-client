@@ -14,10 +14,27 @@ import Loader from "../components/Loader";
 const Notifications = () => {
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
-  const { userService, scraperService } = ApiServices;
-  const [isLoading, setIsLoading] = useState(true);
+  const { notificationsService, scraperService, userService } = ApiServices;
+  const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [followedUsers, setFollowedResearchers] = useState([]);
+
+  const findUserNotifications = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await notificationsService.findUserNotifications(
+        user._id
+      );
+      if (response.data) setNotifications(response.data);
+      else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable d'obtenir les notifications",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user._id]);
 
   const getFollowedResearchers = useCallback(async () => {
     try {
@@ -45,14 +62,45 @@ const Notifications = () => {
       try {
         const response = await scraperService.getAuthorData(user.scholarId);
         const currentPublications = response.data.publications;
-        if (currentPublications.length > user.publications.length)
-          setNotifications((notifications) => [...notifications, { ...user }]);
-        if (followedUsers.length === index + 1) setIsLoading(false);
+        console.log("user:", user.lastName);
+        console.log("currentPublications.length", currentPublications.length);
+        console.log("user.publications.length", user.publications.length);
+        if (currentPublications.length > user.publications.length) {
+          // fin publication
+          console.log("notifyFolloweers");
+          const oldPublicationsShortTitles = user.publications.map(
+            ({ title }) => title.substr(0, 40)
+          );
+          console.log("oldPublicationsTitles", oldPublicationsShortTitles);
+
+          const newPublications = currentPublications.filter(
+            ({ title }) =>
+              !oldPublicationsShortTitles.includes(title.substr(0, 40))
+          );
+
+          const responses = await Promise.all(
+            newPublications.map(
+              async ({ title }) =>
+                await notificationsService.notifyFolloweers({
+                  scholarId: user.scholarId,
+                  publication: title,
+                  followedUserId: user.user_id,
+                  currentPublications,
+                })
+            )
+          );
+
+          console.log("responses", responses);
+        }
       } catch (error) {
         pushAlert({
           message:
             "Incapable  to check if a followed researcher have new publication",
         });
+      } finally {
+        if (followedUsers.length === index + 1) {
+          findUserNotifications();
+        }
       }
     },
     [followedUsers.length]
@@ -67,6 +115,7 @@ const Notifications = () => {
   }, [checkFollowedResearcher, followedUsers]);
 
   useEffect(() => {
+    findUserNotifications();
     getFollowedResearchers();
   }, []);
 
@@ -75,11 +124,30 @@ const Notifications = () => {
     checkAllFollowedResearcher();
   }, [followedUsers]);
 
-  const clear = (index) => () => {
-    let tmp = notifications;
-    tmp.splice(index, 1);
-    setNotifications(() => tmp);
-  };
+  const markAsRead = useCallback(
+    (notification) => async () => {
+      console.log("userService.markNotificationAsRead");
+
+      try {
+        const response = await notificationsService.markNotificationAsRead(
+          notification._id
+        );
+        console.log("response.data", response.data);
+        if (response.data) {
+          pushAlert({
+            type: "success",
+            message: "notification is read",
+          });
+          findUserNotifications();
+        } else throw Error();
+      } catch (error) {
+        pushAlert({
+          message: "Incapable  of setting notification as read",
+        });
+      }
+    },
+    []
+  );
 
   return (
     <Fragment>
@@ -103,7 +171,11 @@ const Notifications = () => {
       >
         <div className="card p-1">
           {notifications.map((notification, index) => (
-            <Notification notification={notification} clear={clear(index)} />
+            <Notification
+              key={index}
+              notification={notification}
+              markAsRead={markAsRead(notification)}
+            />
           ))}
         </div>
       </div>
@@ -112,7 +184,7 @@ const Notifications = () => {
 };
 export default Notifications;
 
-const Notification = ({ notification, clear }) => (
+const Notification = ({ notification, markAsRead }) => (
   <div
     className="toast show"
     role="alert"
@@ -121,24 +193,21 @@ const Notification = ({ notification, clear }) => (
     data-autohide="false"
     data-toggle="toast"
   >
-    <Link
-      to={"/author/" + notification.scholarId}
-      onClick={() => {
-        clear();
-        console.log("is clicked");
-      }}
-    >
+    <Link to={"/author/" + notification.scholarId} onClick={() => markAsRead()}>
       <div className="toast-header">
-        <span
-          className="avatar avatar-sm mr-2"
-          style={{
-            backgroundImage: `url(${notification.profilePicture})`,
-          }}
-        ></span>
-        <strong className="mr-auto">{notification.name}</strong>
+        {notification.profilePicture && (
+          <span
+            className="avatar avatar-sm mr-2"
+            style={{
+              backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${notification.profilePicture})`,
+            }}
+          ></span>
+        )}
+
+        <strong className="mr-auto">{notification.fullName}</strong>
       </div>
       <div className="toast-body">
-        {`${notification.name} a publié une nouvelle publication`}.
+        {`${notification.fullName} a publié une nouvelle publication intitulé : "${notification.publication}"`}
       </div>
     </Link>
   </div>
