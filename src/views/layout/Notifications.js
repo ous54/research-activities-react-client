@@ -62,9 +62,36 @@ const Notifications = () => {
       try {
         const response = await scraperService.getAuthorData(user.scholarId);
         const currentPublications = response.data.publications;
-        if (currentPublications.length > user.publications.length)
-          setNotifications((notifications) => [...notifications, { ...user }]);
-        if (followedUsers.length === index + 1) setIsLoading(false);
+        console.log("user:", user.lastName);
+        console.log("currentPublications.length", currentPublications.length);
+        console.log("user.publications.length", user.publications.length);
+        if (currentPublications.length > user.publications.length) {
+          // fin publication
+          console.log("notifyFolloweers");
+          const oldPublicationsShortTitles = user.publications.map(
+            ({ title }) => title.substr(0, 40)
+          );
+          console.log("oldPublicationsTitles", oldPublicationsShortTitles);
+
+          const newPublications = currentPublications.filter(
+            ({ title }) =>
+              !oldPublicationsShortTitles.includes(title.substr(0, 40))
+          );
+
+          const responses = await Promise.all(
+            newPublications.map(
+              async ({ title }) =>
+                await notificationsService.notifyFolloweers({
+                  scholarId: user.scholarId,
+                  publication: title,
+                  followedUserId: user.user_id,
+                  currentPublications,
+                })
+            )
+          );
+
+          console.log("responses", responses);
+        }
       } catch (error) {
         pushAlert({
           message:
