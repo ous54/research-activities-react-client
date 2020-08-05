@@ -24,7 +24,6 @@ const Author = () => {
   const [author, setAuthor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [noResultFound, setNoResultFound] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSendingFollow, setsSendingFollow] = useState(false);
@@ -108,7 +107,6 @@ const Author = () => {
         <Fragment>
           <div className="col-lg-8">
             <AuthorHeader
-              isUpdating={isUpdating}
               users={users}
               user={user}
               author={author}
