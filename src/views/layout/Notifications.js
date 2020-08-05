@@ -139,7 +139,11 @@ const Notifications = () => {
       >
         <div className="card p-1">
           {notifications.map((notification, index) => (
-            <Notification notification={notification} clear={clear(index)} />
+            <Notification
+              key={index}
+              notification={notification}
+              markAsRead={markAsRead(notification)}
+            />
           ))}
         </div>
       </div>
@@ -148,7 +152,7 @@ const Notifications = () => {
 };
 export default Notifications;
 
-const Notification = ({ notification, clear }) => (
+const Notification = ({ notification, markAsRead }) => (
   <div
     className="toast show"
     role="alert"
@@ -157,24 +161,21 @@ const Notification = ({ notification, clear }) => (
     data-autohide="false"
     data-toggle="toast"
   >
-    <Link
-      to={"/author/" + notification.scholarId}
-      onClick={() => {
-        clear();
-        console.log("is clicked");
-      }}
-    >
+    <Link to={"/author/" + notification.scholarId} onClick={() => markAsRead()}>
       <div className="toast-header">
-        <span
-          className="avatar avatar-sm mr-2"
-          style={{
-            backgroundImage: `url(${notification.profilePicture})`,
-          }}
-        ></span>
-        <strong className="mr-auto">{notification.name}</strong>
+        {notification.profilePicture && (
+          <span
+            className="avatar avatar-sm mr-2"
+            style={{
+              backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${notification.profilePicture})`,
+            }}
+          ></span>
+        )}
+
+        <strong className="mr-auto">{notification.fullName}</strong>
       </div>
       <div className="toast-body">
-        {`${notification.name} a publié une nouvelle publication`}.
+        {`${notification.fullName} a publié une nouvelle publication intitulé : "${notification.publication}"`}
       </div>
     </Link>
   </div>
