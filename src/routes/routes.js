@@ -25,6 +25,7 @@ import {
   TeamIcon,
   SettingsIcon,
 } from "../views/components/icons";
+import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 
 
 const allRoles = [
@@ -117,13 +118,21 @@ const accountsManagementPathsCategory = {
 
 const StatisticsPaths = {
   title: "Statistiques",
-  isDropdown: false,
+  isDropdown: true,
   icon: StatisticsIcon,
   routes: [
     {
       title: "Statistiques",
       path: "/statistics",
       component: Statistics,
+      icon: StatisticsIcon,
+      roles: ["LABORATORY_HEAD"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques d'équipes",
+      path: "/teamStatistics",
+      component: TeamsStatistics,
       icon: StatisticsIcon,
       roles: ["LABORATORY_HEAD"],
       inMenu: true,
