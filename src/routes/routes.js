@@ -25,6 +25,7 @@ import {
   TeamIcon,
   SettingsIcon,
 } from "../views/components/icons";
+import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 
 
 const allRoles = [
@@ -125,11 +126,23 @@ const StatisticsPaths = {
       path: "/statistics",
       component: Statistics,
       icon: StatisticsIcon,
-      roles: ["LABORATORY_HEAD", "TEAM_HEAD"],
+      roles: ["LABORATORY_HEAD"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques d'équipes",
+      path: "/teamStatistics",
+      component: TeamsStatistics,
+      icon: StatisticsIcon,
+      roles: ["LABORATORY_HEAD"],
       inMenu: true,
     },
   ],
 };
+
+
+    
+
 
 const followedResearchersPaths = {
   title: "Chercheur suivis",
