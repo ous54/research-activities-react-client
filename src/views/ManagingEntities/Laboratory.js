@@ -12,60 +12,13 @@ import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import UserListItem from "../Author/components/UserListItem";
 import "c3/c3.css";
-import C3Chart from "react-c3js";
 
 const Laboratory = () => {
   const { laboratoryId } = useParams();
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [laboratory, setLaboratory] = useState(null);
-  const [labMembers, setLabMembers] = useState(null);
-  const [auth, setAuth] = useState( {
     
-    indexes: [
-      {
-        "name": "Citations",
-        "total": "81",
-        "lastFiveYears": "80"
-      },
-      {
-        "name": "indice h",
-        "total": "5",
-        "lastFiveYears": "5"
-      },
-      {
-        "name": "indice i10",
-        "total": "3",
-        "lastFiveYears": "3"
-      }
-    ],
    
-    citationsPerYear: [
-      {
-        "year": "2015",
-        "citations": "1"
-      },
-      {
-        "year": "2016",
-        "citations": "16"
-      },
-      {
-        "year": "2017",
-        "citations": "30"
-      },
-      {
-        "year": "2018",
-        "citations": "14"
-      },
-      {
-        "year": "2019",
-        "citations": "11"
-      },
-      {
-        "year": "2020",
-        "citations": "8"
-      }
-    ]
-  });  
 
   const { ApiServices } = useContext(AppContext);
   const { laboratoryService, userService, statisticsService } = ApiServices;
@@ -84,7 +37,7 @@ const Laboratory = () => {
      console.log(members);
     })
     console.log(members);
-    members.map((member)=>
+    members.map((member) =>
     {
       memberIds.push(member.user_id);
     }
@@ -141,7 +94,7 @@ const Laboratory = () => {
 
   useEffect(() => {
     requestUpdate();
-  }, [requestUpdate, auth]);
+  }, [requestUpdate]);
 
  
 
@@ -218,7 +171,7 @@ const Laboratory = () => {
               </div>
             </div>
           )}
-          <AuthorCitations auth= {auth}/>
+         
         </div>
 
         <div className="col-md-4">
@@ -340,82 +293,6 @@ const TeamListItem = ({ team }) => {
 };
 
 
-
-
-const AuthorCitations = ({auth}) => {
-  let chart = {
-    title: "AuthorCitations",
-    data: {
-      columns: [],
-      type: "bar",
-      colors: {
-        data1: "#467fcf",
-      },
-      names: {
-        data1: "Citations",
-      },
-    },
-    axis: {
-      x: {
-        type: "category",
-        categories: [],
-      },
-    },
-  };
-
-  chart.data.columns[0] = ["data1"].concat(
-    auth.citationsPerYear.slice(-5).map((a) => a.citations)
-  );
-
-  chart.axis.x.categories = auth.citationsPerYear
-    .slice(-5)
-    .map((a) => a.year);
-
-  return (
-    <div className="card">
-      <div className="card-header">
-        <h4 className="card-title">Citée par</h4>
-      </div>
-      <div className="table-responsive ">
-        <table className="table table-hover table-outline   small text-muted card-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th className="text-center">Toutes</th>
-              <th className="text-center">
-                Depuis {new Date().getFullYear() - 5}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {auth.indexes.map(
-              ({ name, total, lastFiveYears }, index) => (
-                <tr key={index}>
-                  <td>{name}</td>
-                  <td className="text-center">{total}</td>
-                  <td className="text-center">{lastFiveYears}</td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
-        <div className="card-body">
-          <C3Chart
-            data={chart.data}
-            axis={chart.axis}
-            legend={{
-              show: false,
-            }}
-            padding={{
-              bottom: 0,
-              top: 0,
-            }}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
 
 
 

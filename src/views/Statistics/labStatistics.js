@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, { useContext, useEffect, useState, useCallback, Fragment } from "react";
 import PageHeader from "../components/PageHeader";
 import StatisticsTable from "./components/StatisticsTable";
 import { AppContext } from "../../context/AppContext";
@@ -9,10 +9,11 @@ import C3Chart from "react-c3js";
 import "c3/c3.css";
 import LabFilter from "../components/LabFilter";
 import ResearchersFilter from "../components/ResearchersFilter";
+import { Link } from "react-router-dom";
 
 const LabStatistics = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
-
+   const [selectedLabs, setSelectedLabs] = useState([]);
   const [
     filteredResearchersStatistics,
     setFilteredResearchersStatistics,
@@ -30,7 +31,8 @@ const LabStatistics = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { user, ApiServices } = useContext(AppContext);
-  const { statisticsService, userService } = ApiServices;
+  const { statisticsService, userService, laboratoryService } = ApiServices;
+  const [laboratories, setLaboratories] = useState([]);
 
   const [chartVersion, setChartVersion] = useState(0);
   const [chart, setChart] = useState({
@@ -42,6 +44,48 @@ const LabStatistics = () => {
     },
   });
 
+  const ListMembers =  useCallback((Laboratory) => {
+    let members= [];
+    let memberIds=[];
+    let labMembers=[];
+    Laboratory.teams.map(({teamMemberShipCount}) =>{
+      console.log(teamMemberShipCount);
+      Array.prototype.push.apply(members,teamMemberShipCount); 
+  
+  ;
+     console.log(members);
+    })
+    console.log(members);
+    members.map((member) =>
+    {
+      memberIds.push(member.user_id);
+    }
+    )
+  
+    console.log(memberIds);
+    Promise.all(memberIds.map( async (id)=>{
+      await statisticsService.findUser(id).then((response)=>{
+        labMembers.push({
+          firstName : response.data.firstName,
+          lastName :response.data.lastName
+        });
+      });
+      
+    }))
+    console.log(labMembers);
+  },[userService]
+  );
+    
+
+  const updateLaboratoryData = useCallback(async () => {
+    let response = await laboratoryService.findAllLaboratories();
+    setLaboratories(
+        response.data.map((laboratory) => ({
+          ...laboratory,
+          establishment: laboratory.establishment.name,
+        }))
+    );
+  }, [laboratoryService]);
   const updateChart = useCallback(() => {
     let yearsRange = [];
     let teamStats= {};
@@ -91,25 +135,7 @@ const LabStatistics = () => {
     filteredResearchersStatistics,
   ]);
 
-  const updateFilteringOptionsData = useCallback(async () => {
-    try {
-      const response = await userService.getFilteringOptions(user._id);
-      if (response.data) setFilteringOptions(response.data);
-      else throw Error();
-    } catch (error) {
-     
-    }
-  }, [user._id]);
 
-  const updateFollowedUsersData = useCallback(async () => {
-    try {
-      const response = await statisticsService.getStatistics(filter);
-      if (response.data) setResearchersStatistics(response.data);
-      else throw Error();
-    } catch (error) {
-     
-    }
-  }, [filter]);
 
   const updateStatistics = () => {};
   useEffect(() => {
@@ -117,14 +143,15 @@ const LabStatistics = () => {
   }, [filteredResearchersStatistics, dateRange]);
 
   useEffect(() => {
-    updateFilteringOptionsData();
-  }, [updateFilteringOptionsData]);
+    updateLaboratoryData();
+    
+    console.log(user);
+  }, [updateLaboratoryData]);
 
   useEffect(() => {
     if (!filter) return;
     if (!isSearchActive) setIsSearchActive(true);
-    updateFollowedUsersData();
-  }, [filter, isSearchActive, updateFollowedUsersData]);
+  }, [filter, isSearchActive]);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -145,7 +172,8 @@ const LabStatistics = () => {
       />
       <div className="row">
         <div className="col-md-4">
-          <StatisticsFilter
+
+          {/*<StatisticsFilter
             dateRange={dateRange}
             setDateRange={setDateRange}
             updateStatistics={updateStatistics}
@@ -160,7 +188,8 @@ const LabStatistics = () => {
               isSearchActive,
               setIsSearchActive,
             }}
-          />
+          />*/}
+          <FilteringCategory {...{ laboratories , setSelectedLabs, selectedLabs}}/>
         </div>
         <div className="col-md-8">
           <div className="card">
@@ -205,4 +234,41 @@ const LabStatistics = () => {
   );
 };
 
+const FilteringCategory = ({laboratories, setSelectedLabs, selectedLabs }) => {
+  return (
+    <Fragment>
+      <div className="subheader mb-2">Laboratories</div>
+      <div className="list-group list-group-transparent mb-3">
+        {laboratories.map(( lab, index) => (
+          <FilteringOption key={index} {...{ lab , setSelectedLabs, selectedLabs}} />
+        ))}
+      </div>
+    </Fragment>
+  );
+};
+
+const FilteringOption = ({ lab, setSelectedLabs, selectedLabs }) => {
+  const classes =
+    "list-group-item list-group-item-action d-flex align-items-center ";
+
+  const updateFilter = (e) => {
+    e.preventDefault();
+    setSelectedLabs(lab
+    );
+    console.log(selectedLabs);
+   
+  };
+
+  let isActive = false;
+  return (
+    <Link
+      to="/#"
+      className={`${classes} ${isActive ? " active " : "notActive"}`}
+      onClick={updateFilter}
+    >
+      {lab.name}
+      <small className="text-muted ml-auto">{lab.membershipCount}</small>
+    </Link>
+  );
+};
 export default LabStatistics;
