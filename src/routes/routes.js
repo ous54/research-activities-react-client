@@ -16,6 +16,8 @@ import Profile from "../views/Profile/Profile";
 import Team from "../views/ManagingEntities/Team";
 import Laboratory from "../views/ManagingEntities/Laboratory";
 import LabTree from "../views/ManagingEntities/LabTree";
+import ResearchDirector from "../views/ManagingAccounts/ResearchDirector";
+import LaboratoriesOfDirector from "../views/ManagingEntities/DirectorViews/LaboratoriesOfDirector";
 
 
 import {
@@ -92,9 +94,33 @@ const entitiesPathsCategory = {
   ],
 };
 
+const researchDirectorPaths = {
+  title: "Direction de recherche",
+  isDropdown: true,
+  icon: SettingsIcon,
+  routes: [
+    {
+      title: "Laboratoires",
+      path: "/laboratories-of-director",
+      component: LaboratoriesOfDirector,
+      roles: ["RESEARCH_DIRECTOR"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques",
+      path: "/statistics",
+      component: Statistics,
+      icon: StatisticsIcon,
+      roles: ["RESEARCH_DIRECTOR"],
+      inMenu: true,
+    }
+  ]
+};
+
 const accountsManagementPathsCategory = {
   title: "Gestion des comptes",
-  isDropdown: false,
+  isDropdown: true,
+  icon: SettingsIcon,
   routes: [
     {
       title: "Comptes chefs des Laboratoires",
@@ -112,6 +138,14 @@ const accountsManagementPathsCategory = {
       icon: TeamIcon,
       inMenu: true,
     },
+    {
+      title: "Compte Directeur de recherche",
+      path: "/research-director",
+      component: ResearchDirector,
+      roles: ["CED_HEAD"],
+      icon: TeamIcon,
+      inMenu: true,
+    }
   ],
 };
 
@@ -214,8 +248,10 @@ const menus = [
   entitiesPathsCategory,
   accountsManagementPathsCategory,
   followedResearchersPaths,
+  researchDirectorPaths,
   StatisticsPaths,
   errorPathsCategory,
+  
 ];
 
 const routes = [
@@ -224,6 +260,7 @@ const routes = [
   ...entitiesPathsCategory.routes,
   ...accountsManagementPathsCategory.routes,
   ...followedResearchersPaths.routes,
+  ...researchDirectorPaths.routes,
   ...StatisticsPaths.routes,
   ...errorPathsCategory.routes,
 ];
