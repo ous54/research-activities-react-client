@@ -48,11 +48,13 @@ const Author = (props) => {
       setIsLoading(true);
       if (isError) setIsError(false);
       if (noResultFound) setNoResultFound(false);
+      const response = await scraperService.getAuthorData("scholar", authorId);
+      if (response.data.author) setAuthor(response.data.author);
+      else if (response.data.error) setNoResultFound(true);
+      else {
+        pushAlert({ message: "Incapable d'obtenir les données de l'auteur" });
+      }
 
-      const response = await scraperService.getAuthorData(authorId);
-      if (response.data.error) throw Error(response);
-      if (response.status === 200) setAuthor(response.data);
-      if (!response.data.publications) throw Error(response);
     } catch (error) {
       setIsError(true);
     } finally {
