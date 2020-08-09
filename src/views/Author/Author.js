@@ -7,7 +7,7 @@ import React, {
   Fragment,
 } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams ,useLocation} from "react-router-dom";
 
 import AuthorHeader from "./components/AuthorHeader";
 import Coauthors from "./components/Coauthors";
@@ -16,11 +16,11 @@ import Publications from "./components/Publications";
 
 import { AppContext } from "../../context/AppContext";
 import NoResultFound from "../components/NoResultFound";
-import Loader from "../components/Loader";
 import LoadingResult from "../components/LoadingResult";
+import ErrorFound from "../components/ErrorFound";
 
-const Author = () => {
-  const { scholarId } = useParams();
+const Author = (props) => {
+  const { authorId } = useParams();
   const [author, setAuthor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +31,16 @@ const Author = () => {
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { scraperService, userService } = ApiServices;
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.publication)
+      pushAlert({
+        type: "info",
+        autoClose: false,
+        message: "Nouvelle publication : " + location.state.publication,
+      });
+  }, []);
 
   const getAuthorData = useCallback(async () => {
     try {
@@ -39,29 +49,27 @@ const Author = () => {
       if (isError) setIsError(false);
       if (noResultFound) setNoResultFound(false);
 
-      const response = await scraperService.getAuthorData(scholarId);
+      const response = await scraperService.getAuthorData(authorId);
       if (response.data.error) throw Error(response);
       if (response.status === 200) setAuthor(response.data);
       if (!response.data.publications) throw Error(response);
     } catch (error) {
       setIsError(true);
-      setNoResultFound(true);
-      pushAlert({ message: "Incapable d'obtenir les données de l'auteur" });
     } finally {
       setIsLoading(false);
     }
-  }, [scholarId]);
+  }, [authorId]);
 
   const getIfIsFollowing = useCallback(async () => {
-    if (!author) return;
     try {
-      const response = await userService.isFollowing(scholarId);
+      const response = await userService.isFollowing(authorId);
       if (response.data.isFollowing) setIsFollowed(true);
+
       throw Error();
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir si l'auteur est suivi" });
     }
-  }, [scholarId]);
+  }, [authorId]);
 
   const findAllUsers = useCallback(async () => {
     try {
@@ -76,7 +84,7 @@ const Author = () => {
     async (user_id) => {
       try {
         const service = isFollowed
-          ? userService.unfollowUser(scholarId)
+          ? userService.unfollowUser(authorId)
           : userService.followUser({ ...author, user_id });
 
         setsSendingFollow(true);
@@ -88,7 +96,7 @@ const Author = () => {
         setsSendingFollow(false);
       }
     },
-    [scholarId]
+    [authorId, author]
   );
 
   useEffect(() => {
@@ -102,7 +110,8 @@ const Author = () => {
   return (
     <div className="row">
       {isLoading && <LoadingResult />}
-      {noResultFound && <NoResultFound query={scholarId} />}
+      {noResultFound && <NoResultFound query={authorId} />}
+      {isError && <ErrorFound />}
       {author && (
         <Fragment>
           <div className="col-lg-8">
