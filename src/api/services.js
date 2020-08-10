@@ -38,7 +38,7 @@ const makeUniversityService = (api) => ({
   findUniversity: (_id) => api.get(`/universities/${_id}`),
   findAllUniversities: () => api.get(`/universities`),
   deleteUniversity: (_id) => api.delete(`/universities/${_id}`),
-  getUniversityEstablishments: (_id) => api.get(`/universities/${_id}/establishments`),
+  getUniversityEstablishments: (_id) => api.get(`/universities/${_id}/establishments`)
 });
 
 const makeEstablishmentService = (api) => ({
@@ -48,6 +48,7 @@ const makeEstablishmentService = (api) => ({
   findAllEstablishments: () => api.get(`/establishments`),
   deleteEstablishment: (_id) => api.delete(`/establishments/${_id}`),
   getEstablishmentLaboratories: (_id) => api.get(`/establishments/${_id}/laboratories`),
+  setEstablishmentResearchDirector: (establishment_id, user_id) => api.post(`/research-director/${establishment_id}/${user_id}`),
 });
 
 const makeLaboratoryService = (api) => ({
@@ -61,6 +62,7 @@ const makeLaboratoryService = (api) => ({
   getFreeLaboratories: () => api.get(`/free-laboratories`),
   associateHeadToLaboratory: (head_id, lab_id) =>
     api.get(`/entitle-laboratory/${head_id}/${lab_id}`),
+  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`)
 });
 
 const makeTeamService = (api) => ({
