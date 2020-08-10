@@ -29,7 +29,7 @@ function AppProvider({ children }) {
 
   const pushAlert = (alert) => {
     if (
-      process.env.DEBUG === "true" ||
+      process.env.REACT_APP_DEBUG === "true" ||
       !["warning", "danger"].includes(alert.type)
     ) {
       setAlerts((alerts) => [
