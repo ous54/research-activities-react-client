@@ -12,7 +12,7 @@ import ResearchersFilter from "../components/ResearchersFilter";
 import { Link } from "react-router-dom";
 
 const LabStatistics = () => {
-  const [researchersStatistics, setResearchersStatistics] = useState([null]);
+  const [researchersStatistics, setResearchersStatistics] = useState([]);
   const [labsStatistics, setLabsStatistics] = useState([]);
 
    const [selectedLabs, setSelectedLabs] = useState(null);
@@ -35,7 +35,7 @@ const LabStatistics = () => {
   const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService, laboratoryService } = ApiServices;
   const [laboratories, setLaboratories] = useState([]);
-
+  const [columns, setColumns] = useState([]);
   const [chartVersion, setChartVersion] = useState(0);
   const [chart, setChart] = useState({
     data: {
@@ -47,14 +47,19 @@ const LabStatistics = () => {
   });
 
  
-  const getLabData = (async (lab) =>{
+  const getLabData = useCallback(async (lab) =>{
     setResearchersStatistics([]);
-    lab.teams.map(
-      (team)=>{
-        getTeamData(team.abbreviation)
-      }
-    )
-  })
+    Promise.all(lab.teams.map(
+      (async (team)=>{
+        const response = await statisticsService.getStatistics({[`team_abbreviation`]: team.abbreviation});
+      if (response.data)  setResearchersStatistics(researcherStatistics => researcherStatistics.concat(response.data));
+      else throw Error();
+     
+ 
+    
+      })
+    ))
+  },[statisticsService])
   
     
   
@@ -83,33 +88,39 @@ const LabStatistics = () => {
         }))
     );
   }, [laboratoryService]);
-  const updateChart =() => {
+
+  const updateLabsStatistics = useCallback (async() =>{
     let yearsRange = [];
     let teamStats= {};
     for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
+
     researchersStatistics
-      .map((usersStatistic) =>
-      
-       {if(usersStatistic != null)
-        { yearsRange.map((year)=>{
-         
-          teamStats[year]=teamStats[year]+(usersStatistic.yearlyPublications[year] ?? 0)
-         })
-         console.log(teamStats);}
-         
-      }
+    .map((usersStatistic) =>
+    
+     {if(usersStatistic != null)
+      { yearsRange.map((year)=>{
        
-         
-        
-      );
-      if(selectedLabs != null){
-        setLabsStatistics( teamsStatistics=> teamsStatistics.concat({
-          'lab': selectedLabs.abbreviation,
-          'publications': teamStats
-        })
-         );
-      }
-      
+        teamStats[year]=teamStats[year]+(usersStatistic.yearlyPublications[year] ?? 0)
+       })
+       console.log(teamStats);}
+       
+    } 
+    );
+    if(selectedLabs != null){
+      setLabsStatistics( teamsStatistics=> teamsStatistics.concat({
+        'lab': selectedLabs.abbreviation,
+        'publications': teamStats
+      })
+       );
+    }
+  });
+
+  const updateChart =(async() => {
+    let yearsRange = [];
+    let teamStats= {};
+    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
+  
+      console.log('here');
     const columns =
       
       
@@ -135,7 +146,7 @@ const LabStatistics = () => {
     console.log(columns);
     setChartVersion(chartVersion + 1);
   
-  }
+  });
   
 
 
@@ -147,30 +158,37 @@ const LabStatistics = () => {
     console.log(user);
   }, [user]);
 
-  useEffect(() => {if (selectedLabs != null){
+  useEffect( () => {if (selectedLabs != null){
     getLabData( selectedLabs);
+ }
+ }, [ selectedLabs]);
+
+  useEffect( () => {if (selectedLabs != null){
+     
+    updateLabsStatistics();
    
   }
-  }, [selectedLabs]);
-  useEffect(() => { console.log(researchersStatistics)
+  }, [researchersStatistics]);
+ 
 
+
+  useEffect(() => { 
+    console.log(researchersStatistics)
     updateChart();
-        }, [researchersStatistics]);
+    }, [selectedLabs,JSON.stringify(researchersStatistics),JSON.stringify(labsStatistics)]);
 
-    useEffect(() => { console.log(labsStatistics)
-     
+    useEffect(() => { 
+      console.log(labsStatistics)
      }, [labsStatistics])
+
   useEffect(() => {
     if (selectedLabs != null){
-      
-     
-    
+    updateChart();
     console.log(selectedLabs);
-
     console.log(researchersStatistics);
     }
   },[selectedLabs,dateRange.end,
-    dateRange.start])
+    dateRange.start,JSON.stringify(labsStatistics)])
 
 
  
@@ -179,10 +197,7 @@ const LabStatistics = () => {
 
   return (
     <div className="container">
-      <PageHeader
-        title="Statistiques"
-        subTitle={filteredResearchersStatistics.length + " chercheurs"}
-      />
+      
       <div className="row">
         <div className="col-md-4">
 
@@ -217,12 +232,7 @@ const LabStatistics = () => {
               </div>
             </div>
           
-            <div className="resize-triggers">
-              <div className="expand-trigger">
-                <div style={{ width: "579px", height: "460px" }}></div>
-              </div>
-              <div className="contract-trigger"></div>
-            </div>
+
         </div>
       </div>
         </div>
