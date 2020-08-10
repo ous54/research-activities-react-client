@@ -27,6 +27,8 @@ import {
   TeamIcon,
   SettingsIcon,
 } from "../views/components/icons";
+import TeamsStatistics from "../views/Statistics/TeamsStatistics";
+import LabStatistics from "../views/Statistics/labStatistics";
 
 
 const allRoles = [
@@ -151,7 +153,7 @@ const accountsManagementPathsCategory = {
 
 const StatisticsPaths = {
   title: "Statistiques",
-  isDropdown: false,
+  isDropdown: true,
   icon: StatisticsIcon,
   routes: [
     {
@@ -159,11 +161,31 @@ const StatisticsPaths = {
       path: "/statistics",
       component: Statistics,
       icon: StatisticsIcon,
-      roles: ["LABORATORY_HEAD", "TEAM_HEAD"],
+      roles: ["LABORATORY_HEAD"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques d'équipes",
+      path: "/teamStatistics",
+      component: TeamsStatistics,
+      icon: StatisticsIcon,
+      roles: ["LABORATORY_HEAD"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques des laboratoires",
+      path: "/labStatistics",
+      component: LabStatistics,
+      icon: StatisticsIcon,
+      roles: ["CED_HEAD","CED_HEAD"],
       inMenu: true,
     },
   ],
 };
+
+
+    
+
 
 const followedResearchersPaths = {
   title: "Chercheur suivis",
