@@ -18,6 +18,7 @@ import Laboratory from "../views/ManagingEntities/Laboratory";
 import LabTree from "../views/ManagingEntities/LabTree";
 import ResearchDirector from "../views/ManagingAccounts/ResearchDirector";
 import LaboratoriesOfDirector from "../views/ManagingEntities/DirectorViews/LaboratoriesOfDirector";
+import TeamOfDirector from "../views/ManagingEntities/DirectorViews/TeamOfDirector";
 
 
 import {
@@ -115,7 +116,14 @@ const researchDirectorPaths = {
       icon: StatisticsIcon,
       roles: ["RESEARCH_DIRECTOR"],
       inMenu: true,
-    }
+    },
+    {
+      title: "Equipe",
+      path: "/team-of-director/:teamId",
+      component: TeamOfDirector,
+      roles: ["RESEARCH_DIRECTOR"]
+    },
+
   ]
 };
 

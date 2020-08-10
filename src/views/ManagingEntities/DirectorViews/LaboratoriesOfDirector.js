@@ -61,6 +61,9 @@ import React, {
     }, [ updateLaboratoryData]);
   
     
+    const manageLaboratory = ({ _id }) => {
+      history.push(`/laboratory/${_id}`);
+    };
   
     return (
       <Fragment>
@@ -77,7 +80,7 @@ import React, {
               data={laboratories}
               tableSkeleton={inputsSkeleton}
               actions={[
-                
+                { name: "Voir", function: manageLaboratory, style: "primary" },
               ]}
             />
           </div>

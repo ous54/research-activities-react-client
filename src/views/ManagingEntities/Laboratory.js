@@ -4,8 +4,9 @@ import React, {
   useContext,
   useEffect,
   useCallback,
-  Fragment,
+  Fragment
 } from "react";
+import { useHistory } from "react-router-dom";
 
 import PageHeader from "../components/PageHeader";
 import { AppContext } from "../../context/AppContext";
@@ -15,11 +16,11 @@ import UserListItem from "../Author/components/UserListItem";
 
 const Laboratory = () => {
   const { laboratoryId } = useParams();
-
+  const history = useHistory();
   const [laboratoryHeads, setLaboratoryHeads] = useState([]);
   const [laboratory, setLaboratory] = useState(null);
 
-  const { ApiServices, alertService } = useContext(AppContext);
+  const { ApiServices, alertService, user } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { laboratoryService, userService } = ApiServices;
 
@@ -44,6 +45,10 @@ const Laboratory = () => {
       });
     }
   }, []);
+
+
+  
+
 
   const requestUpdate = useCallback(() => {
     getLaboratoryData();
@@ -138,7 +143,8 @@ const Laboratory = () => {
           )}
         </div>
 
-        <div className="col-md-4">
+        {user.role == "CED_HEAD" && (
+          <div className="col-md-4">
           {laboratory != null && (
             <div className="card">
               <div className="card-header">
@@ -155,7 +161,7 @@ const Laboratory = () => {
                   {laboratory.laboratoryHead == null && (
                     <div className="list-item ">
                       <small className=" text-center  text-muted text-truncate mt-n1">
-                        Pas encore assassiné
+                        Pas encore désigné
                       </small>
                     </div>
                   )}
@@ -224,6 +230,8 @@ const Laboratory = () => {
               </div>
             )}
         </div>
+        )}
+        
       </div>
     </div>
   );
@@ -238,19 +246,26 @@ const TeamsList = ({ teams }) => (
 );
 
 const TeamListItem = ({ team }) => {
+
+  const history = useHistory();
+  const teamSelected = async (teams) => {
+    history.push(`/team-of-director/${team._id}`);
+  };
+
   return (
     <Fragment>
       <div className="m-3 d-flex align-items-center">
         <span className="bg-blue text-white stamp mr-1">
           {team.abbreviation}
         </span>
-        <div className="mr-3 lh-sm">
+        <div className="mr-3 lh-sm"  >
           <div className="strong"> {team.name}</div>
           <div className="text-muted">
             {team.teamMemberShipCount.length}{" "}
             {team.teamMemberShipCount.length > 1 ? "Membres" : "Membre"}
           </div>
         </div>
+        <button type="button" className = "btn btn-sm btn-outline-primary" onClick={() => teamSelected(team)}>Détails</button>
       </div>
     </Fragment>
   );
