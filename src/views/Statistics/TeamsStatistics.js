@@ -7,6 +7,7 @@ import StatisticsFilter from "./components/StatisticsFilter";
 
 import C3Chart from "react-c3js";
 import "c3/c3.css";
+import LabFilter from "../components/LabFilter";
 
 const TeamsStatistics = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
@@ -143,6 +144,7 @@ const TeamsStatistics = () => {
     setFilteredResearchersStatistics(a);
   }, [searchTerm, researchersStatistics]);
 
+  
   return (
     <div className="container">
       <PageHeader

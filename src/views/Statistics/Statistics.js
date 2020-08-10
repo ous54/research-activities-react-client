@@ -41,7 +41,7 @@ const ResearchersStatistics = () => {
     },
   });
 
-  const updateChart = useCallback(() => {
+  const updateChart = () => {
     let yearsRange = [];
     for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
 
@@ -62,12 +62,7 @@ const ResearchersStatistics = () => {
     }));
 
     setChartVersion(chartVersion + 1);
-  }, [
-    chartVersion,
-    dateRange.end,
-    dateRange.start,
-    filteredResearchersStatistics,
-  ]);
+  };
 
   const updateFilteringOptionsData = useCallback(async () => {
     try {

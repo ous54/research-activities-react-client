@@ -12,8 +12,10 @@ import ResearchersFilter from "../components/ResearchersFilter";
 import { Link } from "react-router-dom";
 
 const LabStatistics = () => {
-  const [researchersStatistics, setResearchersStatistics] = useState([]);
-   const [selectedLabs, setSelectedLabs] = useState([]);
+  const [researchersStatistics, setResearchersStatistics] = useState([null]);
+  const [labsStatistics, setLabsStatistics] = useState([]);
+
+   const [selectedLabs, setSelectedLabs] = useState(null);
   const [
     filteredResearchersStatistics,
     setFilteredResearchersStatistics,
@@ -39,43 +41,38 @@ const LabStatistics = () => {
     data: {
       unload: true,
       x: "x",
-      type: "bar",
+      type: "line",
       columns: [],
     },
   });
 
-  const ListMembers =  useCallback((Laboratory) => {
-    let members= [];
-    let memberIds=[];
-    let labMembers=[];
-    Laboratory.teams.map(({teamMemberShipCount}) =>{
-      console.log(teamMemberShipCount);
-      Array.prototype.push.apply(members,teamMemberShipCount); 
-  
-  ;
-     console.log(members);
-    })
-    console.log(members);
-    members.map((member) =>
-    {
-      memberIds.push(member.user_id);
-    }
+ 
+  const getLabData = (async (lab) =>{
+    setResearchersStatistics([]);
+    lab.teams.map(
+      (team)=>{
+        getTeamData(team.abbreviation)
+      }
     )
+  })
   
-    console.log(memberIds);
-    Promise.all(memberIds.map( async (id)=>{
-      await statisticsService.findUser(id).then((response)=>{
-        labMembers.push({
-          firstName : response.data.firstName,
-          lastName :response.data.lastName
-        });
-      });
-      
-    }))
-    console.log(labMembers);
-  },[userService]
-  );
     
+  
+
+  
+
+  const getTeamData = (async (abbreviation) => {
+    try {
+      
+      const response = await statisticsService.getStatistics({[`team_abbreviation`]: abbreviation});
+      if (response.data)  setResearchersStatistics(researcherStatistics => researcherStatistics.concat(response.data));
+      else throw Error();
+    } catch (error) {
+ 
+    }
+    console.log(researchersStatistics);
+  });
+
 
   const updateLaboratoryData = useCallback(async () => {
     let response = await laboratoryService.findAllLaboratories();
@@ -86,83 +83,99 @@ const LabStatistics = () => {
         }))
     );
   }, [laboratoryService]);
-  const updateChart = useCallback(() => {
+  const updateChart =() => {
     let yearsRange = [];
     let teamStats= {};
     for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
-    filteredResearchersStatistics
+    researchersStatistics
       .map((usersStatistic) =>
       
-       {
-         yearsRange.map((year)=>{
-
+       {if(usersStatistic != null)
+        { yearsRange.map((year)=>{
+         
           teamStats[year]=teamStats[year]+(usersStatistic.yearlyPublications[year] ?? 0)
          })
-         console.log(teamStats);
-       }
+         console.log(teamStats);}
+         
+      }
+       
          
         
       );
-    const columns = filteredResearchersStatistics
-      .map((usersStatistic) =>
+      if(selectedLabs != null){
+        setLabsStatistics( teamsStatistics=> teamsStatistics.concat({
+          'lab': selectedLabs.abbreviation,
+          'publications': teamStats
+        })
+         );
+      }
       
-        [usersStatistic.name].concat(
-          yearsRange.map((year) => usersStatistic.yearlyPublications[year] ?? 0)
-        )
+    const columns =
+      
+      
+    labsStatistics
+      .map((labStatistics) =>
+      
+        [labStatistics.lab].concat(
+          yearsRange.map((year) =>  labStatistics.publications[year] ?? 0)
+        ) 
       )
       
-      .concat([['Team total'].concat(yearsRange.map((year) => teamStats[year] ?? 0))],[["x"].concat(yearsRange)]);
+      .concat([["x"].concat(yearsRange)]);
 
     setChart(() => ({
      
       data:{
       x: "x",
         columns,
-        type: 'bar',
-        types: {
-            
-            'Team total': 'line',
-            data6: 'area',
-        },
+        type: 'line',
+      
       
     }}));
     console.log(columns);
     setChartVersion(chartVersion + 1);
-  }, [
-    chartVersion,
-    dateRange.end,
-    dateRange.start,
-    filteredResearchersStatistics,
-  ]);
+  
+  }
+  
 
 
 
-  const updateStatistics = () => {};
-  useEffect(() => {
-    updateChart();
-  }, [filteredResearchersStatistics, dateRange]);
+  const updateStatistics = () => {}; 
 
   useEffect(() => {
-    updateLaboratoryData();
-    
+    updateLaboratoryData(); 
     console.log(user);
-  }, [updateLaboratoryData]);
+  }, [user]);
 
-  useEffect(() => {
-    if (!filter) return;
-    if (!isSearchActive) setIsSearchActive(true);
-  }, [filter, isSearchActive]);
+  useEffect(() => {if (selectedLabs != null){
+    getLabData( selectedLabs);
+   
+  }
+  }, [selectedLabs]);
+  useEffect(() => { console.log(researchersStatistics)
 
+    updateChart();
+        }, [researchersStatistics]);
+
+    useEffect(() => { console.log(labsStatistics)
+     
+     }, [labsStatistics])
   useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredResearchersStatistics(researchersStatistics);
-      return;
+    if (selectedLabs != null){
+      
+     
+    
+    console.log(selectedLabs);
+
+    console.log(researchersStatistics);
     }
-    const a = researchersStatistics.filter(
-      (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-    );
-    setFilteredResearchersStatistics(a);
-  }, [searchTerm, researchersStatistics]);
+  },[selectedLabs,dateRange.end,
+    dateRange.start])
+
+
+ 
+
+  
 
   return (
     <div className="container">
@@ -173,32 +186,22 @@ const LabStatistics = () => {
       <div className="row">
         <div className="col-md-4">
 
-          {/*<StatisticsFilter
+          <StatisticsFilter
             dateRange={dateRange}
             setDateRange={setDateRange}
             updateStatistics={updateStatistics}
           />
-          <ResearchersFilter
-            {...{
-              filter,
-              setFilter,
-              filteringOptions,
-              setSearchTerm,
-              searchTerm,
-              isSearchActive,
-              setIsSearchActive,
-            }}
-          />*/}
-          <FilteringCategory {...{ laboratories , setSelectedLabs, selectedLabs}}/>
+         
+          <LabFilter {...{ laboratories , setSelectedLabs, selectedLabs}}/>
         </div>
-        <div className="col-md-8">
+          <div className="col-md-8">
           <div className="card">
             <div id="chartData-development-activity" className="mt-4">
               <div
                 id="apexchartDatas28b504"
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
-                {filteredResearchersStatistics.length > 0 && (
+                 
                   <C3Chart
                     key={chartVersion}
                     data={chart.data}
@@ -210,65 +213,24 @@ const LabStatistics = () => {
                       show: true,
                     }}
                   />
-                )}
+                
               </div>
             </div>
-            <div className="table-responsive">
-              {filteredResearchersStatistics.length > 0 && (
-                <StatisticsTable
-                  usersStatistics={filteredResearchersStatistics}
-                  dateRange={dateRange}
-                />
-              )}
-            </div>
+          
             <div className="resize-triggers">
               <div className="expand-trigger">
                 <div style={{ width: "579px", height: "460px" }}></div>
               </div>
               <div className="contract-trigger"></div>
             </div>
-          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-const FilteringCategory = ({laboratories, setSelectedLabs, selectedLabs }) => {
-  return (
-    <Fragment>
-      <div className="subheader mb-2">Laboratories</div>
-      <div className="list-group list-group-transparent mb-3">
-        {laboratories.map(( lab, index) => (
-          <FilteringOption key={index} {...{ lab , setSelectedLabs, selectedLabs}} />
-        ))}
-      </div>
-    </Fragment>
-  );
-};
-
-const FilteringOption = ({ lab, setSelectedLabs, selectedLabs }) => {
-  const classes =
-    "list-group-item list-group-item-action d-flex align-items-center ";
-
-  const updateFilter = (e) => {
-    e.preventDefault();
-    setSelectedLabs(lab
-    );
-    console.log(selectedLabs);
+        </div>
+        </div>
+     
    
-  };
-
-  let isActive = false;
-  return (
-    <Link
-      to="/#"
-      className={`${classes} ${isActive ? " active " : "notActive"}`}
-      onClick={updateFilter}
-    >
-      {lab.name}
-      <small className="text-muted ml-auto">{lab.membershipCount}</small>
-    </Link>
   );
 };
+
+
 export default LabStatistics;
