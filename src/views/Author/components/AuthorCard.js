@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const AuthorCard = ({ author }) => {
   return (
-    <div className="col-md-4">
+    <div className="col-lg-4 col-md-6 ">
       <div className="card">
         <div className="card-body p-3">
           {author.platform === "scopus" && <ScopusCard author={author} />}
@@ -34,8 +34,8 @@ const ScopusCard = ({ author }) => (
       <small className="d-block text-muted text-truncate mt-n1">
         {[author.affiliation, author.city, author.territory]
           .join("@")
-          .substr(30)
           .trim()
+          .substr(0,40)
           .split("@")
           .filter((info) => info.length > 2)
           .map((info) => (
@@ -70,8 +70,8 @@ const ScholarCard = ({ author }) => (
       <small className="d-block text-muted text-truncate mt-n1">
         {author.interests
           .join("@")
-          .substr(0,30)
           .trim()
+          .substr(0,40)
           .split("@")
           .filter((interest) => interest.length > 2)
           .map((interest) => (
