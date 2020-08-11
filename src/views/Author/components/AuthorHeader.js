@@ -203,10 +203,20 @@ const ConfirmationModel = ({ isFollowed, toggleFollow, users }) => {
 };
 
 const AuthorPicture = ({ author }) => (
-  <span
-    className="avatar avatar-lg"
-    style={{
-      backgroundImage: "url(" + author.profilePicture + ")",
-    }}
-  ></span>
+  <Fragment>
+    {author.profilePicture && (
+      <span
+        className="avatar avatar-lg"
+        style={{
+          backgroundImage: "url(" + author.profilePicture + ")",
+        }}
+      ></span>
+    )}{" "}
+    {!author.profilePicture && (
+      <span className="avatar avatar-lg bg-blue-lt ">
+        {author.name.split(" ")[0][0]}
+        {author.name.split(" ")[1] ? author.name.split(" ")[1][0] : ""}
+      </span>
+    )}
+  </Fragment>
 );
