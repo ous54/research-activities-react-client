@@ -42,10 +42,10 @@ const TeamsStatistics = () => {
     },
   });
 
-  const updateChart = useCallback(() => {
+  const getTeamStatistics = useCallback(()=>{
     let yearsRange = [];
     let teamStats= {};
-    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
+    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};  
     filteredResearchersStatistics
       .map((usersStatistic) =>
       
@@ -70,6 +70,13 @@ const TeamsStatistics = () => {
          console.log(filter.team_abbreviation);
          console.log(teamsStatistics);
       }
+  })
+
+  const updateChart = useCallback(() => {
+    let yearsRange = [];
+    let teamStats= {};
+    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
+    
       const columns = teamsStatistics
       .map((teamStatistics) =>
       
@@ -121,7 +128,12 @@ const TeamsStatistics = () => {
   const updateStatistics = () => {};
   useEffect(() => {
     updateChart();
+  }, [filteredResearchersStatistics, dateRange, teamsStatistics]);
+
+  useEffect(() => {
+    getTeamStatistics();
   }, [filteredResearchersStatistics, dateRange]);
+
 
   useEffect(() => {
     updateFilteringOptionsData();
@@ -177,7 +189,7 @@ const TeamsStatistics = () => {
                 id="apexchartDatas28b504"
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
-                {filteredResearchersStatistics.length > 0 && (
+                 
                   <C3Chart
                     key={chartVersion}
                     data={chart.data}
@@ -189,7 +201,7 @@ const TeamsStatistics = () => {
                       show: true,
                     }}
                   />
-                )}
+             
               </div>
             </div>
             
