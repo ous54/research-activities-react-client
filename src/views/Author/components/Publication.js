@@ -18,13 +18,25 @@ const Publication = ({
   const [isFetched, setIsFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getPublicationData = useCallback(async () => {
+  const getJournalData = async () => {
     try {
       setIsLoading(true);
-      const response = await scraperService.getPublicationData(
-        author.authorId,
-        publication.title.replace("/", "@").split("@")[0]
-      );
+
+      const jouranlName = publication.source
+        ? publication.source
+        : publication.extraInformation &&
+          publication.extraInformation["Journal"]
+        ? publication.extraInformation["Journal"]
+        : publication.extraInformation &&
+          publication.extraInformation["Conference"]
+        ? publication.extraInformation["Conference"]
+        : null;
+
+      console.log("jouranlName : ", jouranlName);
+
+      if (!jouranlName) return;
+
+      const response = await scraperService.getJournalData(jouranlName);
       if (response.data.error || response.data.status === 404) {
         setNoResultFound(true);
         updatePublication(index, {
@@ -35,8 +47,8 @@ const Publication = ({
         setIsFetched(true);
         updatePublication(index, {
           ...publication,
-          IF: response.data.publication["Impact Factor"],
-          SJR: response.data.publication["SJR"],
+          IF: response.data.journal["Impact Factor"],
+          SJR: response.data.journal["SJR"],
           searchedFor: true,
         });
       }
@@ -49,14 +61,13 @@ const Publication = ({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    if (platform === "scopus") return;
     let isMounted = true;
     if (!publication.IF && !publication.SJR && !publication.searchedFor)
       setTimeout(() => {
-        if (isMounted) getPublicationData();
+        if (isMounted) getJournalData();
       }, index * 2000);
 
     return () => {
@@ -67,14 +78,14 @@ const Publication = ({
   const fetchedButton = (
     <button
       className="btn  btn-sm m-3 btn-outline-secondary "
-      onClick={getPublicationData}
+      onClick={getJournalData}
     >
       récupérer
     </button>
   );
   return (
     <tr style={{ whiteSpace: "break-spaces " }} key={publication.title}>
-      <td>
+      <td style={{ width: "55%" }}>
         {publication.title}
         {publication.authors && (
           <small className="d-block text-muted text-truncate mt-n1">
@@ -82,16 +93,23 @@ const Publication = ({
           </small>
         )}
 
+        {publication.source && (
+          <small className="d-block text-muted text-truncate mt-n1">
+            {publication.source}
+          </small>
+        )}
+
         {publication.extraInformation &&
           publication.extraInformation["Conference"] && (
             <small className="d-block text-muted text-truncate mt-n1">
-              Conference : {publication.extraInformation["Conference"]}
+              {publication.extraInformation["Conference"]}
             </small>
           )}
+
         {publication.extraInformation &&
           publication.extraInformation["Journal"] && (
             <small className="d-block text-muted text-truncate mt-n1">
-              Journal : {publication.extraInformation["Journal"]}
+              {publication.extraInformation["Journal"]}
             </small>
           )}
       </td>
