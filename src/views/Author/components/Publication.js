@@ -27,16 +27,20 @@ const Publication = ({
         : publication.extraInformation &&
           publication.extraInformation["Journal"]
         ? publication.extraInformation["Journal"]
-        : publication.extraInformation &&
-          publication.extraInformation["Conference"]
-        ? publication.extraInformation["Conference"]
         : null;
 
       console.log("jouranlName : ", jouranlName);
 
-      if (!jouranlName) return;
+      if (!jouranlName) {
+        updatePublication(index, {
+          ...publication,
+          searchedFor: true,
+        });
+        return;
+      }
+      const jouranlNameQuery = jouranlName.replace("/", "").replace("\\", "");
 
-      const response = await scraperService.getJournalData(jouranlName);
+      const response = await scraperService.getJournalData(jouranlNameQuery);
       if (response.data.error || response.data.status === 404) {
         setNoResultFound(true);
         updatePublication(index, {
