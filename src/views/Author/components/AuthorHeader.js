@@ -34,21 +34,19 @@ const AuthorHeader = ({
                   />
                 )}
 
-                {platform !== "scopus" && (
-                  <Fragment>
-                    <PDFDownloadLink
-                      className="btn  btn-sm m-1  btn-outline-primary"
-                      document={<AuthorReport author={author} />}
-                      fileName={author.name + ".pdf"}
-                    >
-                      {({ blob, url, loading, error }) =>
-                        loading
-                          ? "Chargement du document..."
-                          : "Imprimer le rapport"
-                      }
-                    </PDFDownloadLink>
-                  </Fragment>
-                )}
+                <Fragment>
+                  <PDFDownloadLink
+                    className="btn  btn-sm m-1  btn-outline-primary"
+                    document={<AuthorReport author={author} />}
+                    fileName={author.name + ".pdf"}
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading
+                        ? "Chargement du document..."
+                        : "Imprimer le rapport"
+                    }
+                  </PDFDownloadLink>
+                </Fragment>
 
                 <div className="text-info small">
                   {`Nous avons réussi à récupérer le SJR et IF de ${
