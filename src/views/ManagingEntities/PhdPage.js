@@ -14,6 +14,7 @@ const PhdPage = () => {
   const [phdStudents, setPhdStudents] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
   const [coSupervisors, setCoSupervisors] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const [isEmpty, setIsEmpty] = useState(true);
 
@@ -63,7 +64,6 @@ const PhdPage = () => {
       response.data.forEach((researcher) => {
         sup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
-
       setCoSupervisors([{ _id: null,name:"Pas de co-directeur" },...sup]);
       setSupervisors(sup);
 
