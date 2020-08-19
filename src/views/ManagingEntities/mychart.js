@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
-import '../../assets/css/orgChart.css'
+import "../../assets/css/orgChart.css";
 
 export default class extends Component {
   constructor(props) {
@@ -11,16 +11,17 @@ export default class extends Component {
   shouldComponentUpdate() {
     return false;
   }
-user = localStorage.getItem('user');
-   pdf(nodeId) {
+  user = localStorage.getItem("user");
+  pdf(nodeId) {
     // this.chart.exportPDF({
     //     format: "A4",
     //     header: 'My Header',
     //     footer: 'My Footer. Page {current-page} of {total-pages}'
     // });
-}
+  }
   componentDidMount() {
-    let that = this
+    var printIcon = '<img src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/print-512.png">'
+    let that = this;
     OrgChart.templates.diva.field_1 = '<text  style="font-size: 14px;"  x="102" y="144" text-anchor="middle">{val}</text>';
     OrgChart.templates.group.field_0 = '<text  style="font-size: 24px;"  x="70" y="35" >{val}</text>';
     OrgChart.templates.group.link = '<path stroke-linejoin="round" stroke="#aeaeae" stroke-width="1px" fill="none" d="M{xa},{ya} {xb},{yb} {xc},{yc} L{xd},{yd}" />';
@@ -29,11 +30,12 @@ user = localStorage.getItem('user');
     OrgChart.templates.group.min.description = '<text width="230" text-overflow="multiline" style="font-size: 14px;" fill="#aeaeae" x="125" y="100" text-anchor="middle">{val}</text>';
     OrgChart.templates.diva.plus = "";
     OrgChart.templates.diva.minus = "";
-    
+    OrgChart.templates.diva.exportMenuButton = '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer" control-export-menu=""  >' + printIcon + "</div>";
     this.chart = new OrgChart(this.divRef.current, {
-layout: OrgChart.tree,
+      layout: OrgChart.tree,
       nodes: this.props.nodes,
-      scaleInitial: OrgChart.match.boundary,      nodeMouseClick: OrgChart.action.expandCollapse,
+      scaleInitial: OrgChart.match.boundary,
+      nodeMouseClick: OrgChart.action.expandCollapse,
       template: "diva",
       enableSearch: false,
       mouseScrool: OrgChart.action.none,
@@ -58,19 +60,20 @@ layout: OrgChart.tree,
         img_0: "img",
       },
       menu: {
-        pdfWithTitle: {                
-            text: "Imprimer l'arborescence",
-            icon: OrgChart.icon.pdf(24, 24),
-            onClick: function () {
-                this.exportPDF({
-                    header: that.props.name,
-                    footer: "",
-                    format: 'A4',
-                    margin: [60, 20, 60, 20]
-                });
-            }
-        }
-    },
+        pdfWithTitle: {
+          text: "Imprimer l'arborescence",
+          icon: OrgChart.icon.pdf(24, 24),
+          onClick: function () {
+            this.exportPDF({
+              filename: `${that.props.fileName}.pdf`,
+              header: that.props.name,
+              footer: "",
+              format: "A4",
+              margin: [60, 20, 60, 20],
+            });
+          },
+        },
+      },
       tags: {
         group: {
           template: "group",

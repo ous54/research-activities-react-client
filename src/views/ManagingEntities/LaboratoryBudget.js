@@ -1,3 +1,4 @@
+
 import React, {
     Fragment,
     useEffect,
@@ -39,6 +40,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       end:new Date().getFullYear()+1,
     });
   
+
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
@@ -47,6 +49,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
   
     const clearInputs = () => {
       setInputs((inputs) => ({
+
         budget: "",
       }));
     };
@@ -62,10 +65,13 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       ;
     }, [laboratoryService,user.laboratoriesHeaded]);
   
+
+       
     const updateLaboratoriesData = useCallback(() => {
       setLaboratories(user.laboratoriesHeaded);
     }, [user.laboratoriesHeaded]);
   
+
     const updateChart = useCallback(() => {
       let yearsRange = [];
       let budget=laboratories[0].budget;
@@ -101,6 +107,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
          laboratory,
          
         );
+
   
         if (response.data) {
           setAction("ADDING");
@@ -114,6 +121,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       }
     };
   
+
     useEffect(() => {
       updateLaboratoriesData();
       clearInputs();
@@ -125,6 +133,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
      console.log(laboratories[0].budget[2017]);
       console.log(chart.data);
     }, [ columns]);
+
     const handleSubmit = (event) => {
       event.preventDefault();
 
@@ -134,7 +143,9 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       });
       
       updateLaboratory(laboratories[0]);
+
       updateLaboratoriesData();
+
     };
   
     const cancelEdit = () => {
@@ -149,10 +160,12 @@ import BudgetTable from "../Statistics/components/BudgetTable";
            title={`Budget de votre laboratoire ${UserHelper.userHeadedLaboratories(
             user
           )}`}
+
             subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}
           />
         </div>
         <div >
+
             <BudgetForm
               {...{
                 inputs,
@@ -164,6 +177,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
               }}
             />
           </div>
+
           <br/>
           
           <div className="table-responsive">
@@ -198,6 +212,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
               </div>
             </div>
           
+
       </Fragment>
     );
   };
