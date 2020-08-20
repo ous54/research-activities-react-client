@@ -41,7 +41,7 @@ import AddBudget from "../components/AddBudget";
       end:new Date().getFullYear()+1,
     });
   
-const title = "Ajouter budget de l'année prochaine"
+    const title = "Ajouter budget de l'année prochaine"
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
