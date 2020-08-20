@@ -10,11 +10,12 @@ const BudgetForm = ({
 }) => {
   const handleInputsChange = (event) => {
     event.persist();
-
-    setInputs((inputs) => ({
-      ...inputs,
-      [event.target.name]: event.target.value,
-    }));
+    if  (Number(event.target.value))
+      { setInputs((inputs) => ({
+        ...inputs,
+        [event.target.name]:  parseInt(event.target.value),
+        }));
+      }
   };
 
   useEffect(() => {
@@ -29,6 +30,8 @@ const BudgetForm = ({
           [input.name + "_id"]: input.options[0]._id,
         }));
         console.log("II",inputsSkeleton);
+        console.log("I",inputs);
+
     });
   }, [inputs, inputsSkeleton, setInputs]);
 
@@ -50,6 +53,7 @@ const BudgetForm = ({
                   <input
                     required
                     type="text"
+                    pattern="[0-9]*"
                     className="form-control"
                     onChange={handleInputsChange}
                     value={inputs[input.name]}
