@@ -13,6 +13,7 @@ import React, {
   import C3Chart from "react-c3js";
 import StatisticsTable from "../Statistics/components/StatisticsTable";
 import BudgetTable from "../Statistics/components/BudgetTable";
+import AddBudget from "../components/AddBudget";
 
   const LaboratoryBudget = () => {
   
@@ -40,7 +41,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       end:new Date().getFullYear()+1,
     });
   
-
+const title = "Ajouter budget de l'année prochaine"
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
@@ -175,10 +176,11 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 handleSubmit,
                 cancelEdit,
                 action,
+                title
               }}
             />}
           </div>
-
+          {laboratories[0].budget === undefined && <AddBudget/>}
           <br/>
           
           <div className="table-responsive">

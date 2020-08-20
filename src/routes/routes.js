@@ -227,7 +227,7 @@ title: "Budget",
     },
     {
 
-      title: "AddBudget",
+      title: "Ajouter budget",
       path: "/AddBudget",
       component: AddBudget,
      roles: ["LABORATORY_HEAD"],

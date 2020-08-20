@@ -7,6 +7,7 @@ const BudgetForm = ({
   handleSubmit,
   cancelEdit,
   action,
+  title
 }) => {
   const handleInputsChange = (event) => {
     event.persist();
@@ -40,7 +41,7 @@ const BudgetForm = ({
       <form onSubmit={handleSubmit}>
         <div className="card-header">
           <h3 className="card-title">
-            Modifier le budget de l'année prochaine 
+              {title}          
           </h3>
         </div>
 

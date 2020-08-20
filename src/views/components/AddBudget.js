@@ -35,6 +35,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       },
     });
     const columns = [ "budget"];
+    const title = "Ajouter l'historique des budgets"
     const [dateRange, setDateRange] = useState([2015,2016,2017,2018,2019,2020]);
     
 
@@ -159,9 +160,9 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       exp.budget=budget;
       console.log(exp);
       
-      /*updateLaboratory(laboratories[0]);
+      updateLaboratory( exp);
 
-      updateLaboratoriesData();*/
+      updateLaboratoriesData();
 
     };
   
@@ -190,6 +191,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 handleSubmit,
                 cancelEdit,
                 action,
+                title,
               }}
             />}
           </div>
