@@ -166,7 +166,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
           />
         </div>
         <div >
-        {(laboratories.length !==0)&& 
+         {(laboratories.length !==0 && laboratories[0].budget!== undefined)&&
             <BudgetForm
               {...{
                 inputs,
@@ -196,7 +196,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 id="apexchartDatas28b504"
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
-         
+          {(laboratories.length !==0 && laboratories[0].budget!== undefined)&&
                   <C3Chart
                    key={chartVersion}
                    data={chart.data}
@@ -208,7 +208,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
          
                    show: true,
                         }}
-                      />
+                      />}
                 
                
               </div>
