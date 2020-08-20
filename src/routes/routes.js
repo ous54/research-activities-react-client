@@ -34,7 +34,9 @@ import {
 import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 import LabStatistics from "../views/Statistics/labStatistics";
 import LaboratoryBudget from "../views/ManagingEntities/LaboratoryBudget";
+
 import EstablishmentBudget from "../views/ManagingEntities/EstablishmentBudget";
+
 
 
 const allRoles = [
@@ -205,6 +207,7 @@ title: "Budget",
   isDropdown: false,
   routes: [
     {
+
       title: "Budget",
       path: "/Budget",
       component: LaboratoryBudget,
@@ -220,6 +223,7 @@ title: "Budget",
       icon: TeamIcon,
       inMenu: true,
      }
+
   ]
 }
     

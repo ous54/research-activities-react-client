@@ -1,3 +1,4 @@
+
 import React, {
     Fragment,
     useEffect,
@@ -39,6 +40,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       end:new Date().getFullYear()+1,
     });
   
+
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
@@ -47,6 +49,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
   
     const clearInputs = () => {
       setInputs((inputs) => ({
+
         budget: "",
       }));
     };
@@ -62,10 +65,13 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       ;
     }, [laboratoryService,user.laboratoriesHeaded]);
   
+
+       
     const updateLaboratoriesData = useCallback(() => {
       setLaboratories(user.laboratoriesHeaded);
     }, [user.laboratoriesHeaded]);
   
+
     const updateChart = useCallback(() => {
       let yearsRange = [];
       let budget ={2015 : 0}
@@ -103,6 +109,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
          laboratory,
          
         );
+
   
         if (response.data) {
           setAction("ADDING");
@@ -116,6 +123,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       }
     };
   
+
     useEffect(() => {
       if(laboratories.length !==0){
       updateLaboratoriesData();
@@ -127,6 +135,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
     useEffect(() => {
   
     }, [ columns]);
+
     const handleSubmit = (event) => {
       event.preventDefault();
 
@@ -136,7 +145,9 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       });
       
       updateLaboratory(laboratories[0]);
+
       updateLaboratoriesData();
+
     };
   
     const cancelEdit = () => {
@@ -167,6 +178,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
               }}
             />}
           </div>
+
           <br/>
           
           <div className="table-responsive">
@@ -202,6 +214,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
               </div>
             </div>
           
+
       </Fragment>
     );
   };
