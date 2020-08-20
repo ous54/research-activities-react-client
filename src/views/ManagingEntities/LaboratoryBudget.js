@@ -68,7 +68,9 @@ import BudgetTable from "../Statistics/components/BudgetTable";
   
     const updateChart = useCallback(() => {
       let yearsRange = [];
-      let budget=laboratories[0].budget;
+      let budget ={2015 : 0}
+      if(laboratories[0].budget!== undefined)
+      {budget = laboratories[0].budget;}
      
 
       for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
@@ -115,15 +117,15 @@ import BudgetTable from "../Statistics/components/BudgetTable";
     };
   
     useEffect(() => {
+      if(laboratories.length !==0){
       updateLaboratoriesData();
       clearInputs();
       updateChart();
-     
+      }
     }, [ updateLaboratoriesData, updateChart]);
   
     useEffect(() => {
-     console.log(laboratories[0].budget[2017]);
-      console.log(chart.data);
+  
     }, [ columns]);
     const handleSubmit = (event) => {
       event.preventDefault();
@@ -149,10 +151,11 @@ import BudgetTable from "../Statistics/components/BudgetTable";
            title={`Budget de votre laboratoire ${UserHelper.userHeadedLaboratories(
             user
           )}`}
-            subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}
+            /*subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}*/
           />
         </div>
         <div >
+        {(laboratories.length !==0)&& 
             <BudgetForm
               {...{
                 inputs,
@@ -162,16 +165,17 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 cancelEdit,
                 action,
               }}
-            />
+            />}
           </div>
           <br/>
           
           <div className="table-responsive">
           <div className="card">    
-                <BudgetTable
+          {(laboratories.length !==0 && laboratories[0].budget!== undefined)&& <BudgetTable
                   labBudget={laboratories[0].budget}
                   dateRange={dateRange}
                 />
+          }
               </div>   
             </div> 
             <br/>  
