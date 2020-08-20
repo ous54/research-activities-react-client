@@ -161,8 +161,10 @@ const EstablishmentBudget = () => {
      console.log(budget);
 
     for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
+
     if(currentLab.budget!== undefined)
     {const columns = [["budget"].concat(yearsRange.map((year) =>budget[year] ?? 0))]
+
       .concat([["x"].concat(yearsRange)]);
 
     setChart(() => ({
@@ -174,6 +176,7 @@ const EstablishmentBudget = () => {
     }))
     setChartVersion(chartVersion+1);
 }}
+
   },[laboratories, currentLab]);
   
 
@@ -250,7 +253,9 @@ const EstablishmentBudget = () => {
           <div className="card">
             <div id="chartData-development-activity" className="mt-4">
                
+
             {(selectedLabs.length !==0 /*&& currentLab.budget!== undefined*/) &&
+
             
                 <BudgetTable
                   labBudget={currentLab.budget}
@@ -260,6 +265,7 @@ const EstablishmentBudget = () => {
                   <NoResultFound query={searchTerm} />
                 )}
                 
+
               </div>   
             </div>   
         <div className="card">        
@@ -268,6 +274,7 @@ const EstablishmentBudget = () => {
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
          {(selectedLabs.length !==0 && currentLab.budget!== undefined)&&
+
                   <C3Chart
                    key={chartVersion}
                    data={chart.data}
