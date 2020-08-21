@@ -21,7 +21,7 @@ import AddBudget from "../components/AddBudget";
     const { pushAlert } = alertService;
     const { laboratoryService, userService   } = ApiServices;
   
-    const [laboratories, setLaboratories] = useState([{budget : 0}]);
+    const [laboratories, setLaboratories] = useState([{title : "t"}]);
   
     const [inputs, setInputs] = useState({});
     const [action, setAction] = useState("ADDING");
@@ -54,21 +54,27 @@ import AddBudget from "../components/AddBudget";
         budget: "",
       }));
     };
-  
-    const updateLaboratoryData = useCallback(async () => {
+    const updateLaboratoriesData = useCallback(async () => {
       let response = await laboratoryService.findAllLaboratories();
-     
+      let newlabs =[];
+          if(response.data){
           response.data.map((laboratory) => {
+       
             if(laboratory.name === user.laboratoriesHeaded[0].name){
-              setLaboratories(laboratories=> laboratories.concat(laboratory))
+             newlabs.push(laboratory);
+            
+              setLaboratories(newlabs);
+              console.log(laboratories);
             }
-          })
+          })}
       ;
-    }, [laboratoryService,user.laboratoriesHeaded]);
+    }, [laboratoryService]);
   
 
        
-    const updateLaboratoriesData = useCallback(() => {
+  
+       
+    const updateLaboratoryData = useCallback(() => {
       setLaboratories(user.laboratoriesHeaded);
     }, [user.laboratoriesHeaded]);
   
@@ -127,23 +133,31 @@ import AddBudget from "../components/AddBudget";
 
     useEffect(() => {
       if(laboratories.length !==0){
-      updateLaboratoriesData();
+      
       clearInputs();
       updateChart();
       }
     }, [ updateLaboratoriesData, updateChart]);
   
     useEffect(() => {
-  
-    }, [ columns]);
+      updateChart();
+    }, [ laboratories ]);
 
+    useEffect(() => {
+     
+      
+        updateLaboratoriesData();
+      
+    }, []);
+  
     const handleSubmit = (event) => {
       event.preventDefault();
 
-      console.log({
-        ...inputs,
-        ...laboratories[0],
-      });
+      console.log(
+       
+        laboratories[0],
+      
+      );
       
       updateLaboratory(laboratories[0]);
 
@@ -180,7 +194,7 @@ import AddBudget from "../components/AddBudget";
               }}
             />}
           </div>
-          {laboratories[0].budget === undefined && <AddBudget/>}
+        {laboratories[0].budget === undefined && <AddBudget/>}
           <br/>
           
           <div className="table-responsive">

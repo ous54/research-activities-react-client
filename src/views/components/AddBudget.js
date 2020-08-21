@@ -75,27 +75,6 @@ import BudgetTable from "../Statistics/components/BudgetTable";
     }, [user.laboratoriesHeaded]);
   
 
-    const updateChart = useCallback(() => {
-      let yearsRange = [];
-      let budget ={2015 : 0}
-      if(laboratories[0].budget!== undefined)
-      {budget = laboratories[0].budget;}
-     
-
-      for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
-  
-      const columns = [["budget"].concat(yearsRange.map((year) =>budget[year] ?? 0))]
-      .concat([["x"].concat(yearsRange)]);
-      setChart(() => ({
-        data: {
-          x: "x",
-          type: "line",
-          columns,
-        }
-      }))
-      setChartVersion(chartVersion+1);
-    },[laboratories]);
-  
     
    
    
@@ -131,9 +110,9 @@ import BudgetTable from "../Statistics/components/BudgetTable";
       if(laboratories.length !==0){
       updateLaboratoriesData();
       clearInputs();
-      updateChart();
+    
       }
-    }, [ updateLaboratoriesData, updateChart]);
+    }, [ updateLaboratoriesData]);
   
     useEffect(() => {
   
@@ -182,7 +161,6 @@ import BudgetTable from "../Statistics/components/BudgetTable";
           />
         </div>
         <div >
-         {(laboratories.length !==0 && laboratories[0].budget!== undefined)&&
             <BudgetForm
               {...{
                 inputs,
@@ -193,7 +171,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 action,
                 title,
               }}
-            />}
+            />
           </div>
 
          

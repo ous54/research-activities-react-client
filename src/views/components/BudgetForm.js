@@ -30,8 +30,7 @@ const BudgetForm = ({
           ...inputs,
           [input.name + "_id"]: input.options[0]._id,
         }));
-        console.log("II",inputsSkeleton);
-        console.log("I",inputs);
+       
 
     });
   }, [inputs, inputsSkeleton, setInputs]);
