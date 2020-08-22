@@ -11,25 +11,28 @@ const BudgetForm = ({
 }) => {
   const handleInputsChange = (event) => {
     event.persist();
-    
-       setInputs((inputs) => ({
+    if(Number.isInteger(parseInt(event.target.value)))
+       {setInputs((inputs) => ({
         ...inputs,
         [event.target.name]: parseInt(event.target.value),
         }));
       
-        console.log("inputs",inputs);
+        console.log("inputs",inputs);}
   };
 
   useEffect(() => {
+    console.log(inputsSkeleton);
+    console.log("inputs",inputs);
     inputsSkeleton.forEach((input) => {
+      console.log("undef",inputs[input.name]);
       if (
         input.type === "select" &&
         input.options.length &&
-        inputs[input.name] === ""
+        inputs[input.name] === undefined
       )
         setInputs((inputs) => ({
           ...inputs,
-          [input.name ]: "",
+          [input.name ]: 2015,
         }));
        
 
