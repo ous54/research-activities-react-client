@@ -29,6 +29,7 @@ const makeUserService = (api) => ({
   getFollowedUsers: (filter) => api.get(`/followed-users`, { params: filter }),
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
+  getDirectorFilteringOptions: (directorId) => api.get(`/director-filtering-options/${directorId}`)
 });
 // const makePhdService = (api) => ({
 //   createUser: (user) => api.post(`/users`, user),
@@ -73,7 +74,8 @@ const makeLaboratoryService = (api) => ({
   getFreeLaboratories: () => api.get(`/free-laboratories`),
   associateHeadToLaboratory: (head_id, lab_id) =>
     api.get(`/entitle-laboratory/${head_id}/${lab_id}`),
-  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`)
+  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`),
+  getNodesForOrgChart: () => api.get(`/nodesForOrgChart`)
 });
 
 const makeTeamService = (api) => ({
