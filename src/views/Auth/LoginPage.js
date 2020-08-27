@@ -107,7 +107,8 @@ function LoginPage() {
           css = {
             css`
             display: block;
-            margin: 0 auto;
+            margin-left: auto;
+            margin-right: auto;
             border-color: blue;
           `
           }
