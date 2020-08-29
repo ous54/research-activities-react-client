@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, { useContext, useEffect, useState, useCallback, Fragment } from "react";
 import TeamFilter from "../components/TeamFilter";
 import PageHeader from "../components/PageHeader";
 import { AppContext } from "../../context/AppContext";
@@ -9,11 +9,13 @@ import C3Chart from "react-c3js";
 import "c3/c3.css";
 import LabFilter from "../components/LabFilter";
 import NoResultFound from "../components/NoResultFound";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ReportTable from "./ReportTable";
 
 const Report = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
-  const [teamsStatistics, setTeamsStatistics] = useState([]);
-
+  const [teamPublications, setTeamPublications] = useState([]);
+  const [version,setVersion] = useState(0);
   const [
     filteredResearchersStatistics,
     setFilteredResearchersStatistics,
@@ -54,6 +56,8 @@ const Report = () => {
     
 });
 
+
+
   
   const updateFilteringOptionsData = useCallback(async () => {
     try {
@@ -77,43 +81,38 @@ const Report = () => {
   }, [filter]);
 
   const updateStatistics = () => {};
-  useEffect(() => {
-  
-  }, [filteredResearchersStatistics, dateRange, teamsStatistics]);
-
-  useEffect(() => {
  
-    console.log(researchersStatistics);
-  }, [filteredResearchersStatistics, dateRange]);
+  const setTeamPublicationByYear = useCallback( (year) =>{
+    let publications =[];
+      researchersStatistics.map((researcher)=>{
+        researcher.publications.map(publication =>{
+          if(publication.year===year)
+          {publications.push(publication);}
+        })
+      })
+      console.log(publications);
+      setTeamPublications(publications);
 
-
+      return publications;
+  },[researchersStatistics])
+  
   useEffect(() => {
     console.log(researchersStatistics);
-
     updateFilteringOptionsData();
-  }, [updateFilteringOptionsData]);
+  }, [updateFilteringOptionsData,researchersStatistics]);
 
+  useEffect(()=>{
+    setTeamPublicationByYear("2019");
+  },[filter, researchersStatistics])
   useEffect(() => {
     if (!filter) return;
     if (!isSearchActive) setIsSearchActive(true);
     updateFollowedUsersData();
     console.log(researchersStatistics);
-    getPublicationDetails({ title: "Performance Evaluation of Low-Power Wide Area based on LoRa Technology for Smart Metering",
-    year: "2019" })
+
   }, [filter, isSearchActive, updateFollowedUsersData]);
 
-  useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredResearchersStatistics(researchersStatistics);
-      return;
-    }
-    const a = researchersStatistics.filter(
-      (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-    );
-    setFilteredResearchersStatistics(a);
-    console.log(researchersStatistics);
-     
-  }, [searchTerm, researchersStatistics]);
+
 
   
   return (
@@ -140,6 +139,9 @@ const Report = () => {
               setIsSearchActive,
             }}
           />
+                     
+        <ReportTable teamPublications={teamPublications}  />
+          
         </div>
        </div>
     </div>

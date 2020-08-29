@@ -6,6 +6,7 @@ import "datatables";
   const Publications = ({ author, setAuthor ,platform}) => {
   useEffect(() => {
     $(".datatable").DataTable();
+    
   }, []);
 
   const updatePublication = (index, publication) => {
