@@ -20,6 +20,7 @@ const BudgetTable = ({ labBudget }) => {
          
           
           {Object.keys(labBudget).reverse().map((year,index) => (
+
             <tr key={index}>
              <td> {year}</td>
             <td className="" key={index}>{labBudget[year] ?? 0}DH</td>

@@ -31,7 +31,9 @@ import {
   TeamIcon,
   SettingsIcon,
   PhdIcon,
-  BudgetIcon
+
+  BudgetIcon,
+
 } from "../views/components/icons";
 import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 import LabStatistics from "../views/Statistics/labStatistics";
