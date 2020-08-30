@@ -206,7 +206,24 @@ const StatisticsIcon = () => (
     <polyline points="4 12 7 8 11 10 16 4 20 8" />
   </svg>
 );
-
+const BudgetIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="icon icon-tabler icon-tabler-chart-area-line"
+    aria-hidden="true" 
+    focusable="false"
+    width="26"
+    height="26" 
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    preserveAspectRatio="xMidYMid meet"
+    viewBox="0 0 24 24"
+  >
+       <path d="M14 11h-4a2 2 0 0 1 0-4h5a1 1 0 0 1 1 1a1 1 0 0 0 2 0a3 3 0 0 0-3-3h-2V3a1 1 0 0 0-2 0v2h-1a4 4 0 0 0 0 8h4a2 2 0 0 1 0 4H9a1 1 0 0 1-1-1a1 1 0 0 0-2 0a3 3 0 0 0 3 3h2v2a1 1 0 0 0 2 0v-2h1a4 4 0 0 0 0-8z"
+        fill="#626262"/>
+</svg>
+);
 const UserCheckIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -326,6 +343,7 @@ const SuccessIcon = () => (
   </svg>
 );
 
+
 export {
   HomeIcon,
   SettingsIcon,
@@ -344,4 +362,5 @@ export {
   AlertIcon,
   SuccessIcon,
   PhdIcon,
+  BudgetIcon
 };

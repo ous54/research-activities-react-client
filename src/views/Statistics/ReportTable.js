@@ -49,30 +49,35 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const ReportTable = ({teamPublications}) => {
+const ReportTable = ({teamPublications, team}) => {
 
     console.log(teamPublications);
  
   return (
    
-      
+    <Document
+   
+    
+  >
+    <Page orientation="landscape" style={styles.body}>
+      <Text style={styles.subtitle}>{"Publications de l'équipe " + team}</Text>
         <View style={styles.table} key={teamPublications}>
           {/* TableHeader */}
           <View style={styles.tableRow}>
-            <View style={{ ...styles.tableCol, width: "20%" }}>
+            <View style={{ ...styles.tableCol, width: "70%" }}>
               <Text style={styles.tableCell}>Titre complet de la publication</Text>
             </View>
-            <View style={{ ...styles.tableCol, width: "20%" }}>
+            <View style={{ ...styles.tableCol, width: "30%" }}>
               <Text style={styles.tableCell}>Auteurs</Text>
             </View>
-            <View style={{ ...styles.tableCol, width: "20%" }}>
+            <View style={{ ...styles.tableCol, width: "30%" }}>
               <Text style={styles.tableCell}>Source</Text>
             </View>
             <View style={{ ...styles.tableCol, width: "20%" }}>
               <Text style={styles.tableCell}>Année</Text>
             </View>
 
-            <View style={{ ...styles.tableCol, width: "70%" }}>
+            <View style={{ ...styles.tableCol, width: "20%" }}>
               <Text style={styles.tableCell}>IF</Text>
             </View>
             <View style={{ ...styles.tableCol, width: "20%" }}>
@@ -82,19 +87,19 @@ const ReportTable = ({teamPublications}) => {
           </View>
           {teamPublications.map((publication, index) => (
             <View key={index} style={styles.tableRow}>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
+              <View style={{ ...styles.tableCol, width: "70%" }}>
                 <Text style={styles.tableCell}>{publication.title}</Text>
               </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
+              <View style={{ ...styles.tableCol, width: "30%" }}>
                 <Text style={styles.tableCell}>{publication.authors.join(", ")} </Text>
               </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
+              <View style={{ ...styles.tableCol, width: "30%" }}>
                 <Text style={styles.tableCell}>{publication.source} </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "20%" }}>
                 <Text style={styles.tableCell}>{publication.year}</Text>
               </View>
-              <View style={{ ...styles.tableCol, width: "70%" }}>
+              <View style={{ ...styles.tableCol, width: "20%" }}>
                 <Text style={styles.tableCell}>{publication.IF}</Text>
               </View>
               <View style={{ ...styles.tableCol, width: "20%" }}>
@@ -103,7 +108,8 @@ const ReportTable = ({teamPublications}) => {
             </View>
           ))}
         </View>
-     
+     </Page>
+     </Document>
     
   );
 };
