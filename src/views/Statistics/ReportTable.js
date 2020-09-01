@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const ReportTable = ({teamPublications, team}) => {
+const ReportTable = ({teamPublications, team, year}) => {
 
     console.log(teamPublications);
  
@@ -60,7 +60,7 @@ const ReportTable = ({teamPublications, team}) => {
     
   >
     <Page orientation="landscape" style={styles.body}>
-      <Text style={styles.subtitle}>{"Publications de l'équipe " + team}</Text>
+      <Text style={styles.subtitle}>{"Publications de l'équipe " + team+ " pendant l'année "+ year}</Text>
         <View style={styles.table} key={teamPublications}>
           {/* TableHeader */}
           <View style={styles.tableRow}>
